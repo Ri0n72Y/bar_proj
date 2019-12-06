@@ -1,7 +1,6 @@
-import KeySetting as Key;
+import KeySetting as Keys;
 import Entities;
-
-typedef Vec = h3d.Vector;
+import Controller;
 
 enum Dirc {
     FW; //前
@@ -21,6 +20,7 @@ class Main extends hxd.App {
 
     static inline var P_MOVESPEED = 60;
 
+    var controllers : Array<Controller>;
     var player : Player;
     var layers : h2d.Layers;
     var tiles : h2d.Tile;
@@ -28,28 +28,7 @@ class Main extends hxd.App {
 
     // change character texture, return the direction of move
     // TODO: Refactor for Joystick input
-    function key_checkMove(chara : Player, key : Int) : Vec{
-        var direction : Vec = new Vec();
-        if (key == Key.MOVE_VERTICAL_DEC) {
-            chara.sprite = ptiles[2];
-            direction.x = 0;
-            direction.y = -1.0;
-        } else if (key == Key.MOVE_VERTICAL_INC) {
-            chara.sprite = ptiles[0];
-            direction.x = 0;
-            direction.y = 1.0;
-        } else if (key == Key.MOVE_HORISONTAL_DEC) {
-            chara.sprite = ptiles[1];
-            direction.x = -1.0;
-            direction.y = 0;
-        } else if (key == Key.MOVE_HORISONTAL_INC) {
-            chara.sprite = ptiles[3];
-            direction.x = 1.0;
-            direction.y = 0;
-        }
 
-        return direction;
-    }
 
     override function init() {
         layers = new h2d.Layers(s2d);
@@ -57,6 +36,10 @@ class Main extends hxd.App {
         // game objects
         player = new Player();
         player.name = "player";
+        var controller = new Controller();
+        controller.setControl(player);
+
+        controllers = [controller];
         layers.add(player, LAYER_ENTITY);
         
         player.x = Std.int(s2d.width  / 2);
@@ -85,12 +68,35 @@ class Main extends hxd.App {
     override function onResize() {
         if (player == null) return;
     }
+    
+    function key_checkMove(chara : Player, key : Int) : h3d.Vector{
+        var direction = new h3d.Vector();
+        if (key == Keys.MOVE_VERTICAL_DEC) {
+            chara.sprite = ptiles[2];
+            direction.x = 0;
+            direction.y = -1.0;
+        } else if (key == Keys.MOVE_VERTICAL_INC) {
+            chara.sprite = ptiles[0];
+            direction.x = 0;
+            direction.y = 1.0;
+        } else if (key == Keys.MOVE_HORISONTAL_DEC) {
+            chara.sprite = ptiles[1];
+            direction.x = -1.0;
+            direction.y = 0;
+        } else if (key == Keys.MOVE_HORISONTAL_INC) {
+            chara.sprite = ptiles[3];
+            direction.x = 1.0;
+            direction.y = 0;
+        }
+
+        return direction;
+    }
 
     function onEvent(event : hxd.Event) {
         // player texture switch
         switch (event.kind) {
             case EKeyDown: {
-                player.direction = key_checkMove(player, event.keyCode);
+                controllers[0].direction = key_checkMove(player, event.keyCode);
                 var sprite = player.getObjectByName("sprite");
                 sprite.removeChildren();
                 sprite.addChild(player.sprite);
@@ -112,16 +118,9 @@ class Main extends hxd.App {
     }
 
     override function update(dt:Float) {
-        player.x += player.direction.x * P_MOVESPEED * dt;
-        player.y += player.direction.y * P_MOVESPEED * dt;
+        controllers[0].move(P_MOVESPEED, dt);
     }
 
-
-
-    function move(obj : h2d.Object) {
-
-    }
-    
     static function main() {
         hxd.Res.initEmbed();
         new Main();

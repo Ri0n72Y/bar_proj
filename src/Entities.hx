@@ -1,3 +1,5 @@
+import Controller;
+
 class Entities {
 
 }
@@ -5,10 +7,9 @@ class Entities {
 
 class Player extends h2d.Object {
     public var sprite : h2d.Bitmap;
-    public var direction : h3d.Vector = new h3d.Vector();
     
-    override function onAdd() {
-        super.onAdd();
+    public function new() {
+        super();
         var sprite = new h2d.Object(this);
         sprite.name = "sprite";
     }

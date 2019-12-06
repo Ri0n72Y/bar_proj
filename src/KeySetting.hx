@@ -20,6 +20,21 @@ class KeySetting {
     public static var SYS_PAGE_PRE  :  Int = K.Q; // menu page switch previous
     public static var SYS_PAGE_POST :  Int = K.E; // menw page switch next
 
+    public static var ACTION_KEYS = [
+        MOVE_HORISONTAL_DEC,
+        MOVE_HORISONTAL_INC,
+        MOVE_VERTICAL_DEC,
+        MOVE_VERTICAL_INC,
+        ACTION_CHECK,
+        ACTION_INTERACT,
+        ACTION_TALK];
+
+    public static var SYS_KEYS = [
+        SYS_ENTER, SYS_EXIT, SYS_MENU,
+        SYS_SEL_UP, SYS_SEL_DW, SYS_SEL_LF, SYS_SEL_RT,
+        SYS_PAGE_PRE, SYS_PAGE_POST
+    ];
+
     public function readConfig(config : String = "default") {
         // TODO: read key configration and set above keys to the configration
     }
