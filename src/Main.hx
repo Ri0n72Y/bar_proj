@@ -18,9 +18,9 @@ class Main extends hxd.App {
     static var LAYER_ENTITY = 3;
     static var LAYER_UI = 5;
 
-    static inline var P_MOVESPEED = 60;
+    static inline var P_MOVESPEED = 100;
 
-    var controllers : Array<Controller>;
+    var ctrls : Array<Controller>;
     var player : Player;
     var layers : h2d.Layers;
     var tiles : h2d.Tile;
@@ -39,7 +39,7 @@ class Main extends hxd.App {
         var controller = new Controller();
         controller.setControl(player);
 
-        controllers = [controller];
+        ctrls = [controller];
         layers.add(player, LAYER_ENTITY);
         
         player.x = Std.int(s2d.width  / 2);
@@ -57,7 +57,7 @@ class Main extends hxd.App {
         var b = new h2d.Bitmap(p_back);
         var r = new h2d.Bitmap(p_right);
 
-        player.sprite = f;
+        player.sprite.addChild(f);
 
         ptiles = [f,l,b,r];
 
@@ -69,8 +69,7 @@ class Main extends hxd.App {
         if (player == null) return;
     }
     
-    function key_checkMove(chara : Player, key : Int) : h3d.Vector{
-        var direction = new h3d.Vector();
+    function key_checkMove(chara : Player, direction : h3d.Vector, key : Int) : h3d.Vector{
         if (key == Keys.MOVE_VERTICAL_DEC) {
             chara.sprite = ptiles[2];
             direction.x = 0;
@@ -96,7 +95,7 @@ class Main extends hxd.App {
         // player texture switch
         switch (event.kind) {
             case EKeyDown: {
-                controllers[0].direction = key_checkMove(player, event.keyCode);
+                ctrls[0].direction = key_checkMove(player, ctrls[0].direction, event.keyCode);
                 var sprite = player.getObjectByName("sprite");
                 sprite.removeChildren();
                 sprite.addChild(player.sprite);
@@ -118,7 +117,12 @@ class Main extends hxd.App {
     }
 
     override function update(dt:Float) {
-        controllers[0].move(P_MOVESPEED, dt);
+        if (ctrls[0].isKeyPressed()) {
+            ctrls[0].move(P_MOVESPEED, dt);
+            trace("key presssed!");
+        } else {
+            trace("no key pressed");
+        }
     }
 
     static function main() {
