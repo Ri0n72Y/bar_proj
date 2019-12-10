@@ -4,12 +4,12 @@ class Misc {
     
 }
 
-class Machine extends Entity {
+class Facility extends Entity {
     var id : String;
     var description : String;
 }
 
-class PlantSoil extends Machine {
+class PlantSoil extends Facility {
     var state : Int;
     var plant : Plant;
     var interactions : String;

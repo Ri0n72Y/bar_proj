@@ -1,3 +1,4 @@
+import Item;
 import h2d.Tile;
 import KeySetting as Keys;
 import Entity;
@@ -33,9 +34,12 @@ class Main extends hxd.App {
 
         ctrls = [controller];
         layers.add(player, LAYER_ENTITY);
+        player.layer = layers;
+        player.layerNum = LAYER_ENTITY;
         
-        player.x = Std.int(s2d.width  / 2);
+        player.x = Std.int(s2d.width  / 3);
         player.y = Std.int(s2d.height / 2);
+
 
         //var ptiles = hxd.Res.charaAnim.toTile().split();
         tiles = hxd.Res.charaAnim.toTile();
@@ -47,6 +51,13 @@ class Main extends hxd.App {
         player.getObjectByName("sprite").addChild(f);
 
         ptiles = [f,l,b,r];
+
+        var item = new Fruit(WF);
+        item.sprite = loadTileToSize(tiles, 0, FSIZE * 4, FSIZE, FSIZE, 80, 80);
+        item.getObjectByName("sprite").addChild(item.sprite);
+        item.x = Std.int(s2d.width  / 1.5);
+        item.y = Std.int(s2d.height / 2);
+        layers.add(item, LAYER_ENTITY);
 
         //set event listener to window
         hxd.Window.getInstance().addEventTarget(onEvent);
@@ -62,7 +73,7 @@ class Main extends hxd.App {
         if (player == null) return;
     }
     
-    function key_checkMove(chara : Player, direction : h3d.Vector, key : Int) : h3d.Vector{
+    function key_checkMove(chara : Player, direction : h3d.Vector, key : Int, dt : Float){
         if (key == Keys.MOVE_VERTICAL_DEC) {
             chara.sprite = ptiles[2];
             direction.x = 0;
@@ -79,13 +90,14 @@ class Main extends hxd.App {
             chara.sprite = ptiles[3];
             direction.x = 1.0;
             direction.y = 0;
+        } else {
+            return;
         }
         
+        ctrls[0].move(P_MOVESPEED, dt);
         var sprite = chara.getObjectByName("sprite");
         sprite.removeChildren();
         sprite.addChild(chara.sprite);
-
-        return direction;
     }
 
     function onEvent(event : hxd.Event) {
@@ -97,25 +109,14 @@ class Main extends hxd.App {
                 }
             }
             case EKeyUp: {}
-            case EPush: {}
-            case ERelease: {}
-            case EMove: {}
-            case EOver: {}
-            case EOut: {}
-            case EWheel: {}
-            case EFocus: {}
-            case EFocusLost: {}
-            case EReleaseOutside: {}
-            case ETextInput: {}
-            case ECheck: {}
+            case _ : {}
         }
     }
 
     override function update(dt:Float) {
         var key = ctrls[0].isKeyPressed();
         if (key != -1) {
-            ctrls[0].direction = key_checkMove(player, ctrls[0].direction, key);
-            ctrls[0].move(P_MOVESPEED, dt);
+            key_checkMove(player, ctrls[0].direction, key, dt);
         } else {
         }
     }

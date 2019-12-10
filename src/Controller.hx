@@ -1,4 +1,5 @@
 import hxd.Key;
+import Entity;
 
 class Controller {
     var object : h2d.Object;
@@ -7,8 +8,9 @@ class Controller {
         this.direction = new h3d.Vector(0, 0);
     }
 
-    public function setControl(obj : h2d.Object) {
+    public function setControl(obj : Character) {
         this.object = obj;
+        obj.controller = this;
     }
 
     // move the object being controlled

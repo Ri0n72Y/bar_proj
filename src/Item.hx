@@ -8,17 +8,18 @@ enum ItemType {
 }
 
 enum FruitType {
-    Fruit; Nut; Seed;
+    WF;
 }
 
 class Fruit extends Item {
-    var type : FruitType;
     var flavor : String;
     var tastes : Array<Float>;
     var generic_info : Map<String, Float>;
+    var type : FruitType;
 
-    public function new() {
+    public function new(type : FruitType) {
         super();
+        this.type = type;
         tastes = [0,0,0,0,0];
     }
 }
@@ -28,9 +29,8 @@ class Seed extends Fruit {
     var timeBirth : Int;
     var species : String;
 
-    public function new(time : Int) {
-        super();
-        this.type = Seed;
+    public function new(time : Int, type : FruitType) {
+        super(type);
         timeBirth = time;
     }
 }
