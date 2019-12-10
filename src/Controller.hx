@@ -18,11 +18,11 @@ class Controller {
             this.object.y += direction.y * speed * dt;
         }
     }
-    public function isKeyPressed() : Bool {
+    public function isKeyPressed() : Int {
         for (k in KeySetting.ACTION_KEYS) {
             if (Key.isDown(k))
-                return true;
+                return k;
         }
-        return false;
+        return -1;
     }
 }

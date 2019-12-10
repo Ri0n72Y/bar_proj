@@ -1,14 +1,7 @@
+import h2d.Tile;
 import KeySetting as Keys;
-import Entities;
+import Entity;
 import Controller;
-
-enum Dirc {
-    FW; //前
-    BW; //后
-    LF; //左
-    RH; //右
-    DIR(x : Float, y : Float);
-}
 
 class Main extends hxd.App {
 
@@ -18,7 +11,7 @@ class Main extends hxd.App {
     static var LAYER_ENTITY = 3;
     static var LAYER_UI = 5;
 
-    static inline var P_MOVESPEED = 100;
+    static inline var P_MOVESPEED = 160;
 
     var ctrls : Array<Controller>;
     var player : Player;
@@ -28,7 +21,6 @@ class Main extends hxd.App {
 
     // change character texture, return the direction of move
     // TODO: Refactor for Joystick input
-
 
     override function init() {
         layers = new h2d.Layers(s2d);
@@ -47,22 +39,23 @@ class Main extends hxd.App {
 
         //var ptiles = hxd.Res.charaAnim.toTile().split();
         tiles = hxd.Res.charaAnim.toTile();
-        var p_front = tiles.sub(0, 0, FSIZE, FSIZE).center();
-        var p_left  = tiles.sub(0, FSIZE, FSIZE, FSIZE).center();
-        var p_back  = tiles.sub(0, FSIZE * 2, FSIZE, FSIZE).center();
-        var p_right = tiles.sub(0, FSIZE * 3, FSIZE, FSIZE).center();
+        var f = loadTileToSize(tiles, 0, 0, FSIZE, FSIZE, 80, 80);
+        var l = loadTileToSize(tiles, 0, FSIZE, FSIZE, FSIZE, 80, 80);
+        var b = loadTileToSize(tiles, 0, FSIZE * 2, FSIZE, FSIZE, 80, 80);
+        var r = loadTileToSize(tiles, 0, FSIZE * 3, FSIZE, FSIZE, 80, 80);
 
-        var f = new h2d.Bitmap(p_front);
-        var l = new h2d.Bitmap(p_left);
-        var b = new h2d.Bitmap(p_back);
-        var r = new h2d.Bitmap(p_right);
-
-        player.sprite.addChild(f);
+        player.getObjectByName("sprite").addChild(f);
 
         ptiles = [f,l,b,r];
 
         //set event listener to window
         hxd.Window.getInstance().addEventTarget(onEvent);
+    }
+
+    function loadTileToSize(tiles : Tile, x:Float, y:Float, w:Float, h:Float, scaleX:Float, scaleY:Float) : h2d.Bitmap {
+        var tile = tiles.sub(x, y, w, h, -(scaleX * .5), -(scaleY * .5));
+        tile.scaleToSize(scaleX, scaleY);
+        return new h2d.Bitmap(tile);
     }
 
     override function onResize() {
@@ -87,6 +80,10 @@ class Main extends hxd.App {
             direction.x = 1.0;
             direction.y = 0;
         }
+        
+        var sprite = chara.getObjectByName("sprite");
+        sprite.removeChildren();
+        sprite.addChild(chara.sprite);
 
         return direction;
     }
@@ -95,13 +92,11 @@ class Main extends hxd.App {
         // player texture switch
         switch (event.kind) {
             case EKeyDown: {
-                ctrls[0].direction = key_checkMove(player, ctrls[0].direction, event.keyCode);
-                var sprite = player.getObjectByName("sprite");
-                sprite.removeChildren();
-                sprite.addChild(player.sprite);
+                if (event.keyCode == Keys.ACTION_INTERACT) {
+                    player.interact(layers.getLayer(LAYER_ENTITY));
+                }
             }
-            case EKeyUp: {
-            }
+            case EKeyUp: {}
             case EPush: {}
             case ERelease: {}
             case EMove: {}
@@ -117,11 +112,11 @@ class Main extends hxd.App {
     }
 
     override function update(dt:Float) {
-        if (ctrls[0].isKeyPressed()) {
+        var key = ctrls[0].isKeyPressed();
+        if (key != -1) {
+            ctrls[0].direction = key_checkMove(player, ctrls[0].direction, key);
             ctrls[0].move(P_MOVESPEED, dt);
-            trace("key presssed!");
         } else {
-            trace("no key pressed");
         }
     }
 
