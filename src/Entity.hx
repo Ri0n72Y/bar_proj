@@ -5,7 +5,7 @@ import h2d.Object;
 class Entity extends Object{
     public var sprite : h2d.Bitmap;
     var INTERACT_DISTANCE = 100;
-    var DROP_DISTANCE = 60;
+    var DROP_DISTANCE = 80;
     public var holds : Object;
     public function new() {
         super();

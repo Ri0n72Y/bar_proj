@@ -14,7 +14,6 @@ class Main extends hxd.App {
 
     static inline var P_MOVESPEED = 160;
 
-    var ctrls : Array<Controller>;
     var player : Player;
     var layers : h2d.Layers;
     var tiles : h2d.Tile;
@@ -24,15 +23,14 @@ class Main extends hxd.App {
     // TODO: Refactor for Joystick input
 
     override function init() {
-        layers = new h2d.Layers(s2d);
+        layers = new h2d.Layers(s2d); // 初始化世界层
 
-        // game objects
-        player = new Player();
+        // TODO: 将object对象的导入整合到以 scene 的 json 来导入
+        player = new Player(); // add sample entity player
         player.name = "player";
-        var controller = new Controller();
+        var controller = new Controller(); // initialize controller for player
         controller.setControl(player);
 
-        ctrls = [controller];
         layers.add(player, LAYER_ENTITY);
         player.layer = layers;
         player.layerNum = LAYER_ENTITY;
@@ -94,7 +92,7 @@ class Main extends hxd.App {
             return;
         }
         
-        ctrls[0].move(P_MOVESPEED, dt);
+        chara.controller.move(P_MOVESPEED, dt);
         var sprite = chara.getObjectByName("sprite");
         sprite.removeChildren();
         sprite.addChild(chara.sprite);
@@ -114,9 +112,9 @@ class Main extends hxd.App {
     }
 
     override function update(dt:Float) {
-        var key = ctrls[0].isKeyPressed();
+        var key = player.controller.isKeyPressed();
         if (key != -1) {
-            key_checkMove(player, ctrls[0].direction, key, dt);
+            key_checkMove(player, player.controller.direction, key, dt);
         } else {
         }
     }
