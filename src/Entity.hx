@@ -29,6 +29,11 @@ enum Tool {
 class Character extends Entity {
     public var triggers : Array<Object>;
     public var controller : Controller;
+
+    public var state : State;
+    public var layer : h2d.Layers;
+    public var layerNum : Int;
+
     
     public function new() {
         super();
@@ -40,10 +45,6 @@ enum State {
 }
 
 class Player extends Character {
-    public var state : State;
-    public var layer : h2d.Layers;
-    public var layerNum : Int;
-
     var toolInventory : Array<Tool>;
     var currentTool : Tool;
 
@@ -55,11 +56,15 @@ class Player extends Character {
         this.state = Idle;
     }
 
+    /**
+     * 让该角色和传入的其他对象互动
+     * @param list 对象的list
+     */
     public function interact(list : Iterator<Object>) {
         if (state == Idle) {
             while (list.hasNext()) {
                 var item = list.next();
-                if ((item is Fruit) && (isInteractable(item))) {
+                if ((item is Fruit) && (isInDistanceInteractive(item))) { // 希望能通过 item.isCarrible bool值来判定是否能够放到头上
                     this.holds = item;
                     item.x = OFFSET_HOLD_X; item.y = OFFSET_HOLD_Y;
                     this.getObjectByName("holds").addChild(item);
@@ -67,7 +72,7 @@ class Player extends Character {
                     break; // TODO : this method only take the first-found item in the distance, modify to make it better
                 }
             }
-        } else if (state == Holding) {
+        } else if (state == Holding) { //
             var item = this.holds;
             item.x = this.x + DROP_DISTANCE * this.controller.direction.x;
             item.y = this.y + DROP_DISTANCE * this.controller.direction.y;
@@ -78,7 +83,7 @@ class Player extends Character {
         }
     }
 
-    function isInteractable(item : Object) : Bool {
+    function isInDistanceInteractive(item : Object) : Bool {
         return (Math.sqrt(Math.pow(item.x - this.x, 2) + Math.pow(item.y - this.y, 2)) <= INTERACT_DISTANCE);
     }
 }

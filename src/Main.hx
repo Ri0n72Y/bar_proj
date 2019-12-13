@@ -1,57 +1,52 @@
 import Item;
-import h2d.Tile;
 import KeySetting as Keys;
 import Entity;
 import Controller;
+import ResMgr.LAYER_ENTITY;
+import ResMgr.TILE_SIZE;
+import ResMgr.SCALED_SIZE;
+import ResMgr.loadTileToSize;
 
 class Main extends hxd.App {
 
-    static var FSIZE = 32;
-    static var LAYER_STATIC = 0;
-    static var LAYER_COLLIS = 2;
-    static var LAYER_ENTITY = 3;
-    static var LAYER_UI = 5;
-
-    static inline var P_MOVESPEED = 160;
+    static inline var P_MOVESPEED = 160; // 移动速度
 
     var player : Player;
     var layers : h2d.Layers;
-    var tiles : h2d.Tile;
     var ptiles : Array<h2d.Bitmap>;
+    var resMgr : ResMgr;
 
     // change character texture, return the direction of move
     // TODO: Refactor for Joystick input
 
     override function init() {
         layers = new h2d.Layers(s2d); // 初始化世界层
+        resMgr = new ResMgr(layers);
 
         // TODO: 将object对象的导入整合到以 scene 的 json 来导入
         player = new Player(); // add sample entity player
         player.name = "player";
         var controller = new Controller(); // initialize controller for player
-        controller.setControl(player);
+        controller.setControl(player); // set controller
 
-        layers.add(player, LAYER_ENTITY);
-        player.layer = layers;
+        layers.add(player, LAYER_ENTITY); 
+        player.layer = layers; // add double-link
         player.layerNum = LAYER_ENTITY;
         
-        player.x = Std.int(s2d.width  / 3);
+        player.x = Std.int(s2d.width  / 3); // set initial position
         player.y = Std.int(s2d.height / 2);
 
+        var f = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 1));
+        var l = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 1));
+        var b = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 1));
+        var r = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE * 3, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 1));
 
-        //var ptiles = hxd.Res.charaAnim.toTile().split();
-        tiles = hxd.Res.charaAnim.toTile();
-        var f = loadTileToSize(tiles, 0, 0, FSIZE, FSIZE, 80, 80);
-        var l = loadTileToSize(tiles, 0, FSIZE, FSIZE, FSIZE, 80, 80);
-        var b = loadTileToSize(tiles, 0, FSIZE * 2, FSIZE, FSIZE, 80, 80);
-        var r = loadTileToSize(tiles, 0, FSIZE * 3, FSIZE, FSIZE, 80, 80);
+        player.getObjectByName("sprite").addChild(f); // 添加初始图像
 
-        player.getObjectByName("sprite").addChild(f);
+        ptiles = [f,l,b,r]; // 可能会挂到player对象里面
 
-        ptiles = [f,l,b,r];
-
-        var item = new Fruit(WF);
-        item.sprite = loadTileToSize(tiles, 0, FSIZE * 4, FSIZE, FSIZE, 80, 80);
+        var item = new Fruit(WF); // 添加示例物品对象
+        item.sprite = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE * 4, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 1));
         item.getObjectByName("sprite").addChild(item.sprite);
         item.x = Std.int(s2d.width  / 1.5);
         item.y = Std.int(s2d.height / 2);
@@ -61,17 +56,18 @@ class Main extends hxd.App {
         hxd.Window.getInstance().addEventTarget(onEvent);
     }
 
-    function loadTileToSize(tiles : Tile, x:Float, y:Float, w:Float, h:Float, scaleX:Float, scaleY:Float) : h2d.Bitmap {
-        var tile = tiles.sub(x, y, w, h, -(scaleX * .5), -(scaleY * .5));
-        tile.scaleToSize(scaleX, scaleY);
-        return new h2d.Bitmap(tile);
-    }
-
     override function onResize() {
         if (player == null) return;
     }
     
-    function key_checkMove(chara : Player, direction : h3d.Vector, key : Int, dt : Float){
+    /**
+     * 检查移动行为，依赖于全局变量 ptiles  // TODO : 解除依赖
+     * @param chara 被移动的角色
+     * @param direction 方向向量
+     * @param key 按下的键代码
+     * @param dt deltatime
+     */
+    function key_checkMove(chara : Character, direction : h3d.Vector, key : Int, dt : Float){
         if (key == Keys.MOVE_VERTICAL_DEC) {
             chara.sprite = ptiles[2];
             direction.x = 0;
@@ -93,6 +89,7 @@ class Main extends hxd.App {
         }
         
         chara.controller.move(P_MOVESPEED, dt);
+        // TODO : 优化：使其无需每次都删除-添加子对象
         var sprite = chara.getObjectByName("sprite");
         sprite.removeChildren();
         sprite.addChild(chara.sprite);
