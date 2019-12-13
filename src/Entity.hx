@@ -29,6 +29,7 @@ enum Tool {
 class Character extends Entity {
     public var triggers : Array<Object>;
     public var controller : Controller;
+    public var camera : Misc.Camera;
 
     public var state : State;
     public var layer : h2d.Layers;
@@ -54,6 +55,7 @@ class Player extends Character {
     public function new() {
         super();
         this.state = Idle;
+        this.name = "player";
     }
 
     /**

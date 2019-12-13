@@ -3,13 +3,15 @@ import KeySetting as Keys;
 import Entity;
 import Controller;
 import ResMgr.LAYER_ENTITY;
+import ResMgr.LAYERS;
 import ResMgr.TILE_SIZE;
 import ResMgr.SCALED_SIZE;
 import ResMgr.loadTileToSize;
+import Misc;
 
 class Main extends hxd.App {
 
-    static inline var P_MOVESPEED = 160; // 移动速度
+    static inline var P_MOVESPEED = 320; // 移动速度
 
     var player : Player;
     var layers : h2d.Layers;
@@ -25,7 +27,6 @@ class Main extends hxd.App {
 
         // TODO: 将object对象的导入整合到以 scene 的 json 来导入
         player = new Player(); // add sample entity player
-        player.name = "player";
         var controller = new Controller(); // initialize controller for player
         controller.setControl(player); // set controller
 
@@ -35,6 +36,8 @@ class Main extends hxd.App {
         
         player.x = Std.int(s2d.width  / 3); // set initial position
         player.y = Std.int(s2d.height / 2);
+
+        player.camera = new Camera(player, s2d.width, s2d.height);
 
         var f = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 1));
         var l = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 1));
@@ -113,6 +116,9 @@ class Main extends hxd.App {
         if (key != -1) {
             key_checkMove(player, player.controller.direction, key, dt);
         } else {
+        }
+        for (i in LAYERS) {
+            player.camera.update(layers.getLayer(i));
         }
     }
 

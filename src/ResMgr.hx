@@ -6,10 +6,11 @@ class ResMgr {
     public final mapTiles : h2d.Tile;
     var layers : h2d.Layers;
     
-    public static final LAYER_STATIC = 0; // 静物层
-    public static final LAYER_COLLIS = 2; // 实体碰撞箱
-    public static final LAYER_ENTITY = 3; // 实体层
-    public static final LAYER_UI = 5; // UI层
+    public static inline final LAYER_STATIC = 0; // 静物层
+    public static inline final LAYER_COLLIS = 2; // 实体碰撞箱
+    public static inline final LAYER_ENTITY = 3; // 实体层
+    public static inline final LAYER_UI = 5; // UI层
+    public static final LAYERS = [LAYER_STATIC, LAYER_COLLIS, LAYER_ENTITY];
 
     public static final TILE_SIZE = 32; // 像素块标准大小
     public static final SCALED_SIZE = 80;
@@ -25,8 +26,11 @@ class ResMgr {
 ..ddgggddddddd...
 dddggggggggggdddd
 dggggggggggggggdd
+dggggggggggggggdd
+dggggggggggggggdd
+dggggggggggggggdd
 dgggggggggggggddd
-.dgggggggggdddd..
+ddgggggggggdddd..
 ..ddddggggddd....
 .....dddddd......";
 
