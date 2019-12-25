@@ -7,24 +7,27 @@ class AssetManager {
     static final WATERFRUIT = [ 0., 128, 20, 19];
     static final BLUE_BALL  = [21., 128, 24, 24];
     static final PLANT_SOIL = [46., 128, 42, 16];
+    
+    static final TILE_GRASS_A = [ 0., 0, 32, 32];
+    static final TILE_GRASS_B = [32., 0, 32, 32];
+    static final TILE_DIRT_A  = [96., 0, 32, 32];
+    static final TILE_DIRT_B  = [128., 0, 32, 32];
 
     public static function getAssetSize(code : String) : Asset{
         switch (code) {
-            case "slime_front":
-                return getAsset(SLIME_FRONT);
-            case "slime_left" :
-                return getAsset(SLIME_LEFT);
-            case "slime_back" :
-                return getAsset(SLIME_BACK);
-            case "slime_right":
-                return getAsset(SLIME_RIGHT);
-            case "waterfruit" :
-                return getAsset(WATERFRUIT);
-            case "blue_ball"  :
-                return getAsset(BLUE_BALL);
-            case "plant_soil" :
-                return getAsset(PLANT_SOIL);
+            case "slime_front": return getAsset(SLIME_FRONT);
+            case "slime_left" : return getAsset(SLIME_LEFT);
+            case "slime_back" : return getAsset(SLIME_BACK);
+            case "slime_right": return getAsset(SLIME_RIGHT);
+            case "waterfruit" : return getAsset(WATERFRUIT);
+            case "blue_ball"  : return getAsset(BLUE_BALL);
+            case "plant_soil" : return getAsset(PLANT_SOIL);
+            case "tile_grass_a": return getAsset(TILE_GRASS_A);
+            case "tile_grass_b": return getAsset(TILE_GRASS_B);
+            case "tile_dirt_a": return getAsset(TILE_DIRT_A);
+            case "tile_dirt_b": return getAsset(TILE_DIRT_B);
             default : 
+                trace ("Unknown tile name: " + code);
                 return new NullAsset();
         }
     }

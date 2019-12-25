@@ -1,5 +1,6 @@
 import h2d.Object;
 import h2d.Tile;
+import AssetManager.getAssetSize;
 
 class ResMgr {
     public final tiles : h2d.Tile;
@@ -38,10 +39,17 @@ ddgggggggggdddd..
         tiles = hxd.Res.charaAnim.toTile(); 
         mapTiles = hxd.Res.tiles.toTile();
         
-        tile_grass1 = loadTileToSize(mapTiles, 0, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "default");
-        tile_grass2 = loadTileToSize(mapTiles, TILE_SIZE, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "default");
-        tile_dirt1  = loadTileToSize(mapTiles, TILE_SIZE * 3, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "default");
-        tile_dirt2  = loadTileToSize(mapTiles, TILE_SIZE * 4, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "default");
+        var asset = getAssetSize("tile_grass_a");
+        tile_grass1 = loadTileToSize(mapTiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
+        
+        var asset = getAssetSize("tile_grass_b");
+        tile_grass2 = loadTileToSize(mapTiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
+        
+        var asset = getAssetSize("tile_dirt_a");
+        tile_dirt1  = loadTileToSize(mapTiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
+        
+        var asset = getAssetSize("tile_dirt_b");
+        tile_dirt2  = loadTileToSize(mapTiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
         
         this.layers = layers;
         layers.add(parseMap(mapTiles, testmap), LAYER_STATIC);
