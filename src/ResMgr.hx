@@ -38,10 +38,10 @@ ddgggggggggdddd..
         tiles = hxd.Res.charaAnim.toTile(); 
         mapTiles = hxd.Res.tiles.toTile();
         
-        tile_grass1 = loadTileToSize(mapTiles, 0, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 0);
-        tile_grass2 = loadTileToSize(mapTiles, TILE_SIZE, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 0);
-        tile_dirt1  = loadTileToSize(mapTiles, TILE_SIZE * 3, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 0);
-        tile_dirt2  = loadTileToSize(mapTiles, TILE_SIZE * 4, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 0);
+        tile_grass1 = loadTileToSize(mapTiles, 0, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "default");
+        tile_grass2 = loadTileToSize(mapTiles, TILE_SIZE, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "default");
+        tile_dirt1  = loadTileToSize(mapTiles, TILE_SIZE * 3, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "default");
+        tile_dirt2  = loadTileToSize(mapTiles, TILE_SIZE * 4, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "default");
         
         this.layers = layers;
         layers.add(parseMap(mapTiles, testmap), LAYER_STATIC);
@@ -90,11 +90,20 @@ ddgggggggggdddd..
      * @param h 高  
      * @param scaleX 缩放后的宽
      * @param scaleY 缩放后的高
-     * @param centre 位置居中为1，位置左上为0
-     * @return h2d.Bitmap 可以直接渲染的 bitmap 对象
+     * @param centre "centre", "default", "bottom"
+     * @return 切分调整完成的tile
      */
-    public static function loadTileToSize(tiles : Tile, x:Float, y:Float, w:Float, h:Float, scaleX:Float, scaleY:Float, centre : Float) : h2d.Tile {
-        var tile = tiles.sub(x, y, w, h, -(scaleX * .5) * centre, -(scaleY * .5) * centre);
+    public static function loadTileToSize(tiles : Tile, x:Float, y:Float, w:Float, h:Float, scaleX:Float, scaleY:Float, centre : String) : h2d.Tile {
+        var dx = 0.0; var dy = 0.0;
+        switch (centre) {
+            case "centre" : 
+                dx = -(scaleX * .5); dy = -(scaleY * .5);
+            case "bottom" :
+                dx = -scaleX; dy = -(scaleY * .5);
+            default :
+                null;
+        }
+        var tile = tiles.sub(x, y, w, h, dx, dy);
         tile.scaleToSize(scaleX, scaleY);
         return tile;
     }

@@ -39,17 +39,17 @@ class Main extends hxd.App {
 
         player.camera = new Camera(player, s2d.width, s2d.height);
 
-        var f = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 1));
-        var l = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 1));
-        var b = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 1));
-        var r = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE * 3, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 1));
+        var f = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, 0, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "centre"));
+        var l = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "centre"));
+        var b = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "centre"));
+        var r = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE * 3, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "centre"));
 
         player.getObjectByName("sprite").addChild(f); // 添加初始图像
 
         ptiles = [f,l,b,r]; // 可能会挂到player对象里面
 
         var item = new Fruit(WF); // 添加示例物品对象
-        item.sprite = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE * 4, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, 1));
+        item.sprite = new h2d.Bitmap(loadTileToSize(resMgr.tiles, 0, TILE_SIZE * 4, TILE_SIZE, TILE_SIZE, SCALED_SIZE, SCALED_SIZE, "centre"));
         item.getObjectByName("sprite").addChild(item.sprite);
         item.x = Std.int(s2d.width  / 1.5);
         item.y = Std.int(s2d.height / 2);
