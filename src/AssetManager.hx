@@ -13,6 +13,11 @@ class AssetManager {
     static final TILE_DIRT_A  = [96., 0, 32, 32];
     static final TILE_DIRT_B  = [128., 0, 32, 32];
 
+    static final PLANT_WATERFRUIT_SEED = [48., 144, 8, 16];
+    static final PLANT_WATERFRUIT_STAGE_A = [ 0., 152, 48, 40];
+    static final PLANT_WATERFRUIT_STAGE_B = [48., 152, 48, 40];
+    static final PLANT_WATERFRUIT_STAGE_C = [96., 152, 48, 40];
+
     public static function getAssetSize(code : String) : Asset{
         switch (code) {
             case "slime_front": return getAsset(SLIME_FRONT);
@@ -26,6 +31,10 @@ class AssetManager {
             case "tile_grass_b": return getAsset(TILE_GRASS_B);
             case "tile_dirt_a": return getAsset(TILE_DIRT_A);
             case "tile_dirt_b": return getAsset(TILE_DIRT_B);
+            case "plant_waterfruit_seed": return getAsset(PLANT_WATERFRUIT_SEED);
+            case "plant_waterfruit_stage_a": return getAsset(PLANT_WATERFRUIT_STAGE_A);
+            case "plant_waterfruit_stage_b": return getAsset(PLANT_WATERFRUIT_STAGE_B);
+            case "plant_waterfruit_stage_c": return getAsset(PLANT_WATERFRUIT_STAGE_C);
             default : 
                 trace ("Unknown tile name: " + code);
                 return new NullAsset();
