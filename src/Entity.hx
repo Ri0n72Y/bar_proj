@@ -21,7 +21,7 @@ class Entity extends Object{
         s.name = "holds";
     }
 
-    function update() {
+    function update(dt: Float) : Void{
         // detect any sprite change
         if (isSpriteChanged) {
             var s = this.getObjectByName("sprite");
@@ -59,8 +59,8 @@ class Character extends Entity {
         this.sprites = sprites;
     }
 
-    public override function update() {
-        super.update();
+    public override function update(dt: Float) {
+        super.update(dt);
     }
 }
 
@@ -81,8 +81,8 @@ class Player extends Character {
         this.name = "player";
     }
 
-    public override function update() {
-        super.update();
+    public override function update(dt: Float) {
+        super.update(dt);
     }
 
     /**
