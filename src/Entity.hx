@@ -1,5 +1,4 @@
 import h2d.Bitmap;
-import Item.Fruit;
 import h2d.Object;
 
 // Base of All sprited object in the game
@@ -29,6 +28,10 @@ class Entity extends Object{
             s.addChild(this.sprite);
             isSpriteChanged = false;
         }
+    }
+
+    public function isCarrible(entity: Entity): Bool {
+        return false;
     }
 }
 
@@ -65,7 +68,7 @@ class Character extends Entity {
 }
 
 enum State {
-    Holding; Idle;
+    Holding; Idle; Full;
 }
 
 class Player extends Character {
@@ -89,19 +92,19 @@ class Player extends Character {
      * 让该角色和传入的其他对象互动
      * @param list 对象的list
      */
-    public function interact(list : Iterator<Object>) {
+    public function interact(list : Array<Dynamic>) {
+        var items = list.filter(isInDistanceInteractive);
         if (state == Idle) {
-            while (list.hasNext()) {
-                var item = list.next();
-                if ((item is Fruit) && (isInDistanceInteractive(item))) { // 希望能通过 item.isCarrible bool值来判定是否能够放到头上
+            for (item in items) {
+                if ((item is Entity) && (item.isCarrible(this))) {
                     this.holds = item;
                     item.x = OFFSET_HOLD_X; item.y = OFFSET_HOLD_Y;
                     this.getObjectByName("holds").addChild(item);
                     state = Holding;
-                    break; // TODO : this method only take the first-found item in the distance, modify to make it better
+                    break; // TODO: this method only take the first-found item in the distance, modify to make it better
                 }
             }
-        } else if (state == Holding) { //
+        } else if ((state == Holding) && (items.length == 0)) { // throw out 
             var item = this.holds;
             item.x = this.x + DROP_DISTANCE * this.controller.direction.x;
             item.y = this.y + DROP_DISTANCE * this.controller.direction.y;
@@ -109,10 +112,19 @@ class Player extends Character {
 
             this.holds = null;
             state = Idle;
+        } else if ((state == Holding)){
+            for (item in items) {
+                if ((item is Facility)){
+                    var holds = this.getObjectByName("holds");
+                    item.put(holds.getChildAt(0)); // TODO: the method can only put staff at position 0;
+                    holds.removeChildren();
+                }
+                break;
+            }
         }
     }
 
     function isInDistanceInteractive(item : Object) : Bool {
-        return (Math.sqrt(Math.pow(item.x - this.x, 2) + Math.pow(item.y - this.y, 2)) <= INTERACT_DISTANCE);
+        return (item.name != "player" && Math.sqrt(Math.pow(item.x - this.x, 2) + Math.pow(item.y - this.y, 2)) <= INTERACT_DISTANCE);
     }
 }

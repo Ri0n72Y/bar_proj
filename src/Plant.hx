@@ -24,16 +24,19 @@ class Plant extends Entity {
 }
 
 class Plant_Waterfruit extends Plant {
-    public function new(sprites : Array<Bitmap>) {
-        super(0, sprites.length, 10);
-        this.sprites = sprites;
+    public function new() {
+        this.sprites = [];
+        for (s in ResMgr.plant_waterfruit)
+            this.sprites.push(new Bitmap(s));
+        super(0, sprites.length, 3);
         this.sprite = sprites[0];
+        isSpriteChanged = true;
     }
 
     public override function growth() : Bool {
         if (this.stage + 1 >= MAX_STAGE) return false;
         stage ++;
-        nextStage = 10; // TODO : take to next stage algorithm
+        nextStage = 3; // TODO : take to next stage algorithm
         sprite = this.sprites[stage];
         isSpriteChanged = true;
         return true;

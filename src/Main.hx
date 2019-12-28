@@ -1,8 +1,11 @@
+import h2d.Bitmap;
+import Facility.PlantSoil;
 import Item;
 import KeySetting as Keys;
 import Entity;
 import Controller;
 import ResMgr.LAYER_ENTITY;
+import ResMgr.LAYER_STATIC;
 import ResMgr.LAYERS;
 import ResMgr.SCALED_SIZE;
 import ResMgr.SCALE;
@@ -16,17 +19,18 @@ class Main extends hxd.App {
 
     var player : Player;
     var layers : h2d.Layers;
-    var resMgr : ResMgr;
+    var entities : Array<Dynamic>; // reference to find interactivable object
+    public var resMgr : ResMgr;
 
-    // change character texture, return the direction of move
     // TODO: Refactor for Joystick input
 
     override function init() {
+        entities = new Array<Dynamic>();
+        resMgr = new ResMgr();
         layers = new h2d.Layers(s2d); // 初始化世界层
-        resMgr = new ResMgr(layers);
+        layers.add(resMgr.map, LAYER_STATIC);
 
-        // TODO: 将object对象的导入整合到以 scene 的 json 来导入
-
+        // TODO: 将object对象的导入整合到以 scene 的 json 导入
 
         var asset = getAssetSize("slime_front");
         var f = new h2d.Bitmap(loadTileToSize(resMgr.tiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "centre"));
@@ -44,6 +48,8 @@ class Main extends hxd.App {
         controller.setControl(player); // set controller
 
         layers.add(player, LAYER_ENTITY); 
+        entities.push(player);
+
         player.layer = layers; // add double-link
         player.layerNum = LAYER_ENTITY;
         
@@ -52,13 +58,20 @@ class Main extends hxd.App {
 
         player.camera = new Camera(player, s2d.width, s2d.height);
 
-        var item = new Fruit(WF); // 添加示例物品对象
+        var item = new Seed(0, WF); // 添加示例物品对象
         var asset = getAssetSize("waterfruit");
         item.sprite = new h2d.Bitmap(loadTileToSize(resMgr.tiles, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "centre"));
         item.getObjectByName("sprite").addChild(item.sprite);
         item.x = Std.int(s2d.width  / 1.5);
         item.y = Std.int(s2d.height / 2);
         layers.add(item, LAYER_ENTITY);
+        entities.push(item);
+
+        var soil = new PlantSoil(new Bitmap(resMgr.fac_plantsoil));
+        soil.x = Std.int(s2d.width / 2);
+        soil.y = Std.int(s2d.height / 1.5);
+        layers.add(soil, LAYER_ENTITY);
+        entities.push(soil);
 
         //set event listener to window
         hxd.Window.getInstance().addEventTarget(onEvent);
@@ -108,7 +121,7 @@ class Main extends hxd.App {
         switch (event.kind) {
             case EKeyDown: {
                 if (event.keyCode == Keys.ACTION_INTERACT) {
-                    player.interact(layers.getLayer(LAYER_ENTITY));
+                    player.interact(entities);
                 }
             }
             case EKeyUp: {}
@@ -125,7 +138,10 @@ class Main extends hxd.App {
         for (i in LAYERS) {
             player.camera.update(layers.getLayer(i));
         }
-        player.update();
+        player.update(dt);
+        for (item in entities) {
+            item.update(dt);
+        }
     }
 
     static function main() {

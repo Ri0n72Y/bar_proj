@@ -22,6 +22,12 @@ class ResMgr {
     final tile_grass1 : h2d.Tile;
     final tile_grass2 : h2d.Tile;
 
+    public final fac_plantsoil : h2d.Tile;
+
+    public var map : h2d.Object;
+
+    public static final plant_waterfruit: Array<h2d.Tile> = [];
+    
     static var testmap = 
 "...ddddd.........
 ..ddgggddddddd...
@@ -35,30 +41,42 @@ ddgggggggggdddd..
 ..ddddggggddd....
 .....dddddd......";
 
-    public function new(layers : h2d.Layers) {
+    public function new() {
         tiles = hxd.Res.charaAnim.toTile(); 
         mapTiles = hxd.Res.tiles.toTile();
         
+        // add static map tiles
         var asset = getAssetSize("tile_grass_a");
         tile_grass1 = loadTileToSize(mapTiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
-        
         var asset = getAssetSize("tile_grass_b");
         tile_grass2 = loadTileToSize(mapTiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
-        
         var asset = getAssetSize("tile_dirt_a");
         tile_dirt1  = loadTileToSize(mapTiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
-        
         var asset = getAssetSize("tile_dirt_b");
         tile_dirt2  = loadTileToSize(mapTiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
         
-        this.layers = layers;
-        layers.add(parseMap(mapTiles, testmap), LAYER_STATIC);
+        map = parseMap(testmap);
+
+        // load plant tiles
+        var asset = getAssetSize("plant_waterfruit_seed");
+        plant_waterfruit.push(loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "bottom"));
+        var asset = getAssetSize("plant_waterfruit_stage_a");
+        plant_waterfruit.push(loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "bottom"));
+        var asset = getAssetSize("plant_waterfruit_stage_b");
+        plant_waterfruit.push(loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE*2, asset.h * SCALE*2, "bottom"));
+        var asset = getAssetSize("plant_waterfruit_stage_c");
+        plant_waterfruit.push(loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE*3, asset.h * SCALE*3, "bottom"));
+    
+        // load plantsoil
+        var asset = getAssetSize("plant_soil");
+        fac_plantsoil = loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "centre");
+    
     }
 
     function onLoad() {
     }
 
-    public function parseMap(tile : h2d.Tile, maps : String) : h2d.Object {
+    public function parseMap(maps : String) : h2d.Object {
         var map = new h2d.Object();
         map.name = "map";
         var len = maps.indexOf('\n');
@@ -107,7 +125,7 @@ ddgggggggggdddd..
             case "centre" : 
                 dx = -(scaleX * .5); dy = -(scaleY * .5);
             case "bottom" :
-                dx = -scaleX; dy = -(scaleY * .5);
+                dx = -(scaleX * .5); dy = -scaleY;
             default :
                 null;
         }

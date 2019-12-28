@@ -13,7 +13,7 @@ class AssetManager {
     static final TILE_DIRT_A  = [96., 0, 32, 32];
     static final TILE_DIRT_B  = [128., 0, 32, 32];
 
-    static final PLANT_WATERFRUIT_SEED = [48., 144, 8, 16];
+    static final PLANT_WATERFRUIT_SEED = [48., 144, 16, 8];
     static final PLANT_WATERFRUIT_STAGE_A = [ 0., 152, 48, 40];
     static final PLANT_WATERFRUIT_STAGE_B = [48., 152, 48, 40];
     static final PLANT_WATERFRUIT_STAGE_C = [96., 152, 48, 40];
