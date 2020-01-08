@@ -1,6 +1,8 @@
-import Plant.Plant_Waterfruit;
-import Item.FruitType;
-import Item.ItemType;
+package entity;
+
+import entity.Plant.Plant_Waterfruit;
+import entity.Item.FruitType;
+import entity.Item.ItemType;
 
 class Facility extends Entity {
     var id : String;

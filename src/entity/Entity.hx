@@ -1,3 +1,5 @@
+package entity;
+
 import h2d.Bitmap;
 import h2d.Object;
 

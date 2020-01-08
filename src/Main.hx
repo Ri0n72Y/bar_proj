@@ -1,8 +1,8 @@
 import h2d.Bitmap;
-import Facility.PlantSoil;
-import Item;
+import entity.Facility.PlantSoil;
+import entity.Item;
 import KeySetting as Keys;
-import Entity;
+import entity.Entity;
 import Controller;
 import ResMgr.LAYER_ENTITY;
 import ResMgr.LAYER_STATIC;
@@ -10,7 +10,7 @@ import ResMgr.LAYERS;
 import ResMgr.SCALED_SIZE;
 import ResMgr.SCALE;
 import ResMgr.loadTileToSize;
-import Misc;
+import entity.Misc;
 import AssetManager.getAssetSize;
 
 class Main extends hxd.App {

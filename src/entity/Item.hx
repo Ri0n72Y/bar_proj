@@ -1,3 +1,5 @@
+package entity;
+
 class Item extends Entity {
     private var id : Int; // unused variable
     public final type : ItemType;

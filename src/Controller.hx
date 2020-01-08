@@ -1,5 +1,5 @@
 import hxd.Key;
-import Entity;
+import entity.Entity;
 
 class Controller {
     var object : h2d.Object;

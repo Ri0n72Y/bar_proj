@@ -1,3 +1,5 @@
+package entity;
+
 class Misc {
     
 }

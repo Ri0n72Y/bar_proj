@@ -1,3 +1,5 @@
+package entity;
+
 import h2d.Bitmap;
 
 class Plant extends Entity {
