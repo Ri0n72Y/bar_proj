@@ -3,6 +3,7 @@ import entity.Facility.PlantSoil;
 import entity.Item;
 import KeySetting as Keys;
 import entity.Entity;
+import entity.Player;
 import Controller;
 import ResMgr.LAYER_ENTITY;
 import ResMgr.LAYER_STATIC;
