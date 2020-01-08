@@ -37,8 +37,6 @@ class Entity extends Object{
     }
 }
 
-
-
 enum State {
     Holding; Idle; Full;
 }

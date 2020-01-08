@@ -12,7 +12,7 @@ class Item extends Entity {
 
 // TODO : All enum types need to be redesign for increasive prefermence.
 enum ItemType {
-    Food; Fruit; Resourse; Seed;
+    Food; Fruit; Resourse; Seed; Tool;
 }
 
 enum FruitType {
