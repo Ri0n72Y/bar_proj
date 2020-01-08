@@ -44,6 +44,7 @@ ddgggggggggdddd..
     public function new() {
         tiles = hxd.Res.charaAnim.toTile(); 
         mapTiles = hxd.Res.tiles.toTile();
+        onLoad();
         
         // add static map tiles
         var asset = getAssetSize("tile_grass_a");
@@ -74,6 +75,12 @@ ddgggggggggdddd..
     }
 
     function onLoad() {
+        try {
+            var s = haxe.Json.parse(hxd.Res.imageSizeData.entry.getText());
+            AssetManager.sizeData = s;
+        } catch (e : Dynamic) {
+            trace("Error on load image data json file.");
+        }
     }
 
     public function parseMap(maps : String) : h2d.Object {

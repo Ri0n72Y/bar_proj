@@ -1,4 +1,5 @@
 class AssetManager {
+    /*
     static final SLIME_FRONT = [0.,  0, 32, 32];
     static final SLIME_LEFT  = [0., 32, 32, 32];
     static final SLIME_BACK  = [0., 64, 32, 32];
@@ -17,48 +18,29 @@ class AssetManager {
     static final PLANT_WATERFRUIT_STAGE_A = [ 0., 152, 48, 40];
     static final PLANT_WATERFRUIT_STAGE_B = [48., 152, 48, 40];
     static final PLANT_WATERFRUIT_STAGE_C = [96., 152, 48, 40];
+    */
+    public static var sizeData : Dynamic; 
 
-    public static function getAssetSize(code : String) : Asset{
-        switch (code) {
-            case "slime_front": return getAsset(SLIME_FRONT);
-            case "slime_left" : return getAsset(SLIME_LEFT);
-            case "slime_back" : return getAsset(SLIME_BACK);
-            case "slime_right": return getAsset(SLIME_RIGHT);
-            case "waterfruit" : return getAsset(WATERFRUIT);
-            case "blue_ball"  : return getAsset(BLUE_BALL);
-            case "plant_soil" : return getAsset(PLANT_SOIL);
-            case "tile_grass_a": return getAsset(TILE_GRASS_A);
-            case "tile_grass_b": return getAsset(TILE_GRASS_B);
-            case "tile_dirt_a": return getAsset(TILE_DIRT_A);
-            case "tile_dirt_b": return getAsset(TILE_DIRT_B);
-            case "plant_waterfruit_seed": return getAsset(PLANT_WATERFRUIT_SEED);
-            case "plant_waterfruit_stage_a": return getAsset(PLANT_WATERFRUIT_STAGE_A);
-            case "plant_waterfruit_stage_b": return getAsset(PLANT_WATERFRUIT_STAGE_B);
-            case "plant_waterfruit_stage_c": return getAsset(PLANT_WATERFRUIT_STAGE_C);
+    public static function getAssetSize(name : String) : Dynamic{
+        switch (name) {
+            case "slime_front": return sizeData.slime_front;
+            case "slime_left" : return sizeData.slime_left;
+            case "slime_back" : return sizeData.slime_back;
+            case "slime_right": return sizeData.slime_right;
+            case "waterfruit" : return sizeData.waterfruit;
+            case "blue_ball"  : return sizeData.blue_ball;
+            case "plant_soil" : return sizeData.plant_soil;
+            case "tile_grass_a": return sizeData.tile_grass_a;
+            case "tile_grass_b": return sizeData.tile_grass_b;
+            case "tile_dirt_a": return sizeData.tile_dirt_a;
+            case "tile_dirt_b": return sizeData.tile_dirt_b;
+            case "plant_waterfruit_seed": return sizeData.plant_waterfruit_seed;
+            case "plant_waterfruit_stage_a": return sizeData.plant_waterfruit_stage_a;
+            case "plant_waterfruit_stage_b": return sizeData.plant_waterfruit_stage_b;
+            case "plant_waterfruit_stage_c": return sizeData.plant_waterfruit_stage_c;
             default : 
-                trace ("Unknown tile name: " + code);
-                return new NullAsset();
+                trace ("Unknown tile name: " + name);
+                return {x:-1., y:-1., w:-1., z:-1.};
         }
-    }
-
-    static function getAsset(size : Array<Float>) : Asset{
-        return new Asset(size[0], size[1], size[2], size[3]);
-    }
-}
-
-class Asset {
-    public var x : Float;
-    public var y : Float;
-    public var w : Float;
-    public var h : Float;
-
-    public function new(x, y, w, h) {
-        this.x = x; this.y = y; this.w = w; this.h = h;
-    }
-}
-
-class NullAsset extends Asset {
-    public function new() {
-        super(-1, -1, -1, -1);
     }
 }
