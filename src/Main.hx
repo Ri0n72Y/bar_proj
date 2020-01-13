@@ -33,13 +33,13 @@ class Main extends hxd.App {
         // TODO: 将object对象的导入整合到以 scene 的 json 导入
 
         var asset = getAssetSize("slime_front");
-        var f = new h2d.Bitmap(loadTileToSize(resMgr.tiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "centre"));
+        var f = new h2d.Bitmap(loadTileToSize(resMgr.player, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "centre"));
         var asset = getAssetSize("slime_left");
-        var l = new h2d.Bitmap(loadTileToSize(resMgr.tiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "centre"));
+        var l = new h2d.Bitmap(loadTileToSize(resMgr.player, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "centre"));
         var asset = getAssetSize("slime_back");
-        var b = new h2d.Bitmap(loadTileToSize(resMgr.tiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "centre"));
+        var b = new h2d.Bitmap(loadTileToSize(resMgr.player, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "centre"));
         var asset = getAssetSize("slime_right");
-        var r = new h2d.Bitmap(loadTileToSize(resMgr.tiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "centre"));
+        var r = new h2d.Bitmap(loadTileToSize(resMgr.player, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "centre"));
 
         player = new Player([f,l,b,r]); // add sample entity player
         player.getObjectByName("sprite").addChild(f); // 添加初始图像
@@ -60,7 +60,7 @@ class Main extends hxd.App {
 
         var item = new Seed(0, WF); // 添加示例物品对象
         var asset = getAssetSize("waterfruit");
-        item.sprite = new h2d.Bitmap(loadTileToSize(resMgr.tiles, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "centre"));
+        item.sprite = new h2d.Bitmap(loadTileToSize(resMgr.items, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "centre"));
         item.getObjectByName("sprite").addChild(item.sprite);
         item.x = Std.int(s2d.width  / 1.5);
         item.y = Std.int(s2d.height / 2);
