@@ -33,6 +33,7 @@ class Plant_Waterfruit extends Plant {
         super(0, sprites.length, 3);
         this.sprite = sprites[0];
         isSpriteChanged = true;
+        this.y = 10;
     }
 
     public override function growth() : Bool {

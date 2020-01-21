@@ -3,8 +3,10 @@ import h2d.Tile;
 import AssetManager.getAssetSize;
 
 class ResMgr {
+    public final player : h2d.Tile;
+    public final plants : h2d.Tile;
+    public final items : h2d.Tile;
     public final tiles : h2d.Tile;
-    public final mapTiles : h2d.Tile;
     var layers : h2d.Layers;
     
     public static inline final LAYER_STATIC = 0; // 静物层
@@ -23,6 +25,7 @@ class ResMgr {
     final tile_grass2 : h2d.Tile;
 
     public final fac_plantsoil : h2d.Tile;
+    public final fac_plantsoil_avl : h2d.Tile;
 
     public var map : h2d.Object;
 
@@ -42,38 +45,52 @@ ddgggggggggdddd..
 .....dddddd......";
 
     public function new() {
-        tiles = hxd.Res.charaAnim.toTile(); 
-        mapTiles = hxd.Res.tiles.toTile();
+        player = hxd.Res.player_png.toTile();
+        items = hxd.Res.items_png.toTile();
+        plants = hxd.Res.plants_png.toTile();
+        tiles = hxd.Res.tiles.toTile(); 
+
+        onLoad();
         
         // add static map tiles
         var asset = getAssetSize("tile_grass_a");
-        tile_grass1 = loadTileToSize(mapTiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
+        tile_grass1 = loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
         var asset = getAssetSize("tile_grass_b");
-        tile_grass2 = loadTileToSize(mapTiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
+        tile_grass2 = loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
         var asset = getAssetSize("tile_dirt_a");
-        tile_dirt1  = loadTileToSize(mapTiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
+        tile_dirt1  = loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
         var asset = getAssetSize("tile_dirt_b");
-        tile_dirt2  = loadTileToSize(mapTiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
+        tile_dirt2  = loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, SCALED_SIZE, SCALED_SIZE, "default");
         
         map = parseMap(testmap);
 
         // load plant tiles
         var asset = getAssetSize("plant_waterfruit_seed");
-        plant_waterfruit.push(loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "bottom"));
-        var asset = getAssetSize("plant_waterfruit_stage_a");
-        plant_waterfruit.push(loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "bottom"));
-        var asset = getAssetSize("plant_waterfruit_stage_b");
-        plant_waterfruit.push(loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE*2, asset.h * SCALE*2, "bottom"));
-        var asset = getAssetSize("plant_waterfruit_stage_c");
-        plant_waterfruit.push(loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE*3, asset.h * SCALE*3, "bottom"));
-    
+        plant_waterfruit.push(loadTileToSize(plants, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "bottom"));
+        var asset = getAssetSize("plant_waterfruit_stages");
+        plant_waterfruit.push(loadTileToSize(plants, asset.a.x, asset.a.y, asset.a.w, asset.a.h, asset.a.w * SCALE, asset.a.h * SCALE, "bottom"));
+        plant_waterfruit.push(loadTileToSize(plants, asset.b.x, asset.b.y, asset.b.w, asset.b.h, asset.b.w * SCALE, asset.b.h * SCALE, "bottom"));
+        plant_waterfruit.push(loadTileToSize(plants, asset.c.x, asset.c.y, asset.c.w, asset.c.h, asset.c.w * SCALE, asset.c.h * SCALE, "bottom"));
+
         // load plantsoil
-        var asset = getAssetSize("plant_soil");
-        fac_plantsoil = loadTileToSize(tiles, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "centre");
-    
+        var ps = getAssetSize("plant_soil");
+        var asset = ps.full;
+        fac_plantsoil = loadTileToSize(items, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "centre");
+
+        var ps = getAssetSize("plant_soil_avl");
+        var asset = ps.full;
+        fac_plantsoil_avl = loadTileToSize(items, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "centre");
     }
 
     function onLoad() {
+        try {
+            var s = haxe.Json.parse(hxd.Res.imageSizeData.entry.getText());
+            AssetManager.imageSizeData = s;
+            var s = haxe.Json.parse(hxd.Res.tileSizeData.entry.getText());
+            AssetManager.tileSizeData = s;
+        } catch (e : Dynamic) {
+            trace("Error on load json file.");
+        }
     }
 
     public function parseMap(maps : String) : h2d.Object {
