@@ -83,7 +83,7 @@ class Main extends hxd.App {
     }
     
     /**
-     * 检查移动行为，依赖于全局变量 ptiles  // TODO : 解除依赖
+     * 检查移动行为
      * @param chara 被移动的角色
      * @param direction 方向向量
      * @param key 按下的键代码
