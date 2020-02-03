@@ -41,9 +41,7 @@ class Player extends Character {
             } else {
                 for (item in items) {
                     if ((item is Facility)){ // put holding food items to facility
-                        var holds = this.getObjectByName("holds");
-                        item.put(holds.getChildAt(0)); // TODO: the method can only put staff at position 0;
-                        holds.removeChildren();
+                        item.interact(this);
                     }
                     break;
                 }
