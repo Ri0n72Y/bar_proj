@@ -45,9 +45,9 @@ ddgggggggggdddd..
 .....dddddd......";
 
     public function new() {
-        player = hxd.Res.player_png.toTile();
-        items = hxd.Res.items_png.toTile();
-        plants = hxd.Res.plants_png.toTile();
+        player = hxd.Res.player.toTile();
+        items = hxd.Res.items.toTile();
+        plants = hxd.Res.plants.toTile();
         tiles = hxd.Res.tiles.toTile(); 
 
         onLoad();
