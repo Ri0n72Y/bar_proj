@@ -138,7 +138,7 @@ ddgggggggggdddd..
                     var w = 32;
                     if ((i == 64) || (j > 64) && (i == 32)) w = 34;
                     var frame = loadTileToSize(slimes, offx + 1, offy + j, w, 32, w * 2, 64, "default");
-                    if (i == 0) sprites.push(frame);
+                    if (i == 0) sprites.push(new h2d.Bitmap(frame));
                     frames.push(frame); 
                     i += w;
                 }

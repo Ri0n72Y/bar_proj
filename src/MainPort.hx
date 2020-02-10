@@ -28,10 +28,15 @@ class MainPort extends hxd.App {
         // build scene
         layers = new h2d.Layers(s2d);
         layers.addChildAt(res[index.background], ResMgr.LAYER_STATIC);
+        initEntities();
     }
 
     function initEntities() {
-        //var slime = new Character(); // main chef
+        var res = resManager.res;
+        var slime = new Character(res[index.slimes]); // main chef
+        slime.x = s2d.width / 2;
+        slime.y = s2d.height / 2;
+        layers.addChildAt(slime, ResMgr.LAYER_ENTITY);
     }
 
     override function update(dt: Float) {
