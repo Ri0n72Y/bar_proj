@@ -1,0 +1,6 @@
+-cp src
+-lib heaps
+-lib hlsdl
+-hl mobile.hl
+-main MainPort
+-D windowSize=540x960
