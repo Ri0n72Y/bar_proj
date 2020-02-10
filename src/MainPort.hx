@@ -1,4 +1,3 @@
-import h2d.Object;
 import haxe.macro.Expr.Error;
 import entity.Entity.Character;
 
