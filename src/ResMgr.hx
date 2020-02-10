@@ -127,7 +127,8 @@ ddgggggggggdddd..
         res.push(handbook); // index 1
         // build slime animations
         var slimes = hxd.Res.slimebase.toTile();
-        var anims = [];
+        var sprites = []; // stand sprite
+        var anims = []; // animation clips
         var offx = 0, offy = 0, k = 0;
         while (k <= 8) {
             var i = 0, j = 0;
@@ -137,6 +138,7 @@ ddgggggggggdddd..
                     var w = 32;
                     if ((i == 64) || (j > 64) && (i == 32)) w = 34;
                     var frame = loadTileToSize(slimes, offx + 1, offy + j, w, 32, w * 2, 64, "default");
+                    if (i == 0) sprites.push(frame);
                     frames.push(frame); 
                     i += w;
                 }
@@ -147,7 +149,8 @@ ddgggggggggdddd..
             k ++;
             offx = (k % 4) * 136; offy = Math.floor(k / 4) * 128; 
         }
-        res.push(anims); // index 2
+        res.push(sprites); // index 2
+        res.push(anims); // index 3
         // TODO : Load items
     }
 

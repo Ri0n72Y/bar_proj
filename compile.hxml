@@ -1,6 +1,4 @@
 -cp src
 -lib heaps
--lib hlsdl
--hl game.hl
--main Main
--D windowSize=1366x768
+-js mobile.js
+-main MainPort

@@ -1,3 +1,4 @@
+import h2d.Object;
 import haxe.macro.Expr.Error;
 import entity.Entity.Character;
 
@@ -11,7 +12,8 @@ class MainPort extends hxd.App {
     var index = {
         background : 0,
         handbook : 1,
-        slimes : 2
+        slimes : 2,
+        slimeAnims : 3
     }
     var animIndex = {
         blue:0, red:4, lemon:8, kiwi:12,
@@ -29,8 +31,18 @@ class MainPort extends hxd.App {
         layers.addChildAt(res[index.background], ResMgr.LAYER_STATIC);
     }
 
+    function initEntities() {
+        //var slime = new Character(); // main chef
+    }
+
+    override function update(dt: Float) {
+        for (entitiy in entities) {
+            entitiy.update(dt);
+        }
+    }
+
     static function main() {
         hxd.Res.initEmbed();
         new MainPort();
-    }k
+    }
 }
