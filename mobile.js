@@ -389,12 +389,13 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 	}
 	,initEntities: function() {
 		var res = this.resManager.res;
-		var slime = new entity_Character(res[this.index.slimes][0]);
+		var slime = new entity_Character(res[this.index.slimes]);
 		slime.posChanged = true;
-		slime.x = this.s2d.width / 2;
+		slime.x = 270.;
 		slime.posChanged = true;
-		slime.y = this.s2d.height / 2;
+		slime.y = 480.;
 		this.layers.addChildAt(slime,3);
+		this.entities.push(slime);
 	}
 	,update: function(dt) {
 		var _g = 0;
@@ -407,401 +408,6 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 	}
 	,__class__: MainPort
 });
-Math.__name__ = "Math";
-var Reflect = function() { };
-$hxClasses["Reflect"] = Reflect;
-Reflect.__name__ = "Reflect";
-Reflect.field = function(o,field) {
-	try {
-		return o[field];
-	} catch( e ) {
-		var e1 = ((e) instanceof js__$Boot_HaxeError) ? e.val : e;
-		return null;
-	}
-};
-Reflect.fields = function(o) {
-	var a = [];
-	if(o != null) {
-		var hasOwnProperty = Object.prototype.hasOwnProperty;
-		for( var f in o ) {
-		if(f != "__id__" && f != "hx__closures__" && hasOwnProperty.call(o,f)) {
-			a.push(f);
-		}
-		}
-	}
-	return a;
-};
-Reflect.isFunction = function(f) {
-	if(typeof(f) == "function") {
-		return !(f.__name__ || f.__ename__);
-	} else {
-		return false;
-	}
-};
-Reflect.compare = function(a,b) {
-	if(a == b) {
-		return 0;
-	} else if(a > b) {
-		return 1;
-	} else {
-		return -1;
-	}
-};
-Reflect.compareMethods = function(f1,f2) {
-	if(f1 == f2) {
-		return true;
-	}
-	if(!Reflect.isFunction(f1) || !Reflect.isFunction(f2)) {
-		return false;
-	}
-	if(f1.scope == f2.scope && f1.method == f2.method) {
-		return f1.method != null;
-	} else {
-		return false;
-	}
-};
-Reflect.isEnumValue = function(v) {
-	if(v != null) {
-		return v.__enum__ != null;
-	} else {
-		return false;
-	}
-};
-Reflect.deleteField = function(o,field) {
-	if(!Object.prototype.hasOwnProperty.call(o,field)) {
-		return false;
-	}
-	delete(o[field]);
-	return true;
-};
-var ResMgr = function(type) {
-	this.s = { f : { a : { offx : 0, offy : 0}, b : { offx : 0, offy : 1}, c : { offx : -2, offy : 4}, d : { offx : -4, offy : 4}, e : { offx : -4, offy : 4}}, b : { a : { offx : 0, offy : 0}, b : { offx : 0, offy : 0}, c : { offx : 2, offy : -2}, d : { offx : 3, offy : -3}, e : { offx : 3, offy : -4}}};
-	switch(type) {
-	case "main":
-		this.player = hxd_Res.get_loader().loadCache("player.png",hxd_res_Image).toTile();
-		this.items = hxd_Res.get_loader().loadCache("items.png",hxd_res_Image).toTile();
-		this.plants = hxd_Res.get_loader().loadCache("plants.png",hxd_res_Image).toTile();
-		this.tiles = hxd_Res.get_loader().loadCache("tiles.png",hxd_res_Image).toTile();
-		this.loadMain();
-		break;
-	case "mobile":
-		this.items = hxd_Res.get_loader().loadCache("m256x.png",hxd_res_Image).toTile();
-		this.loadMobile();
-		break;
-	default:
-		throw new js__$Boot_HaxeError(new haxe_macro_Error("Unknown Resourse Scenario.",{ min : 49, max : 62, file : "src/ResMgr"}));
-	}
-};
-$hxClasses["ResMgr"] = ResMgr;
-ResMgr.__name__ = "ResMgr";
-ResMgr.loadTileToSize = function(tiles,x,y,w,h,scaleX,scaleY,centre) {
-	var dx = 0.0;
-	var dy = 0.0;
-	switch(centre) {
-	case "bottom":
-		dx = -(scaleX * .5);
-		dy = -scaleY;
-		break;
-	case "centre":
-		dx = -(scaleX * .5);
-		dy = -(scaleY * .5);
-		break;
-	default:
-	}
-	var tile = tiles.sub(x,y,w,h,dx,dy);
-	tile.scaleToSize(scaleX,scaleY);
-	return tile;
-};
-ResMgr.prototype = {
-	loadMain: function() {
-		this.onLoad();
-		var asset = AssetManager.getAssetSize("tile_grass_a");
-		this.tile_grass1 = ResMgr.loadTileToSize(this.tiles,asset.x,asset.y,asset.w,asset.h,ResMgr.SCALED_SIZE,ResMgr.SCALED_SIZE,"default");
-		var asset1 = AssetManager.getAssetSize("tile_grass_b");
-		this.tile_grass2 = ResMgr.loadTileToSize(this.tiles,asset1.x,asset1.y,asset1.w,asset1.h,ResMgr.SCALED_SIZE,ResMgr.SCALED_SIZE,"default");
-		var asset2 = AssetManager.getAssetSize("tile_dirt_a");
-		this.tile_dirt1 = ResMgr.loadTileToSize(this.tiles,asset2.x,asset2.y,asset2.w,asset2.h,ResMgr.SCALED_SIZE,ResMgr.SCALED_SIZE,"default");
-		var asset3 = AssetManager.getAssetSize("tile_dirt_b");
-		this.tile_dirt2 = ResMgr.loadTileToSize(this.tiles,asset3.x,asset3.y,asset3.w,asset3.h,ResMgr.SCALED_SIZE,ResMgr.SCALED_SIZE,"default");
-		this.map = this.parseMap(ResMgr.testmap);
-		var asset4 = AssetManager.getAssetSize("plant_waterfruit_seed");
-		ResMgr.plant_waterfruit.push(ResMgr.loadTileToSize(this.plants,asset4.x,asset4.y,asset4.w,asset4.h,asset4.w * ResMgr.SCALE,asset4.h * ResMgr.SCALE,"bottom"));
-		var asset5 = AssetManager.getAssetSize("plant_waterfruit_stages");
-		ResMgr.plant_waterfruit.push(ResMgr.loadTileToSize(this.plants,asset5.a.x,asset5.a.y,asset5.a.w,asset5.a.h,asset5.a.w * ResMgr.SCALE,asset5.a.h * ResMgr.SCALE,"bottom"));
-		ResMgr.plant_waterfruit.push(ResMgr.loadTileToSize(this.plants,asset5.b.x,asset5.b.y,asset5.b.w,asset5.b.h,asset5.b.w * ResMgr.SCALE,asset5.b.h * ResMgr.SCALE,"bottom"));
-		ResMgr.plant_waterfruit.push(ResMgr.loadTileToSize(this.plants,asset5.c.x,asset5.c.y,asset5.c.w,asset5.c.h,asset5.c.w * ResMgr.SCALE,asset5.c.h * ResMgr.SCALE,"bottom"));
-		var ps = AssetManager.getAssetSize("plant_soil");
-		var asset6 = ps.full;
-		this.fac_plantsoil = ResMgr.loadTileToSize(this.items,asset6.x,asset6.y,asset6.w,asset6.h,asset6.w * ResMgr.SCALE,asset6.h * ResMgr.SCALE,"centre");
-		var ps1 = AssetManager.getAssetSize("plant_soil_avl");
-		var asset7 = ps1.full;
-		this.fac_plantsoil_avl = ResMgr.loadTileToSize(this.items,asset7.x,asset7.y,asset7.w,asset7.h,asset7.w * ResMgr.SCALE,asset7.h * ResMgr.SCALE,"centre");
-	}
-	,loadMobile: function() {
-		this.res = [];
-		var tile = hxd_Res.get_loader().loadCache("mlayout_vert.png",hxd_res_Image).toTile();
-		tile.scaleToSize(540,960);
-		var background = new h2d_Bitmap(tile);
-		this.res.push(background);
-		var tile1 = hxd_Res.get_loader().loadCache("mhandbook.png",hxd_res_Image).toTile();
-		tile1.scaleToSize(540,960);
-		var handbook = new h2d_Bitmap(tile1);
-		this.res.push(handbook);
-		var slimes = hxd_Res.get_loader().loadCache("slimebase.png",hxd_res_Image).toTile();
-		var sprites = [];
-		var anims = [];
-		var offx = 0;
-		var offy = 0;
-		var k = 0;
-		while(k <= 8) {
-			var i = 0;
-			var j = 0;
-			while(j < 128) {
-				var frames = [];
-				while(i < 128) {
-					var w = 32;
-					if(i == 64 || j > 64 && i == 32) {
-						w = 34;
-					}
-					var frame = ResMgr.loadTileToSize(slimes,offx + 1,offy + j,w,32,w * 2,64,"default");
-					if(i == 0) {
-						sprites.push(new h2d_Bitmap(frame));
-					}
-					frames.push(frame);
-					i += w;
-				}
-				i = 0;
-				j += 32;
-				anims.push(new h2d_Anim(frames));
-			}
-			++k;
-			offx = k % 4 * 136;
-			offy = Math.floor(k / 4) * 128;
-		}
-		this.res.push(sprites);
-		this.res.push(anims);
-	}
-	,onLoad: function() {
-		try {
-			var s = JSON.parse(hxd_Res.get_loader().loadCache("imageSizeData.json",hxd_res_Resource).entry.getText());
-			AssetManager.imageSizeData = s;
-			var s1 = JSON.parse(hxd_Res.get_loader().loadCache("tileSizeData.json",hxd_res_Resource).entry.getText());
-			AssetManager.tileSizeData = s1;
-		} catch( e ) {
-			var e1 = ((e) instanceof js__$Boot_HaxeError) ? e.val : e;
-			haxe_Log.trace("Error on load json file.",{ fileName : "src/ResMgr.hx", lineNumber : 164, className : "ResMgr", methodName : "onLoad"});
-		}
-	}
-	,parseMap: function(maps) {
-		var map = new h2d_Object();
-		map.name = "map";
-		var len = maps.indexOf("\n");
-		var j = 0;
-		var _g = 0;
-		var _g1 = maps.length;
-		while(_g < _g1) {
-			var i = _g++;
-			var char = maps.charAt(i);
-			var tile;
-			if(char == "d") {
-				if(i % 2 == 0) {
-					tile = new h2d_Bitmap(this.tile_dirt1);
-				} else {
-					tile = new h2d_Bitmap(this.tile_dirt2);
-				}
-			} else if(char == "g") {
-				if(i % 2 == 0) {
-					tile = new h2d_Bitmap(this.tile_grass1);
-				} else {
-					tile = new h2d_Bitmap(this.tile_grass2);
-				}
-			} else if(char == "\n") {
-				++j;
-				continue;
-			} else {
-				continue;
-			}
-			tile.posChanged = true;
-			tile.x = (i - j * (len + 1)) * ResMgr.SCALED_SIZE;
-			tile.posChanged = true;
-			tile.y = j * ResMgr.SCALED_SIZE;
-			map.addChild(tile);
-		}
-		return map;
-	}
-	,__class__: ResMgr
-};
-var Std = function() { };
-$hxClasses["Std"] = Std;
-Std.__name__ = "Std";
-Std.string = function(s) {
-	return js_Boot.__string_rec(s,"");
-};
-Std.parseInt = function(x) {
-	if(x != null) {
-		var _g = 0;
-		var _g1 = x.length;
-		while(_g < _g1) {
-			var i = _g++;
-			var c = x.charCodeAt(i);
-			if(c <= 8 || c >= 14 && c != 32 && c != 45) {
-				var v = parseInt(x, (x[i + 1]=="x" || x[i + 1]=="X") ? 16 : 10);
-				if(isNaN(v)) {
-					return null;
-				} else {
-					return v;
-				}
-			}
-		}
-	}
-	return null;
-};
-Std.random = function(x) {
-	if(x <= 0) {
-		return 0;
-	} else {
-		return Math.floor(Math.random() * x);
-	}
-};
-var StringBuf = function() {
-	this.b = "";
-};
-$hxClasses["StringBuf"] = StringBuf;
-StringBuf.__name__ = "StringBuf";
-StringBuf.prototype = {
-	__class__: StringBuf
-};
-var StringTools = function() { };
-$hxClasses["StringTools"] = StringTools;
-StringTools.__name__ = "StringTools";
-StringTools.startsWith = function(s,start) {
-	if(s.length >= start.length) {
-		return s.lastIndexOf(start,0) == 0;
-	} else {
-		return false;
-	}
-};
-StringTools.isSpace = function(s,pos) {
-	var c = HxOverrides.cca(s,pos);
-	if(!(c > 8 && c < 14)) {
-		return c == 32;
-	} else {
-		return true;
-	}
-};
-StringTools.ltrim = function(s) {
-	var l = s.length;
-	var r = 0;
-	while(r < l && StringTools.isSpace(s,r)) ++r;
-	if(r > 0) {
-		return HxOverrides.substr(s,r,l - r);
-	} else {
-		return s;
-	}
-};
-StringTools.rtrim = function(s) {
-	var l = s.length;
-	var r = 0;
-	while(r < l && StringTools.isSpace(s,l - r - 1)) ++r;
-	if(r > 0) {
-		return HxOverrides.substr(s,0,l - r);
-	} else {
-		return s;
-	}
-};
-StringTools.trim = function(s) {
-	return StringTools.ltrim(StringTools.rtrim(s));
-};
-StringTools.hex = function(n,digits) {
-	var s = "";
-	var hexChars = "0123456789ABCDEF";
-	while(true) {
-		s = hexChars.charAt(n & 15) + s;
-		n >>>= 4;
-		if(!(n > 0)) {
-			break;
-		}
-	}
-	if(digits != null) {
-		while(s.length < digits) s = "0" + s;
-	}
-	return s;
-};
-var Type = function() { };
-$hxClasses["Type"] = Type;
-Type.__name__ = "Type";
-Type.createInstance = function(cl,args) {
-	return new (Function.prototype.bind.apply(cl,[null].concat(args)));
-};
-Type.createEnum = function(e,constr,params) {
-	var f = Reflect.field(e,constr);
-	if(f == null) {
-		throw new js__$Boot_HaxeError("No such constructor " + constr);
-	}
-	if(Reflect.isFunction(f)) {
-		if(params == null) {
-			throw new js__$Boot_HaxeError("Constructor " + constr + " need parameters");
-		}
-		return f.apply(e,params);
-	}
-	if(params != null && params.length != 0) {
-		throw new js__$Boot_HaxeError("Constructor " + constr + " does not need parameters");
-	}
-	return f;
-};
-Type.createEnumIndex = function(e,index,params) {
-	var c = e.__constructs__[index];
-	if(c == null) {
-		throw new js__$Boot_HaxeError(index + " is not a valid enum constructor index");
-	}
-	return Type.createEnum(e,c,params);
-};
-Type.enumEq = function(a,b) {
-	if(a == b) {
-		return true;
-	}
-	try {
-		var e = a.__enum__;
-		if(e == null || e != b.__enum__) {
-			return false;
-		}
-		if(a._hx_index != b._hx_index) {
-			return false;
-		}
-		var enm = $hxEnums[e];
-		var ctorName = enm.__constructs__[a._hx_index];
-		var params = enm[ctorName].__params__;
-		var _g = 0;
-		while(_g < params.length) {
-			var f = params[_g];
-			++_g;
-			if(!Type.enumEq(a[f],b[f])) {
-				return false;
-			}
-		}
-	} catch( e1 ) {
-		var e2 = ((e1) instanceof js__$Boot_HaxeError) ? e1.val : e1;
-		return false;
-	}
-	return true;
-};
-Type.enumParameters = function(e) {
-	var enm = $hxEnums[e.__enum__];
-	var ctorName = enm.__constructs__[e._hx_index];
-	var params = enm[ctorName].__params__;
-	if(params != null) {
-		var _g = [];
-		var _g1 = 0;
-		while(_g1 < params.length) {
-			var p = params[_g1];
-			++_g1;
-			_g.push(e[p]);
-		}
-		return _g;
-	} else {
-		return [];
-	}
-};
 var h2d_Object = function(parent) {
 	this.alpha = 1.;
 	this.matA = 1;
@@ -1612,17 +1218,17 @@ h2d_Object.prototype = {
 			view.yMax = y15;
 		}
 		var a = bounds.xMin;
-		var b = view.xMin;
-		bounds.xMin = a < b ? b : a;
+		var b1 = view.xMin;
+		bounds.xMin = a < b1 ? b1 : a;
 		var a1 = bounds.yMin;
-		var b1 = view.yMin;
-		bounds.yMin = a1 < b1 ? b1 : a1;
+		var b2 = view.yMin;
+		bounds.yMin = a1 < b2 ? b2 : a1;
 		var a2 = bounds.xMax;
-		var b2 = view.xMax;
-		bounds.xMax = a2 > b2 ? b2 : a2;
+		var b3 = view.xMax;
+		bounds.xMax = a2 > b3 ? b3 : a2;
 		var a3 = bounds.yMax;
-		var b3 = view.yMax;
-		bounds.yMax = a3 > b3 ? b3 : a3;
+		var b4 = view.yMax;
+		bounds.yMax = a3 > b4 ? b4 : a3;
 	}
 	,drawFilters: function(ctx) {
 		if(!ctx.pushFilter(this)) {
@@ -1959,6 +1565,867 @@ h2d_Object.prototype = {
 	}
 	,__class__: h2d_Object
 };
+var h2d_Drawable = function(parent) {
+	h2d_Object.call(this,parent);
+	this.color = new h3d_Vector(1,1,1,1);
+};
+$hxClasses["h2d.Drawable"] = h2d_Drawable;
+h2d_Drawable.__name__ = "h2d.Drawable";
+h2d_Drawable.__super__ = h2d_Object;
+h2d_Drawable.prototype = $extend(h2d_Object.prototype,{
+	set_tileWrap: function(b) {
+		return this.tileWrap = b;
+	}
+	,get_colorAdd: function() {
+		var s = this.getShader(h3d_shader_ColorAdd);
+		if(s == null) {
+			return null;
+		} else {
+			return s.color__;
+		}
+	}
+	,set_colorAdd: function(c) {
+		var s = this.getShader(h3d_shader_ColorAdd);
+		if(s == null) {
+			if(c != null) {
+				s = this.addShader(new h3d_shader_ColorAdd());
+				s.color__ = c;
+			}
+		} else if(c == null) {
+			this.removeShader(s);
+		} else {
+			s.color__ = c;
+		}
+		return c;
+	}
+	,drawFiltered: function(ctx,tile) {
+		var old = this.shaders;
+		this.shaders = null;
+		h2d_Object.prototype.drawFiltered.call(this,ctx,tile);
+		this.shaders = old;
+	}
+	,set_colorKey: function(v) {
+		var s = this.getShader(h3d_shader_ColorKey);
+		if(s == null) {
+			if(v != null) {
+				s = this.addShader(new h3d_shader_ColorKey(-16777216 | v));
+			}
+		} else if(v == null) {
+			this.removeShader(s);
+		} else {
+			var _this = s.colorKey__;
+			var c = -16777216 | v;
+			_this.x = (c >> 16 & 255) / 255;
+			_this.y = (c >> 8 & 255) / 255;
+			_this.z = (c & 255) / 255;
+			_this.w = (c >>> 24) / 255;
+		}
+		return this.colorKey = v;
+	}
+	,adjustColor: function(col) {
+		if(col == null) {
+			this.set_colorMatrix(null);
+		} else {
+			var m = this.get_colorMatrix();
+			if(m == null) {
+				m = new h3d_Matrix();
+				this.set_colorMatrix(m);
+			}
+			m.identity();
+			m.adjustColor(col);
+		}
+	}
+	,get_colorMatrix: function() {
+		var s = this.getShader(h3d_shader_ColorMatrix);
+		if(s == null) {
+			return null;
+		} else {
+			return s.matrix__;
+		}
+	}
+	,set_colorMatrix: function(m) {
+		var s = this.getShader(h3d_shader_ColorMatrix);
+		if(s == null) {
+			if(m != null) {
+				s = this.addShader(new h3d_shader_ColorMatrix());
+				s.matrix__ = m;
+			}
+		} else if(m == null) {
+			this.removeShader(s);
+		} else {
+			s.matrix__ = m;
+		}
+		return m;
+	}
+	,getDebugShaderCode: function(toHxsl) {
+		if(toHxsl == null) {
+			toHxsl = true;
+		}
+		var ctx = this.getScene().ctx;
+		var shader = ctx.manager.compileShaders(new hxsl_ShaderList(ctx.baseShader,this.shaders));
+		if(toHxsl) {
+			var toString = function(s) {
+				return hxsl_Printer.shaderToString(s,true);
+			};
+			return "// vertex:\n" + toString(shader.vertex.data) + "\n\nfragment:\n" + toString(shader.fragment.data);
+		} else {
+			return h3d_Engine.CURRENT.driver.getNativeShaderCode(shader);
+		}
+	}
+	,getShader: function(stype) {
+		if(this.shaders != null) {
+			var _g_l = this.shaders;
+			var _g_last = null;
+			while(_g_l != _g_last) {
+				var s = _g_l.s;
+				_g_l = _g_l.next;
+				var s1 = s;
+				var s2 = js_Boot.__downcastCheck(s1,stype) ? s1 : null;
+				if(s2 != null) {
+					return s2;
+				}
+			}
+		}
+		return null;
+	}
+	,getShaders: function() {
+		return new hxsl__$ShaderList_ShaderIterator(this.shaders,null);
+	}
+	,addShader: function(s) {
+		if(s == null) {
+			throw new js__$Boot_HaxeError("Can't add null shader");
+		}
+		this.shaders = hxsl_ShaderList.addSort(s,this.shaders);
+		return s;
+	}
+	,removeShader: function(s) {
+		var prev = null;
+		var cur = this.shaders;
+		while(cur != null) {
+			if(cur.s == s) {
+				if(prev == null) {
+					this.shaders = cur.next;
+				} else {
+					prev.next = cur.next;
+				}
+				return true;
+			}
+			prev = cur;
+			cur = cur.next;
+		}
+		return false;
+	}
+	,emitTile: function(ctx,tile) {
+		if(tile == null) {
+			tile = new h2d_Tile(null,0,0,5,5);
+		}
+		if(!ctx.drawTile(this,tile)) {
+			return;
+		}
+		return;
+	}
+	,__class__: h2d_Drawable
+});
+var hxd_Interactive = function() { };
+$hxClasses["hxd.Interactive"] = hxd_Interactive;
+hxd_Interactive.__name__ = "hxd.Interactive";
+hxd_Interactive.__isInterface__ = true;
+hxd_Interactive.prototype = {
+	__class__: hxd_Interactive
+};
+var h2d_Interactive = function(width,height,parent,shape) {
+	this.shapeY = 0;
+	this.shapeX = 0;
+	this.mouseDownButton = -1;
+	this.propagateEvents = false;
+	this.cancelEvents = false;
+	h2d_Drawable.call(this,parent);
+	this.width = width;
+	this.height = height;
+	this.shape = shape;
+	this.set_cursor(hxd_Cursor.Button);
+};
+$hxClasses["h2d.Interactive"] = h2d_Interactive;
+h2d_Interactive.__name__ = "h2d.Interactive";
+h2d_Interactive.__interfaces__ = [hxd_Interactive];
+h2d_Interactive.__super__ = h2d_Drawable;
+h2d_Interactive.prototype = $extend(h2d_Drawable.prototype,{
+	onAdd: function() {
+		this.scene = this.getScene();
+		if(this.scene != null) {
+			this.scene.addEventTarget(this);
+		}
+		this.updateMask();
+		h2d_Drawable.prototype.onAdd.call(this);
+	}
+	,draw: function(ctx) {
+		if(this.backgroundColor != null) {
+			this.emitTile(ctx,h2d_Tile.fromColor(this.backgroundColor,this.width | 0,this.height | 0,(this.backgroundColor >>> 24) / 255,{ fileName : "h2d/Interactive.hx", lineNumber : 67, className : "h2d.Interactive", methodName : "draw"}));
+		}
+	}
+	,getBoundsRec: function(relativeTo,out,forSize) {
+		h2d_Drawable.prototype.getBoundsRec.call(this,relativeTo,out,forSize);
+		if(this.backgroundColor != null || forSize) {
+			this.addBounds(relativeTo,out,0,0,this.width | 0,this.height | 0);
+		}
+	}
+	,onHierarchyMoved: function(parentChanged) {
+		h2d_Drawable.prototype.onHierarchyMoved.call(this,parentChanged);
+		if(this.scene != null) {
+			this.scene.removeEventTarget(this);
+			this.scene.addEventTarget(this);
+		}
+		if(parentChanged) {
+			this.updateMask();
+		}
+	}
+	,updateMask: function() {
+		this.parentMask = null;
+		var p = this.parent;
+		while(p != null) {
+			var m = ((p) instanceof h2d_Mask) ? p : null;
+			if(m != null) {
+				this.parentMask = m;
+				break;
+			}
+			p = p.parent;
+		}
+	}
+	,onRemove: function() {
+		if(this.scene != null) {
+			this.scene.removeEventTarget(this,true);
+			this.scene = null;
+		}
+		h2d_Drawable.prototype.onRemove.call(this);
+	}
+	,checkBounds: function(e) {
+		switch(e.kind._hx_index) {
+		case 4:case 6:case 7:case 10:
+			return false;
+		default:
+			return true;
+		}
+	}
+	,preventClick: function() {
+		this.mouseDownButton = -1;
+	}
+	,getInteractiveScene: function() {
+		return this.scene;
+	}
+	,handleEvent: function(e) {
+		if(this.parentMask != null && this.checkBounds(e)) {
+			var p = this.parentMask;
+			var pt = new h2d_col_Point(e.relX,e.relY);
+			this.localToGlobal(pt);
+			var saveX = pt.x;
+			var saveY = pt.y;
+			while(p != null) {
+				pt.x = saveX;
+				pt.y = saveY;
+				var pt1 = p.globalToLocal(pt);
+				if(pt1.x < 0 || pt1.y < 0 || pt1.x > p.width || pt1.y > p.height) {
+					e.cancel = true;
+					return;
+				}
+				p = p.parentMask;
+			}
+		}
+		if(this.shape == null && this.isEllipse && this.checkBounds(e)) {
+			var cx = this.width * 0.5;
+			var cy = this.height * 0.5;
+			var dx = (e.relX - cx) / cx;
+			var dy = (e.relY - cy) / cy;
+			if(dx * dx + dy * dy > 1) {
+				e.cancel = true;
+				return;
+			}
+		}
+		if(this.propagateEvents) {
+			e.propagate = true;
+		}
+		if(this.cancelEvents) {
+			e.cancel = true;
+		}
+		switch(e.kind._hx_index) {
+		case 0:
+			if(this.enableRightButton || e.button == 0) {
+				this.mouseDownButton = e.button;
+				this.onPush(e);
+			}
+			break;
+		case 1:
+			if(this.enableRightButton || e.button == 0) {
+				this.onRelease(e);
+				if(this.mouseDownButton == e.button) {
+					this.onClick(e);
+				}
+			}
+			this.mouseDownButton = -1;
+			break;
+		case 2:
+			this.onMove(e);
+			break;
+		case 3:
+			this.onOver(e);
+			break;
+		case 4:
+			this.onOut(e);
+			break;
+		case 5:
+			this.onWheel(e);
+			break;
+		case 6:
+			this.onFocus(e);
+			break;
+		case 7:
+			this.onFocusLost(e);
+			break;
+		case 8:
+			this.onKeyDown(e);
+			break;
+		case 9:
+			this.onKeyUp(e);
+			break;
+		case 10:
+			if(this.enableRightButton || e.button == 0) {
+				this.onRelease(e);
+				if(this.mouseDownButton == e.button) {
+					this.onReleaseOutside(e);
+				}
+			}
+			this.mouseDownButton = -1;
+			break;
+		case 11:
+			this.onTextInput(e);
+			break;
+		case 12:
+			this.onCheck(e);
+			break;
+		}
+	}
+	,calcAbsPos: function() {
+		h2d_Drawable.prototype.calcAbsPos.call(this);
+		this.invDet = 1 / (this.matA * this.matD - this.matB * this.matC);
+	}
+	,set_cursor: function(c) {
+		this.cursor = c;
+		if(this.scene != null && this.scene.events != null) {
+			this.scene.events.updateCursor(this);
+		}
+		return c;
+	}
+	,eventToLocal: function(e) {
+		var i = this;
+		var dx = e.relX - i.absX;
+		var dy = e.relY - i.absY;
+		e.relX = (dx * i.matD - dy * i.matC) * i.invDet;
+		e.relY = (-dx * i.matB + dy * i.matA) * i.invDet;
+	}
+	,startDrag: function(callb,onCancel) {
+		var _gthis = this;
+		this.scene.startDrag(function(event) {
+			var x = event.relX;
+			var y = event.relY;
+			_gthis.eventToLocal(event);
+			callb(event);
+			event.relX = x;
+			event.relY = y;
+		},onCancel);
+	}
+	,stopDrag: function() {
+		this.scene.stopDrag();
+	}
+	,focus: function() {
+		if(this.scene == null || this.scene.events == null) {
+			return;
+		}
+		this.scene.events.focus(this);
+	}
+	,blur: function() {
+		if(this.hasFocus()) {
+			this.scene.events.blur();
+		}
+	}
+	,isOver: function() {
+		if(this.scene != null && this.scene.events != null) {
+			return this.scene.events.overList.indexOf(this) != -1;
+		} else {
+			return false;
+		}
+	}
+	,hasFocus: function() {
+		if(this.scene != null && this.scene.events != null) {
+			return this.scene.events.currentFocus == this;
+		} else {
+			return false;
+		}
+	}
+	,onOver: function(e) {
+	}
+	,onOut: function(e) {
+	}
+	,onPush: function(e) {
+	}
+	,onRelease: function(e) {
+	}
+	,onReleaseOutside: function(e) {
+	}
+	,onClick: function(e) {
+	}
+	,onMove: function(e) {
+	}
+	,onWheel: function(e) {
+	}
+	,onFocus: function(e) {
+	}
+	,onFocusLost: function(e) {
+	}
+	,onKeyUp: function(e) {
+	}
+	,onKeyDown: function(e) {
+	}
+	,onCheck: function(e) {
+	}
+	,onTextInput: function(e) {
+	}
+	,__class__: h2d_Interactive
+});
+var DraggableEntity = function(width,height,entity,shape) {
+	var _gthis = this;
+	h2d_Interactive.call(this,width,height,entity,shape);
+	this.entity = entity;
+	this.onPush = function(event) {
+		entity.alpha = 0.8;
+		var _g = entity;
+		_g.posChanged = true;
+		_g.scaleX *= 1.5;
+		var _g1 = entity;
+		_g1.posChanged = true;
+		_g1.scaleY *= 1.5;
+		entity.parent.addChildAt(entity,5);
+		_gthis.startDrag(function(event1) {
+			_gthis.entity.x = event1.relX - width / 2;
+			_gthis.entity.y = event1.relY - height / 2;
+		});
+	};
+	this.onRelease = function(event2) {
+		_gthis.stopDrag();
+		entity.alpha = 1;
+		var _g2 = entity;
+		_g2.posChanged = true;
+		_g2.scaleX = _g2.scaleX;
+		var _g11 = entity;
+		_g11.posChanged = true;
+		_g11.scaleY = _g11.scaleY;
+		var layers = entity.parent;
+		layers.addChildAt(entity,3);
+		layers.ysort(3);
+	};
+};
+$hxClasses["DraggableEntity"] = DraggableEntity;
+DraggableEntity.__name__ = "DraggableEntity";
+DraggableEntity.__super__ = h2d_Interactive;
+DraggableEntity.prototype = $extend(h2d_Interactive.prototype,{
+	update: function(dt) {
+		this.entity.update(dt);
+	}
+	,__class__: DraggableEntity
+});
+Math.__name__ = "Math";
+var Reflect = function() { };
+$hxClasses["Reflect"] = Reflect;
+Reflect.__name__ = "Reflect";
+Reflect.field = function(o,field) {
+	try {
+		return o[field];
+	} catch( e ) {
+		var e1 = ((e) instanceof js__$Boot_HaxeError) ? e.val : e;
+		return null;
+	}
+};
+Reflect.fields = function(o) {
+	var a = [];
+	if(o != null) {
+		var hasOwnProperty = Object.prototype.hasOwnProperty;
+		for( var f in o ) {
+		if(f != "__id__" && f != "hx__closures__" && hasOwnProperty.call(o,f)) {
+			a.push(f);
+		}
+		}
+	}
+	return a;
+};
+Reflect.isFunction = function(f) {
+	if(typeof(f) == "function") {
+		return !(f.__name__ || f.__ename__);
+	} else {
+		return false;
+	}
+};
+Reflect.compare = function(a,b) {
+	if(a == b) {
+		return 0;
+	} else if(a > b) {
+		return 1;
+	} else {
+		return -1;
+	}
+};
+Reflect.compareMethods = function(f1,f2) {
+	if(f1 == f2) {
+		return true;
+	}
+	if(!Reflect.isFunction(f1) || !Reflect.isFunction(f2)) {
+		return false;
+	}
+	if(f1.scope == f2.scope && f1.method == f2.method) {
+		return f1.method != null;
+	} else {
+		return false;
+	}
+};
+Reflect.isEnumValue = function(v) {
+	if(v != null) {
+		return v.__enum__ != null;
+	} else {
+		return false;
+	}
+};
+Reflect.deleteField = function(o,field) {
+	if(!Object.prototype.hasOwnProperty.call(o,field)) {
+		return false;
+	}
+	delete(o[field]);
+	return true;
+};
+var ResMgr = function(type) {
+	this.s = { f : { a : { offx : 0, offy : 0}, b : { offx : 0, offy : 1}, c : { offx : -2, offy : 4}, d : { offx : -4, offy : 4}, e : { offx : -4, offy : 4}}, b : { a : { offx : 0, offy : 0}, b : { offx : 0, offy : 0}, c : { offx : 2, offy : -2}, d : { offx : 3, offy : -3}, e : { offx : 3, offy : -4}}};
+	switch(type) {
+	case "main":
+		this.player = hxd_Res.get_loader().loadCache("player.png",hxd_res_Image).toTile();
+		this.items = hxd_Res.get_loader().loadCache("items.png",hxd_res_Image).toTile();
+		this.plants = hxd_Res.get_loader().loadCache("plants.png",hxd_res_Image).toTile();
+		this.tiles = hxd_Res.get_loader().loadCache("tiles.png",hxd_res_Image).toTile();
+		this.loadMain();
+		break;
+	case "mobile":
+		this.items = hxd_Res.get_loader().loadCache("m256x.png",hxd_res_Image).toTile();
+		this.loadMobile();
+		break;
+	default:
+		throw new js__$Boot_HaxeError(new haxe_macro_Error("Unknown Resourse Scenario.",{ min : 49, max : 62, file : "src/ResMgr"}));
+	}
+};
+$hxClasses["ResMgr"] = ResMgr;
+ResMgr.__name__ = "ResMgr";
+ResMgr.loadTileToSize = function(tiles,x,y,w,h,scaleX,scaleY,centre) {
+	var dx = 0.0;
+	var dy = 0.0;
+	switch(centre) {
+	case "bottom":
+		dx = -(scaleX * .5);
+		dy = -scaleY;
+		break;
+	case "centre":
+		dx = -(scaleX * .5);
+		dy = -(scaleY * .5);
+		break;
+	default:
+	}
+	var tile = tiles.sub(x,y,w,h,dx,dy);
+	tile.scaleToSize(scaleX,scaleY);
+	return tile;
+};
+ResMgr.prototype = {
+	loadMain: function() {
+		this.onLoad();
+		var asset = AssetManager.getAssetSize("tile_grass_a");
+		this.tile_grass1 = ResMgr.loadTileToSize(this.tiles,asset.x,asset.y,asset.w,asset.h,ResMgr.SCALED_SIZE,ResMgr.SCALED_SIZE,"default");
+		var asset1 = AssetManager.getAssetSize("tile_grass_b");
+		this.tile_grass2 = ResMgr.loadTileToSize(this.tiles,asset1.x,asset1.y,asset1.w,asset1.h,ResMgr.SCALED_SIZE,ResMgr.SCALED_SIZE,"default");
+		var asset2 = AssetManager.getAssetSize("tile_dirt_a");
+		this.tile_dirt1 = ResMgr.loadTileToSize(this.tiles,asset2.x,asset2.y,asset2.w,asset2.h,ResMgr.SCALED_SIZE,ResMgr.SCALED_SIZE,"default");
+		var asset3 = AssetManager.getAssetSize("tile_dirt_b");
+		this.tile_dirt2 = ResMgr.loadTileToSize(this.tiles,asset3.x,asset3.y,asset3.w,asset3.h,ResMgr.SCALED_SIZE,ResMgr.SCALED_SIZE,"default");
+		this.map = this.parseMap(ResMgr.testmap);
+		var asset4 = AssetManager.getAssetSize("plant_waterfruit_seed");
+		ResMgr.plant_waterfruit.push(ResMgr.loadTileToSize(this.plants,asset4.x,asset4.y,asset4.w,asset4.h,asset4.w * ResMgr.SCALE,asset4.h * ResMgr.SCALE,"bottom"));
+		var asset5 = AssetManager.getAssetSize("plant_waterfruit_stages");
+		ResMgr.plant_waterfruit.push(ResMgr.loadTileToSize(this.plants,asset5.a.x,asset5.a.y,asset5.a.w,asset5.a.h,asset5.a.w * ResMgr.SCALE,asset5.a.h * ResMgr.SCALE,"bottom"));
+		ResMgr.plant_waterfruit.push(ResMgr.loadTileToSize(this.plants,asset5.b.x,asset5.b.y,asset5.b.w,asset5.b.h,asset5.b.w * ResMgr.SCALE,asset5.b.h * ResMgr.SCALE,"bottom"));
+		ResMgr.plant_waterfruit.push(ResMgr.loadTileToSize(this.plants,asset5.c.x,asset5.c.y,asset5.c.w,asset5.c.h,asset5.c.w * ResMgr.SCALE,asset5.c.h * ResMgr.SCALE,"bottom"));
+		var ps = AssetManager.getAssetSize("plant_soil");
+		var asset6 = ps.full;
+		this.fac_plantsoil = ResMgr.loadTileToSize(this.items,asset6.x,asset6.y,asset6.w,asset6.h,asset6.w * ResMgr.SCALE,asset6.h * ResMgr.SCALE,"centre");
+		var ps1 = AssetManager.getAssetSize("plant_soil_avl");
+		var asset7 = ps1.full;
+		this.fac_plantsoil_avl = ResMgr.loadTileToSize(this.items,asset7.x,asset7.y,asset7.w,asset7.h,asset7.w * ResMgr.SCALE,asset7.h * ResMgr.SCALE,"centre");
+	}
+	,loadMobile: function() {
+		this.res = [];
+		var tile = hxd_Res.get_loader().loadCache("mlayout_vert.png",hxd_res_Image).toTile();
+		tile.scaleToSize(540,960);
+		var background = new h2d_Bitmap(tile);
+		this.res.push(background);
+		var tile1 = hxd_Res.get_loader().loadCache("mhandbook.png",hxd_res_Image).toTile();
+		tile1.scaleToSize(540,960);
+		var handbook = new h2d_Bitmap(tile1);
+		this.res.push(handbook);
+		var slimes = hxd_Res.get_loader().loadCache("slimebase.png",hxd_res_Image).toTile();
+		var sprites = [];
+		var anims = [];
+		var offx = 0;
+		var offy = 0;
+		var k = 0;
+		while(k < 8) {
+			var i = 0;
+			var j = 0;
+			while(j < 128) {
+				var frames = [];
+				while(i < 128) {
+					var w = 32;
+					if(i == 64 || j > 64 && i == 32) {
+						w = 34;
+					}
+					var frame = ResMgr.loadTileToSize(slimes,offx + i,offy + j,w,32,w * 2,64,"default");
+					if(i == 0) {
+						sprites.push(new h2d_Bitmap(frame));
+					}
+					frames.push(frame);
+					i += w;
+				}
+				i = 0;
+				j += 32;
+				anims.push(new h2d_Anim(frames));
+			}
+			++k;
+			offx = k % 4 * 136;
+			offy = Math.floor(k / 4) * 128;
+		}
+		this.res.push(sprites);
+		this.res.push(anims);
+	}
+	,onLoad: function() {
+		try {
+			var s = JSON.parse(hxd_Res.get_loader().loadCache("imageSizeData.json",hxd_res_Resource).entry.getText());
+			AssetManager.imageSizeData = s;
+			var s1 = JSON.parse(hxd_Res.get_loader().loadCache("tileSizeData.json",hxd_res_Resource).entry.getText());
+			AssetManager.tileSizeData = s1;
+		} catch( e ) {
+			var e1 = ((e) instanceof js__$Boot_HaxeError) ? e.val : e;
+			haxe_Log.trace("Error on load json file.",{ fileName : "src/ResMgr.hx", lineNumber : 164, className : "ResMgr", methodName : "onLoad"});
+		}
+	}
+	,parseMap: function(maps) {
+		var map = new h2d_Object();
+		map.name = "map";
+		var len = maps.indexOf("\n");
+		var j = 0;
+		var _g = 0;
+		var _g1 = maps.length;
+		while(_g < _g1) {
+			var i = _g++;
+			var char = maps.charAt(i);
+			var tile;
+			if(char == "d") {
+				if(i % 2 == 0) {
+					tile = new h2d_Bitmap(this.tile_dirt1);
+				} else {
+					tile = new h2d_Bitmap(this.tile_dirt2);
+				}
+			} else if(char == "g") {
+				if(i % 2 == 0) {
+					tile = new h2d_Bitmap(this.tile_grass1);
+				} else {
+					tile = new h2d_Bitmap(this.tile_grass2);
+				}
+			} else if(char == "\n") {
+				++j;
+				continue;
+			} else {
+				continue;
+			}
+			tile.posChanged = true;
+			tile.x = (i - j * (len + 1)) * ResMgr.SCALED_SIZE;
+			tile.posChanged = true;
+			tile.y = j * ResMgr.SCALED_SIZE;
+			map.addChild(tile);
+		}
+		return map;
+	}
+	,__class__: ResMgr
+};
+var Std = function() { };
+$hxClasses["Std"] = Std;
+Std.__name__ = "Std";
+Std.string = function(s) {
+	return js_Boot.__string_rec(s,"");
+};
+Std.parseInt = function(x) {
+	if(x != null) {
+		var _g = 0;
+		var _g1 = x.length;
+		while(_g < _g1) {
+			var i = _g++;
+			var c = x.charCodeAt(i);
+			if(c <= 8 || c >= 14 && c != 32 && c != 45) {
+				var v = parseInt(x, (x[i + 1]=="x" || x[i + 1]=="X") ? 16 : 10);
+				if(isNaN(v)) {
+					return null;
+				} else {
+					return v;
+				}
+			}
+		}
+	}
+	return null;
+};
+Std.random = function(x) {
+	if(x <= 0) {
+		return 0;
+	} else {
+		return Math.floor(Math.random() * x);
+	}
+};
+var StringBuf = function() {
+	this.b = "";
+};
+$hxClasses["StringBuf"] = StringBuf;
+StringBuf.__name__ = "StringBuf";
+StringBuf.prototype = {
+	__class__: StringBuf
+};
+var StringTools = function() { };
+$hxClasses["StringTools"] = StringTools;
+StringTools.__name__ = "StringTools";
+StringTools.startsWith = function(s,start) {
+	if(s.length >= start.length) {
+		return s.lastIndexOf(start,0) == 0;
+	} else {
+		return false;
+	}
+};
+StringTools.isSpace = function(s,pos) {
+	var c = HxOverrides.cca(s,pos);
+	if(!(c > 8 && c < 14)) {
+		return c == 32;
+	} else {
+		return true;
+	}
+};
+StringTools.ltrim = function(s) {
+	var l = s.length;
+	var r = 0;
+	while(r < l && StringTools.isSpace(s,r)) ++r;
+	if(r > 0) {
+		return HxOverrides.substr(s,r,l - r);
+	} else {
+		return s;
+	}
+};
+StringTools.rtrim = function(s) {
+	var l = s.length;
+	var r = 0;
+	while(r < l && StringTools.isSpace(s,l - r - 1)) ++r;
+	if(r > 0) {
+		return HxOverrides.substr(s,0,l - r);
+	} else {
+		return s;
+	}
+};
+StringTools.trim = function(s) {
+	return StringTools.ltrim(StringTools.rtrim(s));
+};
+StringTools.hex = function(n,digits) {
+	var s = "";
+	var hexChars = "0123456789ABCDEF";
+	while(true) {
+		s = hexChars.charAt(n & 15) + s;
+		n >>>= 4;
+		if(!(n > 0)) {
+			break;
+		}
+	}
+	if(digits != null) {
+		while(s.length < digits) s = "0" + s;
+	}
+	return s;
+};
+var Type = function() { };
+$hxClasses["Type"] = Type;
+Type.__name__ = "Type";
+Type.createInstance = function(cl,args) {
+	return new (Function.prototype.bind.apply(cl,[null].concat(args)));
+};
+Type.createEnum = function(e,constr,params) {
+	var f = Reflect.field(e,constr);
+	if(f == null) {
+		throw new js__$Boot_HaxeError("No such constructor " + constr);
+	}
+	if(Reflect.isFunction(f)) {
+		if(params == null) {
+			throw new js__$Boot_HaxeError("Constructor " + constr + " need parameters");
+		}
+		return f.apply(e,params);
+	}
+	if(params != null && params.length != 0) {
+		throw new js__$Boot_HaxeError("Constructor " + constr + " does not need parameters");
+	}
+	return f;
+};
+Type.createEnumIndex = function(e,index,params) {
+	var c = e.__constructs__[index];
+	if(c == null) {
+		throw new js__$Boot_HaxeError(index + " is not a valid enum constructor index");
+	}
+	return Type.createEnum(e,c,params);
+};
+Type.enumEq = function(a,b) {
+	if(a == b) {
+		return true;
+	}
+	try {
+		var e = a.__enum__;
+		if(e == null || e != b.__enum__) {
+			return false;
+		}
+		if(a._hx_index != b._hx_index) {
+			return false;
+		}
+		var enm = $hxEnums[e];
+		var ctorName = enm.__constructs__[a._hx_index];
+		var params = enm[ctorName].__params__;
+		var _g = 0;
+		while(_g < params.length) {
+			var f = params[_g];
+			++_g;
+			if(!Type.enumEq(a[f],b[f])) {
+				return false;
+			}
+		}
+	} catch( e1 ) {
+		var e2 = ((e1) instanceof js__$Boot_HaxeError) ? e1.val : e1;
+		return false;
+	}
+	return true;
+};
+Type.enumParameters = function(e) {
+	var enm = $hxEnums[e.__enum__];
+	var ctorName = enm.__constructs__[e._hx_index];
+	var params = enm[ctorName].__params__;
+	if(params != null) {
+		var _g = [];
+		var _g1 = 0;
+		while(_g1 < params.length) {
+			var p = params[_g1];
+			++_g1;
+			_g.push(e[p]);
+		}
+		return _g;
+	} else {
+		return [];
+	}
+};
 var entity_Entity = function() {
 	this.DROP_DISTANCE = 80;
 	this.INTERACT_DISTANCE = 100;
@@ -1995,6 +2462,7 @@ entity_State.__empty_constructs__ = [entity_State.Holding,entity_State.Idle,enti
 var entity_Character = function(sprites) {
 	entity_Entity.call(this);
 	this.sprites = sprites;
+	this.sprite = sprites[0];
 	this.isSpriteChanged = true;
 };
 $hxClasses["entity.Character"] = entity_Character;
@@ -5222,167 +5690,6 @@ format_wav_Reader.prototype = {
 	}
 	,__class__: format_wav_Reader
 };
-var h2d_Drawable = function(parent) {
-	h2d_Object.call(this,parent);
-	this.color = new h3d_Vector(1,1,1,1);
-};
-$hxClasses["h2d.Drawable"] = h2d_Drawable;
-h2d_Drawable.__name__ = "h2d.Drawable";
-h2d_Drawable.__super__ = h2d_Object;
-h2d_Drawable.prototype = $extend(h2d_Object.prototype,{
-	set_tileWrap: function(b) {
-		return this.tileWrap = b;
-	}
-	,get_colorAdd: function() {
-		var s = this.getShader(h3d_shader_ColorAdd);
-		if(s == null) {
-			return null;
-		} else {
-			return s.color__;
-		}
-	}
-	,set_colorAdd: function(c) {
-		var s = this.getShader(h3d_shader_ColorAdd);
-		if(s == null) {
-			if(c != null) {
-				s = this.addShader(new h3d_shader_ColorAdd());
-				s.color__ = c;
-			}
-		} else if(c == null) {
-			this.removeShader(s);
-		} else {
-			s.color__ = c;
-		}
-		return c;
-	}
-	,drawFiltered: function(ctx,tile) {
-		var old = this.shaders;
-		this.shaders = null;
-		h2d_Object.prototype.drawFiltered.call(this,ctx,tile);
-		this.shaders = old;
-	}
-	,set_colorKey: function(v) {
-		var s = this.getShader(h3d_shader_ColorKey);
-		if(s == null) {
-			if(v != null) {
-				s = this.addShader(new h3d_shader_ColorKey(-16777216 | v));
-			}
-		} else if(v == null) {
-			this.removeShader(s);
-		} else {
-			var _this = s.colorKey__;
-			var c = -16777216 | v;
-			_this.x = (c >> 16 & 255) / 255;
-			_this.y = (c >> 8 & 255) / 255;
-			_this.z = (c & 255) / 255;
-			_this.w = (c >>> 24) / 255;
-		}
-		return this.colorKey = v;
-	}
-	,adjustColor: function(col) {
-		if(col == null) {
-			this.set_colorMatrix(null);
-		} else {
-			var m = this.get_colorMatrix();
-			if(m == null) {
-				m = new h3d_Matrix();
-				this.set_colorMatrix(m);
-			}
-			m.identity();
-			m.adjustColor(col);
-		}
-	}
-	,get_colorMatrix: function() {
-		var s = this.getShader(h3d_shader_ColorMatrix);
-		if(s == null) {
-			return null;
-		} else {
-			return s.matrix__;
-		}
-	}
-	,set_colorMatrix: function(m) {
-		var s = this.getShader(h3d_shader_ColorMatrix);
-		if(s == null) {
-			if(m != null) {
-				s = this.addShader(new h3d_shader_ColorMatrix());
-				s.matrix__ = m;
-			}
-		} else if(m == null) {
-			this.removeShader(s);
-		} else {
-			s.matrix__ = m;
-		}
-		return m;
-	}
-	,getDebugShaderCode: function(toHxsl) {
-		if(toHxsl == null) {
-			toHxsl = true;
-		}
-		var ctx = this.getScene().ctx;
-		var shader = ctx.manager.compileShaders(new hxsl_ShaderList(ctx.baseShader,this.shaders));
-		if(toHxsl) {
-			var toString = function(s) {
-				return hxsl_Printer.shaderToString(s,true);
-			};
-			return "// vertex:\n" + toString(shader.vertex.data) + "\n\nfragment:\n" + toString(shader.fragment.data);
-		} else {
-			return h3d_Engine.CURRENT.driver.getNativeShaderCode(shader);
-		}
-	}
-	,getShader: function(stype) {
-		if(this.shaders != null) {
-			var _g_l = this.shaders;
-			var _g_last = null;
-			while(_g_l != _g_last) {
-				var s = _g_l.s;
-				_g_l = _g_l.next;
-				var s1 = s;
-				var s2 = js_Boot.__downcastCheck(s1,stype) ? s1 : null;
-				if(s2 != null) {
-					return s2;
-				}
-			}
-		}
-		return null;
-	}
-	,getShaders: function() {
-		return new hxsl__$ShaderList_ShaderIterator(this.shaders,null);
-	}
-	,addShader: function(s) {
-		if(s == null) {
-			throw new js__$Boot_HaxeError("Can't add null shader");
-		}
-		this.shaders = hxsl_ShaderList.addSort(s,this.shaders);
-		return s;
-	}
-	,removeShader: function(s) {
-		var prev = null;
-		var cur = this.shaders;
-		while(cur != null) {
-			if(cur.s == s) {
-				if(prev == null) {
-					this.shaders = cur.next;
-				} else {
-					prev.next = cur.next;
-				}
-				return true;
-			}
-			prev = cur;
-			cur = cur.next;
-		}
-		return false;
-	}
-	,emitTile: function(ctx,tile) {
-		if(tile == null) {
-			tile = new h2d_Tile(null,0,0,5,5);
-		}
-		if(!ctx.drawTile(this,tile)) {
-			return;
-		}
-		return;
-	}
-	,__class__: h2d_Drawable
-});
 var h2d_Anim = function(frames,speed,parent) {
 	this.fading = false;
 	this.loop = true;
@@ -5517,270 +5824,6 @@ var h2d_BlendMode = $hxEnums["h2d.BlendMode"] = { __ename__ : true, __constructs
 	,Min: {_hx_index:11,__enum__:"h2d.BlendMode",toString:$estr}
 };
 h2d_BlendMode.__empty_constructs__ = [h2d_BlendMode.None,h2d_BlendMode.Alpha,h2d_BlendMode.Add,h2d_BlendMode.AlphaAdd,h2d_BlendMode.SoftAdd,h2d_BlendMode.Multiply,h2d_BlendMode.AlphaMultiply,h2d_BlendMode.Erase,h2d_BlendMode.Screen,h2d_BlendMode.Sub,h2d_BlendMode.Max,h2d_BlendMode.Min];
-var hxd_Interactive = function() { };
-$hxClasses["hxd.Interactive"] = hxd_Interactive;
-hxd_Interactive.__name__ = "hxd.Interactive";
-hxd_Interactive.__isInterface__ = true;
-hxd_Interactive.prototype = {
-	__class__: hxd_Interactive
-};
-var h2d_Interactive = function(width,height,parent,shape) {
-	this.shapeY = 0;
-	this.shapeX = 0;
-	this.mouseDownButton = -1;
-	this.propagateEvents = false;
-	this.cancelEvents = false;
-	h2d_Drawable.call(this,parent);
-	this.width = width;
-	this.height = height;
-	this.shape = shape;
-	this.set_cursor(hxd_Cursor.Button);
-};
-$hxClasses["h2d.Interactive"] = h2d_Interactive;
-h2d_Interactive.__name__ = "h2d.Interactive";
-h2d_Interactive.__interfaces__ = [hxd_Interactive];
-h2d_Interactive.__super__ = h2d_Drawable;
-h2d_Interactive.prototype = $extend(h2d_Drawable.prototype,{
-	onAdd: function() {
-		this.scene = this.getScene();
-		if(this.scene != null) {
-			this.scene.addEventTarget(this);
-		}
-		this.updateMask();
-		h2d_Drawable.prototype.onAdd.call(this);
-	}
-	,draw: function(ctx) {
-		if(this.backgroundColor != null) {
-			this.emitTile(ctx,h2d_Tile.fromColor(this.backgroundColor,this.width | 0,this.height | 0,(this.backgroundColor >>> 24) / 255,{ fileName : "h2d/Interactive.hx", lineNumber : 67, className : "h2d.Interactive", methodName : "draw"}));
-		}
-	}
-	,getBoundsRec: function(relativeTo,out,forSize) {
-		h2d_Drawable.prototype.getBoundsRec.call(this,relativeTo,out,forSize);
-		if(this.backgroundColor != null || forSize) {
-			this.addBounds(relativeTo,out,0,0,this.width | 0,this.height | 0);
-		}
-	}
-	,onHierarchyMoved: function(parentChanged) {
-		h2d_Drawable.prototype.onHierarchyMoved.call(this,parentChanged);
-		if(this.scene != null) {
-			this.scene.removeEventTarget(this);
-			this.scene.addEventTarget(this);
-		}
-		if(parentChanged) {
-			this.updateMask();
-		}
-	}
-	,updateMask: function() {
-		this.parentMask = null;
-		var p = this.parent;
-		while(p != null) {
-			var m = ((p) instanceof h2d_Mask) ? p : null;
-			if(m != null) {
-				this.parentMask = m;
-				break;
-			}
-			p = p.parent;
-		}
-	}
-	,onRemove: function() {
-		if(this.scene != null) {
-			this.scene.removeEventTarget(this,true);
-			this.scene = null;
-		}
-		h2d_Drawable.prototype.onRemove.call(this);
-	}
-	,checkBounds: function(e) {
-		switch(e.kind._hx_index) {
-		case 4:case 6:case 7:case 10:
-			return false;
-		default:
-			return true;
-		}
-	}
-	,preventClick: function() {
-		this.mouseDownButton = -1;
-	}
-	,getInteractiveScene: function() {
-		return this.scene;
-	}
-	,handleEvent: function(e) {
-		if(this.parentMask != null && this.checkBounds(e)) {
-			var p = this.parentMask;
-			var pt = new h2d_col_Point(e.relX,e.relY);
-			this.localToGlobal(pt);
-			var saveX = pt.x;
-			var saveY = pt.y;
-			while(p != null) {
-				pt.x = saveX;
-				pt.y = saveY;
-				var pt1 = p.globalToLocal(pt);
-				if(pt1.x < 0 || pt1.y < 0 || pt1.x > p.width || pt1.y > p.height) {
-					e.cancel = true;
-					return;
-				}
-				p = p.parentMask;
-			}
-		}
-		if(this.shape == null && this.isEllipse && this.checkBounds(e)) {
-			var cx = this.width * 0.5;
-			var cy = this.height * 0.5;
-			var dx = (e.relX - cx) / cx;
-			var dy = (e.relY - cy) / cy;
-			if(dx * dx + dy * dy > 1) {
-				e.cancel = true;
-				return;
-			}
-		}
-		if(this.propagateEvents) {
-			e.propagate = true;
-		}
-		if(this.cancelEvents) {
-			e.cancel = true;
-		}
-		switch(e.kind._hx_index) {
-		case 0:
-			if(this.enableRightButton || e.button == 0) {
-				this.mouseDownButton = e.button;
-				this.onPush(e);
-			}
-			break;
-		case 1:
-			if(this.enableRightButton || e.button == 0) {
-				this.onRelease(e);
-				if(this.mouseDownButton == e.button) {
-					this.onClick(e);
-				}
-			}
-			this.mouseDownButton = -1;
-			break;
-		case 2:
-			this.onMove(e);
-			break;
-		case 3:
-			this.onOver(e);
-			break;
-		case 4:
-			this.onOut(e);
-			break;
-		case 5:
-			this.onWheel(e);
-			break;
-		case 6:
-			this.onFocus(e);
-			break;
-		case 7:
-			this.onFocusLost(e);
-			break;
-		case 8:
-			this.onKeyDown(e);
-			break;
-		case 9:
-			this.onKeyUp(e);
-			break;
-		case 10:
-			if(this.enableRightButton || e.button == 0) {
-				this.onRelease(e);
-				if(this.mouseDownButton == e.button) {
-					this.onReleaseOutside(e);
-				}
-			}
-			this.mouseDownButton = -1;
-			break;
-		case 11:
-			this.onTextInput(e);
-			break;
-		case 12:
-			this.onCheck(e);
-			break;
-		}
-	}
-	,calcAbsPos: function() {
-		h2d_Drawable.prototype.calcAbsPos.call(this);
-		this.invDet = 1 / (this.matA * this.matD - this.matB * this.matC);
-	}
-	,set_cursor: function(c) {
-		this.cursor = c;
-		if(this.scene != null && this.scene.events != null) {
-			this.scene.events.updateCursor(this);
-		}
-		return c;
-	}
-	,eventToLocal: function(e) {
-		var i = this;
-		var dx = e.relX - i.absX;
-		var dy = e.relY - i.absY;
-		e.relX = (dx * i.matD - dy * i.matC) * i.invDet;
-		e.relY = (-dx * i.matB + dy * i.matA) * i.invDet;
-	}
-	,startDrag: function(callb,onCancel) {
-		var _gthis = this;
-		this.scene.startDrag(function(event) {
-			var x = event.relX;
-			var y = event.relY;
-			_gthis.eventToLocal(event);
-			callb(event);
-			event.relX = x;
-			event.relY = y;
-		},onCancel);
-	}
-	,stopDrag: function() {
-		this.scene.stopDrag();
-	}
-	,focus: function() {
-		if(this.scene == null || this.scene.events == null) {
-			return;
-		}
-		this.scene.events.focus(this);
-	}
-	,blur: function() {
-		if(this.hasFocus()) {
-			this.scene.events.blur();
-		}
-	}
-	,isOver: function() {
-		if(this.scene != null && this.scene.events != null) {
-			return this.scene.events.overList.indexOf(this) != -1;
-		} else {
-			return false;
-		}
-	}
-	,hasFocus: function() {
-		if(this.scene != null && this.scene.events != null) {
-			return this.scene.events.currentFocus == this;
-		} else {
-			return false;
-		}
-	}
-	,onOver: function(e) {
-	}
-	,onOut: function(e) {
-	}
-	,onPush: function(e) {
-	}
-	,onRelease: function(e) {
-	}
-	,onReleaseOutside: function(e) {
-	}
-	,onClick: function(e) {
-	}
-	,onMove: function(e) {
-	}
-	,onWheel: function(e) {
-	}
-	,onFocus: function(e) {
-	}
-	,onFocusLost: function(e) {
-	}
-	,onKeyUp: function(e) {
-	}
-	,onKeyDown: function(e) {
-	}
-	,onCheck: function(e) {
-	}
-	,onTextInput: function(e) {
-	}
-	,__class__: h2d_Interactive
-});
 var h2d_Layers = function(parent) {
 	h2d_Object.call(this,parent);
 	this.layersIndexes = [];
@@ -13445,8 +13488,8 @@ var h3d_anim_Skin = function(name,vertexCount,bonesPerVertex) {
 	if(vertexCount > 0) {
 		var this1 = new Array(vertexCount * bonesPerVertex);
 		this.vertexJoints = this1;
-		var this2 = new Array(vertexCount * bonesPerVertex);
-		this.vertexWeights = this2;
+		var this11 = new Array(vertexCount * bonesPerVertex);
+		this.vertexWeights = this11;
 		this.envelop = [];
 	}
 };
@@ -19039,11 +19082,11 @@ h3d_impl_GlDriver.prototype = $extend(h3d_impl_Driver.prototype,{
 		var bufLen = pixels.stride * pixels.height;
 		var buffer;
 		switch(t.format._hx_index) {
-		case 4:case 7:case 10:case 13:
-			buffer = new Float32Array(pixels.bytes.b.buffer,pixels.offset,bufLen >> 2);
-			break;
 		case 3:case 6:case 9:case 12:
 			buffer = new Uint16Array(pixels.bytes.b.buffer,pixels.offset,bufLen >> 1);
+			break;
+		case 4:case 7:case 10:case 13:
+			buffer = new Float32Array(pixels.bytes.b.buffer,pixels.offset,bufLen >> 2);
 			break;
 		case 16:case 17:
 			buffer = new Uint32Array(pixels.bytes.b.buffer,pixels.offset,bufLen >> 2);
@@ -19532,11 +19575,11 @@ h3d_impl_GlDriver.prototype = $extend(h3d_impl_Driver.prototype,{
 		}
 		var buffer = pixels.bytes.b;
 		switch(this.curTarget.format._hx_index) {
-		case 4:case 7:case 10:case 13:
-			buffer = new Float32Array(buffer.buffer);
-			break;
 		case 3:case 6:case 9:case 12:
 			buffer = new Uint16Array(buffer.buffer);
+			break;
+		case 4:case 7:case 10:case 13:
+			buffer = new Float32Array(buffer.buffer);
 			break;
 		case 16:case 17:
 			buffer = new Uint32Array(buffer.buffer);
@@ -19780,8 +19823,8 @@ h3d_impl_MemoryManager.prototype = {
 			indices.push(i);
 		}
 		this.triIndexes = h3d_Indexes.alloc(indices);
-		var this2 = new Array(0);
-		var indices1 = this2;
+		var this11 = new Array(0);
+		var indices1 = this11;
 		var p = 0;
 		var _g1 = 0;
 		var _g2 = 16383;
@@ -20876,9 +20919,9 @@ h3d_mat_MaterialDatabase.prototype = {
 				throw e;
 			}
 		}
-		var this2 = this.db;
+		var this11 = this.db;
 		var key1 = model.entry.get_directory();
-		var _this1 = this2;
+		var _this1 = this11;
 		var value1 = { v : value};
 		if(__map_reserved[key1] != null) {
 			_this1.setReserved(key1,value1);
@@ -25260,7 +25303,7 @@ h3d_pass_ShaderManager.prototype = {
 		var tid1 = 0;
 		var p4 = s2.textures;
 		while(p4 != null) {
-			var this2 = buf2.tex;
+			var this11 = buf2.tex;
 			var index5 = tid1++;
 			var opt2 = !h3d_pass_ShaderManager.STRICT;
 			if(opt2 == null) {
@@ -25291,7 +25334,7 @@ h3d_pass_ShaderManager.prototype = {
 				}
 				val2 = v15;
 			}
-			this2[index5] = val2;
+			this11[index5] = val2;
 			p4 = p4.next;
 		}
 		var p5 = s2.buffers;
@@ -25579,47 +25622,47 @@ h3d_prim_BigPrimitive.prototype = $extend(h3d_prim_Primitive.prototype,{
 				h3d_prim_BigPrimitive.PREV_BUFFER = null;
 			}
 			if(this.isStatic) {
-				var this2 = this.tmpBuf;
-				var _g = this2.pos;
+				var this11 = this.tmpBuf;
+				var _g = this11.pos;
 				var _g1 = 65535 * this.stride;
 				while(_g < _g1) {
 					var i = _g++;
-					if(this2.pos == this2.array.length) {
-						var newSize = this2.array.length << 1;
+					if(this11.pos == this11.array.length) {
+						var newSize = this11.array.length << 1;
 						if(newSize < 128) {
 							newSize = 128;
 						}
 						var newArray = new Float32Array(newSize);
-						newArray.set(this2.array);
-						this2.array = newArray;
+						newArray.set(this11.array);
+						this11.array = newArray;
 					}
-					this2.array[this2.pos++] = 0.;
+					this11.array[this11.pos++] = 0.;
 				}
 			}
 		}
 		if(!this.isStatic) {
-			var this3 = this.tmpBuf;
-			var _g2 = this3.pos;
+			var this12 = this.tmpBuf;
+			var _g2 = this12.pos;
 			var _g11 = vcount * this.stride + this.bufPos;
 			while(_g2 < _g11) {
 				var i1 = _g2++;
-				if(this3.pos == this3.array.length) {
-					var newSize1 = this3.array.length << 1;
+				if(this12.pos == this12.array.length) {
+					var newSize1 = this12.array.length << 1;
 					if(newSize1 < 128) {
 						newSize1 = 128;
 					}
 					var newArray1 = new Float32Array(newSize1);
-					newArray1.set(this3.array);
-					this3.array = newArray1;
+					newArray1.set(this12.array);
+					this12.array = newArray1;
 				}
-				this3.array[this3.pos++] = 0.;
+				this12.array[this12.pos++] = 0.;
 			}
 		}
 		if(this.tmpIdx == null) {
 			this.tmpIdx = h3d_prim_BigPrimitive.PREV_INDEX;
 			if(this.tmpIdx == null) {
-				var this4 = new Array(0);
-				this.tmpIdx = this4;
+				var this13 = new Array(0);
+				this.tmpIdx = this13;
 			} else {
 				h3d_prim_BigPrimitive.PREV_INDEX = null;
 			}
@@ -25628,8 +25671,8 @@ h3d_prim_BigPrimitive.prototype = $extend(h3d_prim_Primitive.prototype,{
 			var size = this.tmpIdx.length == 0 ? 1024 : this.tmpIdx.length;
 			var req = this.idxPos + icount;
 			while(size < req) size <<= 1;
-			var this5 = this.tmpIdx;
-			while(this5.length < size) this5.push(0);
+			var this14 = this.tmpIdx;
+			while(this14.length < size) this14.push(0);
 		}
 	}
 	,addPoint: function(x,y,z) {
@@ -26252,8 +26295,8 @@ h3d_prim_HMDModel.prototype = $extend(h3d_prim_MeshPrimitive.prototype,{
 		}
 		var pol = new h3d_prim_Polygon(pts,idx);
 		pol.addNormals();
-		var this2 = hxd__$FloatBuffer_Float32Expand_$Impl_$._new(0);
-		var v = this2;
+		var this11 = hxd__$FloatBuffer_Float32Expand_$Impl_$._new(0);
+		var v = this11;
 		var _g4 = 0;
 		var _g5 = this.data.vertexCount;
 		while(_g4 < _g5) {
@@ -27113,8 +27156,8 @@ h3d_prim_Polygon.prototype = $extend(h3d_prim_MeshPrimitive.prototype,{
 	,getCollider: function() {
 		var this1 = new Array(this.points.length * 3);
 		var vertexes = this1;
-		var this2 = new Array(this.idx.length);
-		var indexes = this2;
+		var this11 = new Array(this.idx.length);
+		var indexes = this11;
 		var vid = 0;
 		var _g = 0;
 		var _g1 = this.points;
@@ -30349,12 +30392,12 @@ h3d_scene_Scene.prototype = $extend(h3d_scene_Object.prototype,{
 						var l_y1 = y6;
 						var l_z1 = z6;
 						var l_w1 = 1.;
-						var px3 = l_x1 * m._11 + l_y1 * m._21 + l_z1 * m._31;
-						var py3 = l_x1 * m._12 + l_y1 * m._22 + l_z1 * m._32;
-						var pz3 = l_x1 * m._13 + l_y1 * m._23 + l_z1 * m._33;
-						l_x1 = px3;
-						l_y1 = py3;
-						l_z1 = pz3;
+						var px11 = l_x1 * m._11 + l_y1 * m._21 + l_z1 * m._31;
+						var py11 = l_x1 * m._12 + l_y1 * m._22 + l_z1 * m._32;
+						var pz11 = l_x1 * m._13 + l_y1 * m._23 + l_z1 * m._33;
+						l_x1 = px11;
+						l_y1 = py11;
+						l_z1 = pz11;
 						r1.lx = l_x1;
 						r1.ly = l_y1;
 						r1.lz = l_z1;
@@ -30412,20 +30455,20 @@ h3d_scene_Scene.prototype = $extend(h3d_scene_Object.prototype,{
 					var p_w2 = w;
 					p_w2 = 1;
 					var m1 = i1.absPos;
-					var px4 = p_x2 * m1._11 + p_y2 * m1._21 + p_z2 * m1._31 + p_w2 * m1._41;
-					var py4 = p_x2 * m1._12 + p_y2 * m1._22 + p_z2 * m1._32 + p_w2 * m1._42;
-					var pz4 = p_x2 * m1._13 + p_y2 * m1._23 + p_z2 * m1._33 + p_w2 * m1._43;
-					p_x2 = px4;
-					p_y2 = py4;
-					p_z2 = pz4;
+					var px3 = p_x2 * m1._11 + p_y2 * m1._21 + p_z2 * m1._31 + p_w2 * m1._41;
+					var py3 = p_x2 * m1._12 + p_y2 * m1._22 + p_z2 * m1._32 + p_w2 * m1._42;
+					var pz3 = p_x2 * m1._13 + p_y2 * m1._23 + p_z2 * m1._33 + p_w2 * m1._43;
+					p_x2 = px3;
+					p_y2 = py3;
+					p_z2 = pz3;
 					var m2 = this.camera.m;
-					var px5 = p_x2 * m2._11 + p_y2 * m2._21 + p_z2 * m2._31 + p_w2 * m2._41;
-					var py5 = p_x2 * m2._12 + p_y2 * m2._22 + p_z2 * m2._32 + p_w2 * m2._42;
-					var pz5 = p_x2 * m2._13 + p_y2 * m2._23 + p_z2 * m2._33 + p_w2 * m2._43;
+					var px4 = p_x2 * m2._11 + p_y2 * m2._21 + p_z2 * m2._31 + p_w2 * m2._41;
+					var py4 = p_x2 * m2._12 + p_y2 * m2._22 + p_z2 * m2._32 + p_w2 * m2._42;
+					var pz4 = p_x2 * m2._13 + p_y2 * m2._23 + p_z2 * m2._33 + p_w2 * m2._43;
 					var iw = 1 / (p_x2 * m2._14 + p_y2 * m2._24 + p_z2 * m2._34 + p_w2 * m2._44);
-					p_x2 = px5 * iw;
-					p_y2 = py5 * iw;
-					p_z2 = pz5 * iw;
+					p_x2 = px4 * iw;
+					p_y2 = py4 * iw;
+					p_z2 = pz4 * iw;
 					p_w2 = 1;
 					i1.hitPoint.w = p_z2 + wfactor;
 				}
@@ -32133,8 +32176,8 @@ var h3d_shader_ShaderBuffers = function(s) {
 	this.tex = this1;
 	var tmp;
 	if(s.bufferCount > 0) {
-		var this2 = new Array(s.bufferCount);
-		tmp = this2;
+		var this11 = new Array(s.bufferCount);
+		tmp = this11;
 	} else {
 		tmp = null;
 	}
@@ -32159,8 +32202,8 @@ h3d_shader_ShaderBuffers.prototype = {
 			this.tex = this1;
 		}
 		if(nb > 0 && (this.buffers == null || this.buffers.length < nb)) {
-			var this2 = new Array(nb);
-			this.buffers = this2;
+			var this11 = new Array(nb);
+			this.buffers = this11;
 		}
 	}
 	,__class__: h3d_shader_ShaderBuffers
@@ -38407,7 +38450,7 @@ hxd_System.setNativeCursor = function(c) {
 			tmp = cur.alloc[cur.frameIndex];
 			break;
 		case 6:
-			var _g11 = c.f;
+			var _g2 = c.f;
 			throw new js__$Boot_HaxeError("assert");
 		}
 		canvas.style.cursor = tmp;
@@ -38739,8 +38782,8 @@ hxd_fmt_hmd_Library.prototype = {
 		var models = modelIndex < 0 ? this.header.models : [this.header.models[modelIndex]];
 		var this1 = hxd__$FloatBuffer_Float32Expand_$Impl_$._new(0);
 		var outVertex = this1;
-		var this2 = new Array(0);
-		var outIndex = this2;
+		var this11 = new Array(0);
+		var outIndex = this11;
 		var stride = 0;
 		var mid = -1;
 		var _g = 0;
@@ -38910,8 +38953,8 @@ hxd_fmt_hmd_Library.prototype = {
 		if(material == null) {
 			var this1 = new Array(stride * geom.vertexCount);
 			buf.vertexes = this1;
-			var this2 = new Array(geom.get_indexCount());
-			buf.indexes = this2;
+			var this11 = new Array(geom.get_indexCount());
+			buf.indexes = this11;
 			var w = 0;
 			var _g22 = 0;
 			var _g31 = geom.vertexCount;
@@ -38960,12 +39003,12 @@ hxd_fmt_hmd_Library.prototype = {
 			}
 		} else {
 			var icount = geom.indexCounts[material];
-			var this3 = new Array(geom.vertexCount);
-			var vmap = this3;
-			var this4 = hxd__$FloatBuffer_Float32Expand_$Impl_$._new(0);
-			var vertexes = this4;
-			var this5 = new Array(icount);
-			buf.indexes = this5;
+			var this12 = new Array(geom.vertexCount);
+			var vmap = this12;
+			var this13 = hxd__$FloatBuffer_Float32Expand_$Impl_$._new(0);
+			var vertexes = this13;
+			var this14 = new Array(icount);
+			buf.indexes = this14;
 			var r2 = 0;
 			var vcount = 0;
 			var _g24 = 0;
@@ -39124,13 +39167,13 @@ hxd_fmt_hmd_Library.prototype = {
 				}
 				buf.indexes[i5] = rid - 1;
 			}
-			var this6 = vertexes;
+			var this15 = vertexes;
 			var _g6 = [];
 			var _g12 = 0;
-			var _g26 = this6.pos;
+			var _g26 = this15.pos;
 			while(_g12 < _g26) {
 				var i7 = _g12++;
-				_g6.push(this6.array[i7]);
+				_g6.push(this15.array[i7]);
 			}
 			buf.vertexes = _g6;
 		}
@@ -39543,8 +39586,8 @@ hxd_fmt_hmd_Library.prototype = {
 				l.addCurve(o.name,fl,true,rot,scale);
 			}
 			if((o.flags & 1 << hxd_fmt_hmd_AnimationFlag.HasUV._hx_index) != 0) {
-				var this2 = new Array(a.frames * 2);
-				var fl1 = this2;
+				var this11 = new Array(a.frames * 2);
+				var fl1 = this11;
 				var size1 = 8 * a.frames;
 				var data1 = new haxe_io_Bytes(new ArrayBuffer(size1));
 				entry.read(data1,0,size1);
@@ -39557,8 +39600,8 @@ hxd_fmt_hmd_Library.prototype = {
 				l.addUVCurve(o.name,fl1);
 			}
 			if((o.flags & 1 << hxd_fmt_hmd_AnimationFlag.HasAlpha._hx_index) != 0) {
-				var this3 = new Array(a.frames);
-				var fl2 = this3;
+				var this12 = new Array(a.frames);
+				var fl2 = this12;
 				var size2 = 4 * a.frames;
 				var data2 = new haxe_io_Bytes(new ArrayBuffer(size2));
 				entry.read(data2,0,size2);
@@ -39576,8 +39619,8 @@ hxd_fmt_hmd_Library.prototype = {
 				while(_g5 < _g14.length) {
 					var p1 = _g14[_g5];
 					++_g5;
-					var this4 = new Array(a.frames);
-					var fl3 = this4;
+					var this13 = new Array(a.frames);
+					var fl3 = this13;
 					var size3 = 4 * a.frames;
 					var data3 = new haxe_io_Bytes(new ArrayBuffer(size3));
 					entry.read(data3,0,size3);
@@ -39602,8 +39645,8 @@ hxd_fmt_hmd_Library.prototype = {
 		var w = this.getBuffers(geom,[new hxd_fmt_hmd_GeometryFormat("weights",3)]).vertexes;
 		var this1 = new Array(skin.vertexCount * skin.bonesPerVertex);
 		skin.vertexWeights = this1;
-		var this2 = new Array(skin.vertexCount * skin.bonesPerVertex);
-		skin.vertexJoints = this2;
+		var this11 = new Array(skin.vertexCount * skin.bonesPerVertex);
+		skin.vertexJoints = this11;
 		var _g = 0;
 		var _g1 = skin.vertexWeights.length;
 		while(_g < _g1) {
@@ -52221,10 +52264,10 @@ hxsl_GlslOut.prototype = {
 				break;
 			case 5:
 				if(_g11._hx_index == 5) {
-					var _g31 = _g11.t;
+					var _g14 = _g11.t;
 					if(_g2._hx_index == 5) {
-						var _g5 = _g2.t;
-						var _g4 = _g2.size;
+						var _g16 = _g2.t;
+						var _g15 = _g2.size;
 						var n = _g11.size;
 						this.buf.b += Std.string("vec" + n + "(");
 						var v9;
@@ -52275,10 +52318,10 @@ hxsl_GlslOut.prototype = {
 				break;
 			case 6:
 				if(_g11._hx_index == 5) {
-					var _g17 = _g11.t;
+					var _g18 = _g11.t;
 					if(_g2._hx_index == 5) {
-						var _g19 = _g2.t;
-						var _g18 = _g2.size;
+						var _g20 = _g2.t;
+						var _g19 = _g2.size;
 						var n1 = _g11.size;
 						this.buf.b += Std.string("vec" + n1 + "(");
 						var v12;
@@ -52329,10 +52372,10 @@ hxsl_GlslOut.prototype = {
 				break;
 			case 7:
 				if(_g11._hx_index == 5) {
-					var _g24 = _g11.t;
+					var _g6 = _g11.t;
 					if(_g2._hx_index == 5) {
-						var _g26 = _g2.t;
-						var _g25 = _g2.size;
+						var _g8 = _g2.t;
+						var _g7 = _g2.size;
 						var n2 = _g11.size;
 						this.buf.b += Std.string("vec" + n2 + "(");
 						var v15;
@@ -52383,10 +52426,10 @@ hxsl_GlslOut.prototype = {
 				break;
 			case 8:
 				if(_g11._hx_index == 5) {
-					var _g7 = _g11.t;
+					var _g10 = _g11.t;
 					if(_g2._hx_index == 5) {
-						var _g9 = _g2.t;
-						var _g8 = _g2.size;
+						var _g12 = _g2.t;
+						var _g111 = _g2.size;
 						var n3 = _g11.size;
 						this.buf.b += Std.string("vec" + n3 + "(");
 						var v18;
@@ -52437,10 +52480,10 @@ hxsl_GlslOut.prototype = {
 				break;
 			case 9:
 				if(_g11._hx_index == 5) {
-					var _g111 = _g11.t;
+					var _g24 = _g11.t;
 					if(_g2._hx_index == 5) {
-						var _g13 = _g2.t;
-						var _g12 = _g2.size;
+						var _g26 = _g2.t;
+						var _g25 = _g2.size;
 						var n4 = _g11.size;
 						this.buf.b += Std.string("vec" + n4 + "(");
 						var v21;
@@ -52555,7 +52598,7 @@ hxsl_GlslOut.prototype = {
 				if(e.t != hxsl_Type.TInt) {
 					var tmp1;
 					if(op._hx_index == 20) {
-						var _g6 = op.op;
+						var _g4 = op.op;
 						tmp1 = true;
 					} else {
 						tmp1 = false;
@@ -52585,7 +52628,7 @@ hxsl_GlslOut.prototype = {
 									this.decl("vec3 m3x4mult( vec3 v, _mat3x4 m) { vec4 ve = vec4(v,1.0); return vec3(dot(m.a,ve),dot(m.b,ve),dot(m.c,ve)); }");
 									var tmp2;
 									if(op._hx_index == 20) {
-										var _g10 = op.op;
+										var _g5 = op.op;
 										tmp2 = true;
 									} else {
 										tmp2 = false;
@@ -52636,7 +52679,7 @@ hxsl_GlslOut.prototype = {
 					if(e.t != hxsl_Type.TInt) {
 						var tmp3;
 						if(op._hx_index == 20) {
-							var _g14 = op.op;
+							var _g9 = op.op;
 							tmp3 = true;
 						} else {
 							tmp3 = false;
@@ -52727,10 +52770,10 @@ hxsl_GlslOut.prototype = {
 					var v37 = this.getFunName(g1,args,e.t);
 					this.buf.b += Std.string(v37);
 					this.buf.b += Std.string("(");
-					var _g15 = 0;
-					while(_g15 < args.length) {
-						var e3 = args[_g15];
-						++_g15;
+					var _g13 = 0;
+					while(_g13 < args.length) {
+						var e3 = args[_g13];
+						++_g13;
 						this.addValue(e3,tabs);
 						this.buf.b += Std.string(", ");
 					}
@@ -52745,9 +52788,9 @@ hxsl_GlslOut.prototype = {
 					} else {
 						var v38 = _g34;
 						var args1 = _g35;
-						var _g16 = v38.e;
-						if(_g16._hx_index == 2) {
-							var g2 = _g16.g;
+						var _g17 = v38.e;
+						if(_g17._hx_index == 2) {
+							var g2 = _g17.g;
 							var v39 = this.getFunName(g2,args1,e.t);
 							this.buf.b += Std.string(v39);
 						} else {
@@ -52772,9 +52815,9 @@ hxsl_GlslOut.prototype = {
 				default:
 					var args2 = _g35;
 					var v40 = _g34;
-					var _g20 = v40.e;
-					if(_g20._hx_index == 2) {
-						var g3 = _g20.g;
+					var _g22 = v40.e;
+					if(_g22._hx_index == 2) {
+						var g3 = _g22.g;
 						var v41 = this.getFunName(g3,args2,e.t);
 						this.buf.b += Std.string(v41);
 					} else {
@@ -52782,10 +52825,10 @@ hxsl_GlslOut.prototype = {
 					}
 					this.buf.b += Std.string("(");
 					var first1 = true;
-					var _g22 = 0;
-					while(_g22 < args2.length) {
-						var e6 = args2[_g22];
-						++_g22;
+					var _g23 = 0;
+					while(_g23 < args2.length) {
+						var e6 = args2[_g23];
+						++_g23;
 						if(first1) {
 							first1 = false;
 						} else {
@@ -52798,9 +52841,9 @@ hxsl_GlslOut.prototype = {
 			} else {
 				var args3 = _g35;
 				var v42 = _g34;
-				var _g23 = v42.e;
-				if(_g23._hx_index == 2) {
-					var g4 = _g23.g;
+				var _g27 = v42.e;
+				if(_g27._hx_index == 2) {
+					var g4 = _g27.g;
 					var v43 = this.getFunName(g4,args3,e.t);
 					this.buf.b += Std.string(v43);
 				} else {
@@ -52808,10 +52851,10 @@ hxsl_GlslOut.prototype = {
 				}
 				this.buf.b += Std.string("(");
 				var first2 = true;
-				var _g27 = 0;
-				while(_g27 < args3.length) {
-					var e7 = args3[_g27];
-					++_g27;
+				var _g210 = 0;
+				while(_g210 < args3.length) {
+					var e7 = args3[_g210];
+					++_g210;
 					if(first2) {
 						first2 = false;
 					} else {
@@ -52826,10 +52869,10 @@ hxsl_GlslOut.prototype = {
 			var regs = _g.regs;
 			var e8 = _g.e;
 			if(e8.t._hx_index == 3) {
-				var _g32 = 0;
-				while(_g32 < regs.length) {
-					var r = regs[_g32];
-					++_g32;
+				var _g31 = 0;
+				while(_g31 < regs.length) {
+					var r = regs[_g31];
+					++_g31;
 					if(r != hxsl_Component.X) {
 						throw new js__$Boot_HaxeError("assert");
 					}
@@ -52862,10 +52905,10 @@ hxsl_GlslOut.prototype = {
 			} else {
 				this.addValue(e8,tabs);
 				this.buf.b += Std.string(".");
-				var _g33 = 0;
-				while(_g33 < regs.length) {
-					var r1 = regs[_g33];
-					++_g33;
+				var _g32 = 0;
+				while(_g32 < regs.length) {
+					var r1 = regs[_g32];
+					++_g32;
 					var _this2 = this.buf;
 					var _this3 = _this2.b;
 					var tmp5;
@@ -52920,11 +52963,11 @@ hxsl_GlslOut.prototype = {
 			var it = _g.it;
 			var v44 = _g.v;
 			this.locals.h[v44.id] = v44;
-			var _g40 = it.e;
-			if(_g40._hx_index == 5) {
-				if(_g40.op._hx_index == 21) {
-					var e22 = _g40.e2;
-					var e13 = _g40.e1;
+			var _g33 = it.e;
+			if(_g33._hx_index == 5) {
+				if(_g33.op._hx_index == 21) {
+					var e22 = _g33.e2;
+					var e13 = _g33.e1;
 					this.buf.b += Std.string("for(");
 					this.buf.b += Std.string(v44.name + "=");
 					this.addValue(e13,tabs);
@@ -52957,10 +53000,10 @@ hxsl_GlslOut.prototype = {
 			var el1 = _g.el;
 			this.buf.b += Std.string("[");
 			var first3 = true;
-			var _g41 = 0;
-			while(_g41 < el1.length) {
-				var e14 = el1[_g41];
-				++_g41;
+			var _g40 = 0;
+			while(_g40 < el1.length) {
+				var e14 = el1[_g40];
+				++_g40;
 				if(first3) {
 					first3 = false;
 				} else {
@@ -56234,6 +56277,8 @@ KeySetting.SYS_PAGE_POST = 69;
 KeySetting.ACTION_KEYS = [KeySetting.MOVE_HORISONTAL_DEC,KeySetting.MOVE_HORISONTAL_INC,KeySetting.MOVE_VERTICAL_DEC,KeySetting.MOVE_VERTICAL_INC,KeySetting.ACTION_CHECK,KeySetting.ACTION_INTERACT,KeySetting.ACTION_TALK];
 KeySetting.SYS_KEYS = [KeySetting.SYS_ENTER,KeySetting.SYS_EXIT,KeySetting.SYS_MENU,KeySetting.SYS_SEL_UP,KeySetting.SYS_SEL_DW,KeySetting.SYS_SEL_LF,KeySetting.SYS_SEL_RT,KeySetting.SYS_PAGE_PRE,KeySetting.SYS_PAGE_POST];
 MainPort.MOVE_SPEED = 150;
+MainPort.FIXED_WIDTH = 540;
+MainPort.FIXED_HEIGHT = 960;
 ResMgr.LAYER_STATIC = 0;
 ResMgr.LAYER_COLLIS = 2;
 ResMgr.LAYER_ENTITY = 3;

@@ -61,6 +61,7 @@ class Character extends Entity {
     public function new(sprites:Array<Bitmap>) {
         super();
         this.sprites = sprites;
+        this.sprite = sprites[0];
         isSpriteChanged = true;
     }
 

@@ -130,14 +130,14 @@ ddgggggggggdddd..
         var sprites = []; // stand sprite
         var anims = []; // animation clips
         var offx = 0, offy = 0, k = 0;
-        while (k <= 8) {
+        while (k < 8) {
             var i = 0, j = 0;
             while (j < 128) {
                 var frames = [];
                 while (i < 128) {
                     var w = 32;
                     if ((i == 64) || (j > 64) && (i == 32)) w = 34;
-                    var frame = loadTileToSize(slimes, offx + 1, offy + j, w, 32, w * 2, 64, "default");
+                    var frame = loadTileToSize(slimes, offx + i, offy + j, w, 32, w * 2, 64, "default");
                     if (i == 0) sprites.push(new h2d.Bitmap(frame));
                     frames.push(frame); 
                     i += w;
