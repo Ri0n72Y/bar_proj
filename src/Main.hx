@@ -27,7 +27,7 @@ class Main extends hxd.App {
 
     override function init() {
         entities = new Array<Dynamic>();
-        resMgr = new ResMgr();
+        resMgr = new ResMgr("main");
         layers = new h2d.Layers(s2d); // 初始化世界层
         layers.add(resMgr.map, LAYER_STATIC);
 

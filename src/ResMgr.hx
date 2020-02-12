@@ -1,13 +1,13 @@
+import haxe.macro.Expr.Error;
 import h2d.Object;
 import h2d.Tile;
 import AssetManager.getAssetSize;
 
 class ResMgr {
-    public final player : h2d.Tile;
-    public final plants : h2d.Tile;
-    public final items : h2d.Tile;
-    public final tiles : h2d.Tile;
-    var layers : h2d.Layers;
+    public var player : h2d.Tile;
+    public var plants : h2d.Tile;
+    public var items : h2d.Tile;
+    public var tiles : h2d.Tile;
     
     public static inline final LAYER_STATIC = 0; // 静物层
     public static inline final LAYER_COLLIS = 2; // 实体碰撞箱
@@ -19,18 +19,37 @@ class ResMgr {
     public static final SCALED_SIZE = 80;
     public static final SCALE = 2.5;
 
-    final tile_dirt1 : h2d.Tile;
-    final tile_dirt2 : h2d.Tile;
-    final tile_grass1 : h2d.Tile;
-    final tile_grass2 : h2d.Tile;
+    var tile_dirt1 : h2d.Tile;
+    var tile_dirt2 : h2d.Tile;
+    var tile_grass1 : h2d.Tile;
+    var tile_grass2 : h2d.Tile;
 
-    public final fac_plantsoil : h2d.Tile;
-    public final fac_plantsoil_avl : h2d.Tile;
+    public var fac_plantsoil : h2d.Tile;
+    public var fac_plantsoil_avl : h2d.Tile;
 
     public var map : h2d.Object;
 
     public static final plant_waterfruit: Array<h2d.Tile> = [];
-    
+
+    // data for mobile version use
+    public var res : Array<Dynamic> ;
+    public final s = {
+        f : {
+            a : {offx:0, offy:0},
+            b : {offx:0, offy:1},
+            c : {offx:-2, offy:4},
+            d : {offx:-4, offy:4},
+            e : {offx:-4, offy:4}
+        },
+        b : {
+            a : {offx:0, offy:0},
+            b : {offx:0, offy:0},
+            c : {offx:2, offy:-2},
+            d : {offx:3, offy:-3},
+            e : {offx:3, offy:-4}
+        }
+    }
+
     static var testmap = 
 "...ddddd.........
 ..ddgggddddddd...
@@ -44,11 +63,23 @@ ddgggggggggdddd..
 ..ddddggggddd....
 .....dddddd......";
 
-    public function new() {
-        player = hxd.Res.player.toTile();
-        items = hxd.Res.items.toTile();
-        plants = hxd.Res.plants.toTile();
-        tiles = hxd.Res.tiles.toTile(); 
+    public function new(type : String) {
+        switch (type) {
+            case "main" :
+                player = hxd.Res.player.toTile();
+                items = hxd.Res.items.toTile();
+                plants = hxd.Res.plants.toTile();
+                tiles = hxd.Res.tiles.toTile(); 
+                loadMain();
+            case "mobile" :
+                items = hxd.Res.m256x.toTile();
+                loadMobile();
+            default :
+                throw new Error("Unknown Resourse Scenario.", {min: 49, max: 62, file: "src/ResMgr"});
+        }
+    }
+
+    function loadMain() {
 
         onLoad();
         
@@ -80,6 +111,44 @@ ddgggggggggdddd..
         var ps = getAssetSize("plant_soil_avl");
         var asset = ps.full;
         fac_plantsoil_avl = loadTileToSize(items, asset.x, asset.y, asset.w, asset.h, asset.w * SCALE, asset.h * SCALE, "centre");
+    
+    }
+
+    function loadMobile() {
+        res = new Array<Dynamic>();
+        // load background
+        var tile = hxd.Res.mlayout_vert.toTile(); tile.scaleToSize(540, 960);
+        var background = new h2d.Bitmap(tile);
+        res.push(background); // index 0
+        // load UI
+        var tile = hxd.Res.mhandbook.toTile(); tile.scaleToSize(540, 960);
+        var handbook = new h2d.Bitmap(tile);
+
+        res.push(handbook); // index 1
+        // build slime animations
+        var slimes = hxd.Res.slimebase.toTile();
+        var anims = [];
+        var offx = 0, offy = 0, k = 0;
+        while (k <= 8) {
+            var i = 0, j = 0;
+            while (j < 128) {
+                var frames = [];
+                while (i < 128) {
+                    var w = 32;
+                    if ((i == 64) || (j > 64) && (i == 32)) w = 34;
+                    var frame = loadTileToSize(slimes, offx + 1, offy + j, w, 32, w * 2, 64, "default");
+                    frames.push(frame); 
+                    i += w;
+                }
+                i = 0;
+                j += 32;
+                anims.push(new h2d.Anim(frames));
+            }
+            k ++;
+            offx = (k % 4) * 136; offy = Math.floor(k / 4) * 128; 
+        }
+        res.push(anims); // index 2
+        // TODO : Load items
     }
 
     function onLoad() {
