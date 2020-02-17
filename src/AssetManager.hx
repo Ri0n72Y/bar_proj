@@ -21,6 +21,7 @@ class AssetManager {
     */
     public static var imageSizeData : Dynamic; 
     public static var tileSizeData : Dynamic;
+    public static var msizeData : Dynamic;
 
     public static function getAssetSize(name : String) : Dynamic{
         switch (name) {
@@ -108,6 +109,90 @@ class AssetManager {
             case "tile_grass_b": return tileSizeData.tile_grass_b;
             case "tile_dirt_a": return tileSizeData.tile_dirt_a;
             case "tile_dirt_b": return tileSizeData.tile_dirt_b;
+
+            //msizedata
+            case "book" : return msizeData.book;
+
+            //apple
+            case "apple" : return msizeData.apple;
+            case "apple_half" : return msizeData.apple_half;
+            case "apple_slice" : return msizeData.apple_slice;
+            case "apple_peel" : return msizeData.apple_peel;
+            case "apple_slicegroup" : return msizeData.apple_slicegroup;
+            case "apple_dice" : return msizeData.apple_dice;
+            case "apple_juice" : return msizeData.apple_juice;
+            case "bow_apple_dice" : return msizeData.bow_apple_dice;
+            case "bow_apple_mush" : return msizeData.bow_apple_mush;
+            
+            //orange
+            case "orange" : return msizeData.orange;  
+            case "orange_half" : return msizeData.orange_half;
+            case "orange_slice" : return msizeData.orange_slice;
+            case "orange_peel" : return msizeData.orange_peel;
+            case "orange_slicegroup" : return msizeData.orange_slicegroup;
+            case "orange_juice" : return msizeData.orange_juice;
+            
+            //lemon
+            case "lemon" : return msizeData.lemon;
+            case "lemon_juice" : return msizeData.lemon_juice;
+            case "lemon_slice" : return msizeData.lemon_slice;
+            case "lemon_half" : return msizeData.lemon_half;
+            case "lemon_slicegroup" : return msizeData.lemon_slicegroup;
+            
+            //glass
+            case "glass_stack_topb" : return msizeData.glass_stack_topb;
+            case "glass_stack_top" : return msizeData.glass_stack_top;
+            case "glass_stack_bot" : return msizeData.glass_stack_bot;
+            case "glass_stack_botb" : return msizeData.glass_stack_botb;
+            case "glass" : return msizeData.glass;
+            case "glass_down" : return msizeData.glass_down;
+            
+            //grape
+            case "grape" : return msizeData.grape;
+            case "grape_juice" : return msizeData.grape_juice;
+            case "grape_mush" : return msizeData.grape_mush;
+            
+            //kiwi
+            case "kiwi" : return msizeData.kiwi;
+            case "kiwi_half" : return msizeData.kiwi_half;
+            case "kiwi_slice" : return msizeData.kiwi_slice;
+            case "kiwi_slicegroup" : return msizeData.kiwi_slicegroup;
+            case "kiwi_smash" : return msizeData.kiwi_smash;
+            case "kiwi_juice" : return msizeData.kiwi_juice;
+            case "bow_kiwi_smash" : return msizeData.bow_kiwi_smash;
+            
+            
+            case "round_wood" : return msizeData.round_wood;
+            
+            //knife
+            case "knife_big" : return msizeData.knife_big;
+            case "knife_small" : return msizeData.knife_small;
+            case "knife_stage" : return msizeData.knife_stage;
+            
+            case "glass_triangle" : return msizeData.glass_triangle;
+            
+            //dish
+            case "dish_big" : return msizeData.dish_big;
+            case "dish_small" : return msizeData.dish_small;
+            case "bowl" : return msizeData.bowl;
+            case "bowl_green" : return msizeData.bowl_green;
+            
+            
+            case "entry" : return msizeData.entry;
+            case "cut_open" : return msizeData.cut_open;
+            case "cut_close" : return msizeData.cut_close;
+            case "paper" : return msizeData.paper;
+            case "mixer" : return msizeData.mixer;
+            case "mixer_open" : return msizeData.mixer_open;
+            
+            case "rectangle_up" : return msizeData.rectangle_up;
+            case "rectangle_down" : return msizeData.rectangle_down;
+
+
+
+
+
+
 
             default : 
                 trace ("Unknown tile name: " + name);
