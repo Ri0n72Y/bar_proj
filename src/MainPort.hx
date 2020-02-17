@@ -35,13 +35,19 @@ class MainPort extends hxd.App {
 
     function initEntities() {
         var res = resManager.res;
-        var slime = new Character(res[index.slimes]); // main chef
-        slime.name = "slime";
-        slime.x = FIXED_WIDTH / 2;
-        slime.y = FIXED_HEIGHT / 2;
-        var event = new DraggableEntity(64, 64, slime, s2d);
-        layers.addChildAt(slime, ResMgr.LAYER_ENTITY); 
-        entities.push(slime);
+        var slimeSprite = res[index.slimes];
+
+        var i = 0;
+        while (i < 8) {
+            var slime = new Character(slimeSprite.slice(i * 4, (i+1)*4)); // main chef
+            slime.name = "slime";
+            slime.x = FIXED_WIDTH / 2;
+            slime.y = FIXED_HEIGHT / 2;
+            var event = new DraggableEntity(64, 64, slime, s2d);
+            layers.addChildAt(slime, ResMgr.LAYER_ENTITY); 
+            entities.push(slime);
+            i++;
+        }
     }
 
     override function update(dt: Float) {
