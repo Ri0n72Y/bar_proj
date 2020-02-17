@@ -1,5 +1,6 @@
 package entity;
 
+import MainPort.DraggableEntity;
 import h2d.Bitmap;
 import h2d.Object;
 
@@ -29,6 +30,11 @@ class Entity extends Object{
             s.removeChildren();
             s.addChild(this.sprite);
             isSpriteChanged = false;
+        }
+        var children : Array<Dynamic> = this.children;
+        for (c in children) {
+            if ((c is DraggableEntity))
+                c.update();
         }
     }
 

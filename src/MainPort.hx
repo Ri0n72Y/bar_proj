@@ -36,15 +36,17 @@ class MainPort extends hxd.App {
     function initEntities() {
         var res = resManager.res;
         var slime = new Character(res[index.slimes]); // main chef
+        slime.name = "slime";
         slime.x = FIXED_WIDTH / 2;
         slime.y = FIXED_HEIGHT / 2;
+        var event = new DraggableEntity(64, 64, slime, s2d);
         layers.addChildAt(slime, ResMgr.LAYER_ENTITY); 
         entities.push(slime);
     }
 
     override function update(dt: Float) {
-        for (entitiy in entities) {
-            entitiy.update(dt);
+        for (entity in entities) {
+            entity.update(dt);
         }
     }
 
@@ -55,29 +57,35 @@ class MainPort extends hxd.App {
 }
 
 class DraggableEntity extends h2d.Interactive {
-    var entity : Dynamic;
-    public function new(width, height, entity, ?shape) {
-        super(width, height, entity, shape);
-        this.entity = entity;
+    var e : Dynamic;
+    var s2d : h2d.Scene;
+    var isFollow : Bool = false;
+    public function new(width, height, entity, s2d) {
+        super(width, height, entity);
+        this.s2d = s2d;
+        this.e = entity;
         this.onPush = function(event: hxd.Event) {
             entity.alpha = 0.8;
-            entity.scale(1.5);
-            entity.parent.addChildAt(entity, ResMgr.LAYER_UI);
-            this.startDrag(function(event) {
-                this.entity.x = event.relX - (width  / 2);
-                this.entity.y = event.relY - (height / 2);
-            });
+            entity.scale(6 / 5);
+            var layer = entity.parent;
+            layer.removeChild(entity);
+            layer.addChildAt(entity, ResMgr.LAYER_UI);
+            isFollow = true;
         }
         this.onRelease = function(event: hxd.Event) {
-            this.stopDrag();
-            entity.alpha = 1; entity.scale(1);
+            isFollow = false;
+            entity.alpha = 1; entity.scale(5 / 6);
+            entity.x = s2d.mouseX - width * 5 / 12;
+            entity.y = s2d.mouseY - height * 5 / 12;
             var layers: Dynamic = entity.parent;
             layers.addChildAt(entity, ResMgr.LAYER_ENTITY);
             layers.ysort(ResMgr.LAYER_ENTITY); // bug posible
         }
     }
-
     public function update(dt:Float) {
-        entity.update(dt);
+        if (isFollow) {
+            this.parent.x = s2d.mouseX - width * 0.6;
+            this.parent.y = s2d.mouseY - height * 0.6;
+        }
     }
 }
