@@ -160,22 +160,22 @@ class AssetManager {
             case "kiwi_smash" : return msizeData.kiwi_smash;
             case "kiwi_juice" : return msizeData.kiwi_juice;
             case "bow_kiwi_smash" : return msizeData.bow_kiwi_smash;
+            case "bowl_kiwi_mush" : return msizeData.bowl_kiwi_mush;
             
             
             case "round_wood" : return msizeData.round_wood;
             
             //knife
-            case "knife_big" : return msizeData.knife_big;
-            case "knife_small" : return msizeData.knife_small;
-            case "knife_stage" : return msizeData.knife_stage;
+            case "knife_stand" : return msizeData.knife_stand;
+            case "knife_flat" : return msizeData.knife_small;
+            case "chopping_board" : return msizeData.chopping_board;
             
             case "glass_triangle" : return msizeData.glass_triangle;
             
             //dish
-            case "dish_big" : return msizeData.dish_big;
+            case "dish_large" : return msizeData.dish_large;
             case "dish_small" : return msizeData.dish_small;
             case "bowl" : return msizeData.bowl;
-            case "bowl_green" : return msizeData.bowl_green;
             
             
             case "entry" : return msizeData.entry;
@@ -187,11 +187,6 @@ class AssetManager {
             
             case "rectangle_up" : return msizeData.rectangle_up;
             case "rectangle_down" : return msizeData.rectangle_down;
-
-
-
-
-
 
 
             default : 
