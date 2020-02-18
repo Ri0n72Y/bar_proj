@@ -147,10 +147,10 @@ class AssetManager {
             case "glass" : return msizeData.glass;
             case "glass_down" : return msizeData.glass_down;
             
-            //grape
-            case "grape" : return msizeData.grape;
-            case "grape_juice" : return msizeData.grape_juice;
-            case "grape_mush" : return msizeData.grape_mush;
+            //blueberry
+            case "blueberry" : return msizeData.blueberry;
+            case "blueberry_juice" : return msizeData.blueberry_juice;
+            case "blueberry_mush" : return msizeData.blueberry_mush;
             
             //kiwi
             case "kiwi" : return msizeData.kiwi;

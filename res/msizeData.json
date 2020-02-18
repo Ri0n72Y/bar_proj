@@ -161,19 +161,19 @@
         "w":16.0,
         "h":16.0
     },
-    "grape":{
+    "blueberry":{
         "x":64.0,
         "y":160.0,
         "w":16.0,
         "h":16.0
     },
-    "grape_juice":{
+    "blueberry_juice":{
         "x":80.0,
         "y":160.0,
         "w":16.0,
         "h":16.0
     },
-    "grape_mush":{
+    "blueberry_mush":{
         "x":64.0,
         "y":176.0,
         "w":32.0,
