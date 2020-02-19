@@ -14,12 +14,15 @@ class MainPort extends hxd.App {
         background : 0,
         handbook : 1,
         slimes : 2,
-        slimeAnims : 3
+        slimeAnims : 3,
+        fruits : 4,
+        items : 5
     }
     var animIndex = {
         blue:0, red:4, lemon:8, kiwi:12,
         pink:16, deepblue:20, orange:24, purple:28
     }
+    var fruitIndex = ["apple", "orange", "lemon", "kiwi", "blueberry"];
 
     override function init() {
         entities = new Array<Dynamic>();
@@ -43,11 +46,22 @@ class MainPort extends hxd.App {
             slime.name = "slime";
             slime.x = FIXED_WIDTH / 2;
             slime.y = FIXED_HEIGHT / 2;
-            var event = new DraggableEntity(64, 64, slime, s2d);
+            new DraggableEntity(64, 64, slime, s2d);
             layers.addChildAt(slime, ResMgr.LAYER_ENTITY); 
             entities.push(slime);
             i++;
         }
+    }
+
+    function spawnFruit(type: String) {
+        var fruit = new entity.Item.Fruit(type);
+        var sprite = resManager.res[index.fruits][getFruitIndex(type)][0];
+        fruit.getObjectByName("sprite").addChild(sprite);
+        return new DraggableEntity(32, 32, fruit, s2d);
+    }
+    
+    function getFruitIndex(type: String){
+        return fruitIndex.indexOf(type);
     }
 
     override function update(dt: Float) {

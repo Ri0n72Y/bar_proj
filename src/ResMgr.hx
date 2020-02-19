@@ -73,6 +73,8 @@ ddgggggggggdddd..
                 loadMain();
             case "mobile" :
                 items = hxd.Res.m256x.toTile();
+                var s = haxe.Json.parse(hxd.Res.msizeData.entry.getText());
+                AssetManager.msizeData = s;
                 loadMobile();
             default :
                 throw new Error("Unknown Resourse Scenario.", {min: 49, max: 62, file: "src/ResMgr"});
@@ -151,6 +153,24 @@ ddgggggggggdddd..
         }
         res.push(sprites); // index 2
         res.push(anims); // index 3
+        // load fruits
+        var fruits = [];
+        var fruitTextures = [
+            ["apple", "apple_half", "apple_peel", "apple_slice", "apple_slicegroup", "apple_dice"],
+            ["orange", "orange_half", "orange_peel", "orange_slice", "orange_slicegroup"],
+            ["lemon", "lemon_half", "lemon_slice", "lemon_slicegroup"],
+            ["kiwi", "kiwi_half", "kiwi_slice", "kiwi_slicegroup", "kiwi_smash"],
+            ["blueberry", "blueberry_mush"]
+        ];
+        for (textures in fruitTextures) {
+            var fruit = []; 
+            for (name in textures) {
+                var size = getAssetSize(name);
+                fruit.push(new h2d.Bitmap(loadTileToSize(items, size.x, size.y, size.w, size.h, size.w * 2, size.h * 2, "default")));
+            }
+            fruits.push(fruit);
+        }
+        res.push(fruits); // index 4
         // TODO : Load items
     }
 
@@ -160,6 +180,7 @@ ddgggggggggdddd..
             AssetManager.imageSizeData = s;
             var s = haxe.Json.parse(hxd.Res.tileSizeData.entry.getText());
             AssetManager.tileSizeData = s;
+
         } catch (e : Dynamic) {
             trace("Error on load json file.");
         }
