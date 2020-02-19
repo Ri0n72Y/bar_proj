@@ -83,53 +83,31 @@ class MainPort extends hxd.App {
 
     function loaditems(){
 
-        var list : Array<Dynamic> = resManager.mlayoutData.scene;
+        var list: Array<Dynamic> = [];
+        list = resManager.res[5];
         
         for (i in list) {
 
-            var name = i.name;
+            var name = i[0];
 
             switch (name) {
-              case "rectangle": 
-                name = "rectangle_up";
-                var asset = getAssetSize(name);
-                var item_tile = loadTileToSize(resManager.items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
-                var item_bitmap = new h2d.Bitmap(item_tile);
+              case "rectangle_up": 
                 var item = new Facility();
-                item.getObjectByName("sprite").addChild(item_bitmap);
-                item.x = 2*i.x;
-                item.y = 2*i.y;
-                layers.addChildAt(item,ResMgr.LAYER_ENTITY);
-
-                name = "rectangle_down";
-                var asset = getAssetSize(name);
-                var item_tile = loadTileToSize(resManager.items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
-                var item_bitmap = new h2d.Bitmap(item_tile);
-                var item = new Facility();
-                item.getObjectByName("sprite").addChild(item_bitmap);
-                item.x = 2*i.x;
-                item.y = 2*i.y;
+                item.getObjectByName("sprite").addChild(i[1]);
+                item.x = i[2];
+                item.y = i[3];
                 layers.addChildAt(item,ResMgr.LAYER_STATIC);
-
               case "mixer":
-                name = "mixer";
-                var asset = getAssetSize(name);
-                var item_tile = loadTileToSize(resManager.items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
-                var item_bitmap = new h2d.Bitmap(item_tile);
                 var item = new Facility();
-                item.getObjectByName("sprite").addChild(item_bitmap);
-                item.x = 2*i.x;
-                item.y = 2*i.y;
-                layers.addChildAt(item,ResMgr.LAYER_ENTITY) ;
-
+                item.getObjectByName("sprite").addChild(i[1]);
+                item.x = i[2];
+                item.y = i[3];
+                layers.addChildAt(item,ResMgr.LAYER_ENTITY);
               default:
-                var asset = getAssetSize(name);
-                var item_tile = loadTileToSize(resManager.items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
-                var item_bitmap = new h2d.Bitmap(item_tile);
                 var item = new Facility();
-                item.getObjectByName("sprite").addChild(item_bitmap);
-                item.x = 2*i.x;
-                item.y = 2*i.y;
+                item.getObjectByName("sprite").addChild(i[1]);
+                item.x = i[2];
+                item.y = i[3];
                 layers.addChildAt(item,ResMgr.LAYER_ENTITY);
             }
 

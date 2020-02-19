@@ -167,7 +167,7 @@ AssetManager.getAssetSize = function(name) {
 	case "waterfruit":
 		return AssetManager.imageSizeData.item_wf;
 	default:
-		haxe_Log.trace("Unknown tile name: " + name,{ fileName : "src/AssetManager.hx", lineNumber : 193, className : "AssetManager", methodName : "getAssetSize"});
+		haxe_Log.trace("Unknown tile name: " + name,{ fileName : "src/AssetManager.hx", lineNumber : 195, className : "AssetManager", methodName : "getAssetSize"});
 		return { x : -1., y : -1., w : -1., z : -1.};
 	}
 };
@@ -533,61 +533,40 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		}
 	}
 	,loaditems: function() {
-		var list = this.resManager.mlayoutData.scene;
+		var list = [];
+		list = this.resManager.res[5];
 		var _g = 0;
 		while(_g < list.length) {
 			var i = list[_g];
 			++_g;
-			var name = i.name;
+			var name = i[0];
 			switch(name) {
 			case "mixer":
-				name = "mixer";
-				var asset = AssetManager.getAssetSize(name);
-				var item_tile = ResMgr.loadTileToSize(this.resManager.items,asset.x,asset.y,asset.w,asset.h,asset.w * 2,asset.h * 2,"default");
-				var item_bitmap = new h2d_Bitmap(item_tile);
 				var item = new entity_Facility();
-				item.getObjectByName("sprite").addChild(item_bitmap);
+				item.getObjectByName("sprite").addChild(i[1]);
 				item.posChanged = true;
-				item.x = 2 * i.x;
+				item.x = i[2];
 				item.posChanged = true;
-				item.y = 2 * i.y;
+				item.y = i[3];
 				this.layers.addChildAt(item,3);
 				break;
-			case "rectangle":
-				name = "rectangle_up";
-				var asset1 = AssetManager.getAssetSize(name);
-				var item_tile1 = ResMgr.loadTileToSize(this.resManager.items,asset1.x,asset1.y,asset1.w,asset1.h,asset1.w * 2,asset1.h * 2,"default");
-				var item_bitmap1 = new h2d_Bitmap(item_tile1);
+			case "rectangle_up":
 				var item1 = new entity_Facility();
-				item1.getObjectByName("sprite").addChild(item_bitmap1);
+				item1.getObjectByName("sprite").addChild(i[1]);
 				item1.posChanged = true;
-				item1.x = 2 * i.x;
+				item1.x = i[2];
 				item1.posChanged = true;
-				item1.y = 2 * i.y;
-				this.layers.addChildAt(item1,3);
-				name = "rectangle_down";
-				var asset2 = AssetManager.getAssetSize(name);
-				var item_tile2 = ResMgr.loadTileToSize(this.resManager.items,asset2.x,asset2.y,asset2.w,asset2.h,asset2.w * 2,asset2.h * 2,"default");
-				var item_bitmap2 = new h2d_Bitmap(item_tile2);
-				var item2 = new entity_Facility();
-				item2.getObjectByName("sprite").addChild(item_bitmap2);
-				item2.posChanged = true;
-				item2.x = 2 * i.x;
-				item2.posChanged = true;
-				item2.y = 2 * i.y;
-				this.layers.addChildAt(item2,0);
+				item1.y = i[3];
+				this.layers.addChildAt(item1,0);
 				break;
 			default:
-				var asset3 = AssetManager.getAssetSize(name);
-				var item_tile3 = ResMgr.loadTileToSize(this.resManager.items,asset3.x,asset3.y,asset3.w,asset3.h,asset3.w * 2,asset3.h * 2,"default");
-				var item_bitmap3 = new h2d_Bitmap(item_tile3);
-				var item3 = new entity_Facility();
-				item3.getObjectByName("sprite").addChild(item_bitmap3);
-				item3.posChanged = true;
-				item3.x = 2 * i.x;
-				item3.posChanged = true;
-				item3.y = 2 * i.y;
-				this.layers.addChildAt(item3,3);
+				var item2 = new entity_Facility();
+				item2.getObjectByName("sprite").addChild(i[1]);
+				item2.posChanged = true;
+				item2.x = i[2];
+				item2.posChanged = true;
+				item2.y = i[3];
+				this.layers.addChildAt(item2,3);
 			}
 		}
 	}
@@ -2314,7 +2293,7 @@ var ResMgr = function(type) {
 		var s = JSON.parse(hxd_Res.get_loader().loadCache("msizeData.json",hxd_res_Resource).entry.getText());
 		AssetManager.msizeData = s;
 		var m = JSON.parse(hxd_Res.get_loader().loadCache("mlayoutData.json",hxd_res_Resource).entry.getText());
-		this.mlayoutData = m;
+		AssetManager.mlayoutData = m;
 		this.loadMobile();
 		break;
 	default:
@@ -2426,6 +2405,64 @@ ResMgr.prototype = {
 			fruits.push(fruit);
 		}
 		this.res.push(fruits);
+		this.loaditems();
+	}
+	,loaditems: function() {
+		var list = AssetManager.mlayoutData.scene;
+		var layout_result = [];
+		var _g = 0;
+		while(_g < list.length) {
+			var i = list[_g];
+			++_g;
+			var name = i.name;
+			switch(name) {
+			case "mixer":
+				var elements = [];
+				name = "mixer";
+				var asset = AssetManager.getAssetSize(name);
+				var item_tile = ResMgr.loadTileToSize(this.items,asset.x,asset.y,asset.w,asset.h,asset.w * 2,asset.h * 2,"default");
+				var item_bitmap = new h2d_Bitmap(item_tile);
+				elements.push(name);
+				elements.push(item_bitmap);
+				elements.push(2 * i.x);
+				elements.push(2 * i.y);
+				layout_result.push(elements);
+				break;
+			case "rectangle":
+				var elements1 = [];
+				name = "rectangle_up";
+				var asset1 = AssetManager.getAssetSize(name);
+				var item_tile1 = ResMgr.loadTileToSize(this.items,asset1.x,asset1.y,asset1.w,asset1.h,asset1.w * 2,asset1.h * 2,"default");
+				var item_bitmap1 = new h2d_Bitmap(item_tile1);
+				elements1.push(name);
+				elements1.push(item_bitmap1);
+				elements1.push(2 * i.x);
+				elements1.push(2 * i.y);
+				layout_result.push(elements1);
+				var elements2 = [];
+				name = "rectangle_down";
+				var asset2 = AssetManager.getAssetSize(name);
+				var item_tile2 = ResMgr.loadTileToSize(this.items,asset2.x,asset2.y,asset2.w,asset2.h,asset2.w * 2,asset2.h * 2,"default");
+				var item_bitmap2 = new h2d_Bitmap(item_tile2);
+				elements2.push(name);
+				elements2.push(item_bitmap2);
+				elements2.push(2 * i.x);
+				elements2.push(2 * i.y);
+				layout_result.push(elements2);
+				break;
+			default:
+				var elements3 = [];
+				var asset3 = AssetManager.getAssetSize(name);
+				var item_tile3 = ResMgr.loadTileToSize(this.items,asset3.x,asset3.y,asset3.w,asset3.h,asset3.w * 2,asset3.h * 2,"default");
+				var item_bitmap3 = new h2d_Bitmap(item_tile3);
+				elements3.push(name);
+				elements3.push(item_bitmap3);
+				elements3.push(2 * i.x);
+				elements3.push(2 * i.y);
+				layout_result.push(elements3);
+			}
+		}
+		this.res.push(layout_result);
 	}
 	,onLoad: function() {
 		try {
@@ -2435,7 +2472,7 @@ ResMgr.prototype = {
 			AssetManager.tileSizeData = s1;
 		} catch( e ) {
 			var e1 = ((e) instanceof js__$Boot_HaxeError) ? e.val : e;
-			haxe_Log.trace("Error on load json file.",{ fileName : "src/ResMgr.hx", lineNumber : 196, className : "ResMgr", methodName : "onLoad"});
+			haxe_Log.trace("Error on load json file.",{ fileName : "src/ResMgr.hx", lineNumber : 263, className : "ResMgr", methodName : "onLoad"});
 		}
 	}
 	,parseMap: function(maps) {
