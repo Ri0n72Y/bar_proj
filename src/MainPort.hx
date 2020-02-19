@@ -118,7 +118,7 @@ class MainPort extends hxd.App {
 
     function spawnFruit(type: String) {
         var fruit = new entity.Item.Fruit(type);
-        var sprite = resManager.res[index.fruits][getFruitIndex(type)][0];
+        var sprite = new h2d.Bitmap(resManager.res[index.fruits][getFruitIndex(type)][0]);
         fruit.getObjectByName("sprite").addChild(sprite);
         layers.addChild(fruit);
         entities.push(fruit);

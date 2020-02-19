@@ -178,7 +178,7 @@ ddgggggggggdddd..
             var fruit = []; 
             for (name in textures) {
                 var size = getAssetSize(name);
-                fruit.push(new h2d.Bitmap(loadTileToSize(items, size.x, size.y, size.w, size.h, size.w * 2, size.h * 2, "default")));
+                fruit.push(loadTileToSize(items, size.x, size.y, size.w, size.h, size.w * 2, size.h * 2, "default"));
             }
             fruits.push(fruit);
         }

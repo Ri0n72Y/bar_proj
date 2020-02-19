@@ -590,7 +590,7 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 	}
 	,spawnFruit: function(type) {
 		var fruit = new entity_Fruit(type);
-		var sprite = this.resManager.res[this.index.fruits][this.getFruitIndex(type)][0];
+		var sprite = new h2d_Bitmap(this.resManager.res[this.index.fruits][this.getFruitIndex(type)][0]);
 		fruit.getObjectByName("sprite").addChild(sprite);
 		this.layers.addChild(fruit);
 		this.entities.push(fruit);
@@ -2465,7 +2465,7 @@ ResMgr.prototype = {
 				var name = textures[_g1];
 				++_g1;
 				var size = AssetManager.getAssetSize(name);
-				fruit.push(new h2d_Bitmap(ResMgr.loadTileToSize(this.items,size.x,size.y,size.w,size.h,size.w * 2,size.h * 2,"default")));
+				fruit.push(ResMgr.loadTileToSize(this.items,size.x,size.y,size.w,size.h,size.w * 2,size.h * 2,"default"));
 			}
 			fruits.push(fruit);
 		}
