@@ -6,6 +6,7 @@ class MainPort extends hxd.App {
     var main_character : Character;
     var layers : h2d.Layers;
     var entities : Array<Dynamic>;
+    var menus : Array<Dynamic>;
     public var resManager : ResMgr;
     static inline var FIXED_WIDTH = 540; 
     static inline var FIXED_HEIGHT = 960; 
@@ -37,6 +38,7 @@ class MainPort extends hxd.App {
     }
 
     function initEntities() {
+        // slimes
         var res = resManager.res;
         var slimeSprite = res[index.slimes];
 
@@ -51,6 +53,13 @@ class MainPort extends hxd.App {
             entities.push(slime);
             i++;
         }
+
+        // cellar entry
+
+    }
+
+    function onLoadMenu() {
+
     }
 
     function spawnFruit(type: String) {
@@ -63,6 +72,7 @@ class MainPort extends hxd.App {
     function getFruitIndex(type: String){
         return fruitIndex.indexOf(type);
     }
+
 
     override function update(dt: Float) {
         for (entity in entities) {
