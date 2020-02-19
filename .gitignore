@@ -2,3 +2,5 @@
 game.hl
 /bin
 *.psd
+*.js
+*.map
