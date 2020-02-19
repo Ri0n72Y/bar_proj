@@ -64,17 +64,22 @@ class MainPort extends hxd.App {
     }
 
     function onLoadMenu() {
+        // cellar menu
         var menu = new h2d.Layers();
         menu.add(resManager.res[index.cellar], 0);
-
         var x = [120, 120, 66, 180, 152];
+        var y = [150, 334, 198, 292, 219];
 
-        var fruit = new h2d.Interactive(40, 50, menu);
-        fruit.x = 120; fruit.y = 150;
-        fruit.onPush = function (e: hxd.Event){
-            var fruit = spawnFruit("apple");
-            fruit.onPush(e);
+        for (f in fruitIndex) {
+            var i = getFruitIndex(f);
+            var fruit = new h2d.Interactive(40, 50, menu);
+            fruit.x = x[i]; fruit.y = y[i];
+            fruit.onPush = function (e: hxd.Event){
+                var fruit = spawnFruit(f);
+                fruit.onPush(e);
+            }
         }
+        menus.push(menu); // index 0 : cellar
     }
     function onOpenMenu() {
 
@@ -106,14 +111,10 @@ class MainPort extends hxd.App {
     }
 
     function loaditems(){
-
         var list: Array<Dynamic> = [];
         list = resManager.res[5];
-        
         for (i in list) {
-
             var name = i[0];
-
             switch (name) {
               case "rectangle_up": 
                 var item = new Facility();

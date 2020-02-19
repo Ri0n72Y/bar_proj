@@ -183,11 +183,11 @@ ddgggggggggdddd..
             fruits.push(fruit);
         }
         res.push(fruits); // index 4
-        // TODO : Load items
+        // Load items
         res.push(loaditems()); // index 5
 
         // Load cellar
-        var tile = hxd.Res.mcellar.toTile(); tile.scaleToSize(540, 960);
+        var tile = hxd.Res.mcellar.toTile();
         res.push(new h2d.Bitmap(tile)); // index 6
 
     }
