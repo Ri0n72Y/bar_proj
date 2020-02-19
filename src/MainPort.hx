@@ -1,6 +1,10 @@
 import haxe.macro.Expr.Error;
 import entity.Entity.Character;
 
+import AssetManager.getAssetSize;
+import ResMgr.loadTileToSize;
+import entity.Facility;
+
 class MainPort extends hxd.App {
     static inline var MOVE_SPEED = 150;
     var main_character : Character;
@@ -17,7 +21,8 @@ class MainPort extends hxd.App {
         slimes : 2,
         slimeAnims : 3,
         fruits : 4,
-        items : 5
+        items : 5,
+        cellar : 6
     }
     var animIndex = {
         blue:0, red:4, lemon:8, kiwi:12,
@@ -59,6 +64,22 @@ class MainPort extends hxd.App {
     }
 
     function onLoadMenu() {
+        var menu = new h2d.Layers();
+        menu.add(resManager.res[index.cellar], 0);
+
+        var x = [120, 120, 66, 180, 152];
+
+        var fruit = new h2d.Interactive(40, 50, menu);
+        fruit.x = 120; fruit.y = 150;
+        fruit.onPush = function (e: hxd.Event){
+            var fruit = spawnFruit("apple");
+            fruit.onPush(e);
+        }
+    }
+    function onOpenMenu() {
+
+    }
+    function onLeaveMenu() {
 
     }
 
@@ -73,7 +94,6 @@ class MainPort extends hxd.App {
         return fruitIndex.indexOf(type);
     }
 
-
     override function update(dt: Float) {
         for (entity in entities) {
             entity.update(dt);
@@ -83,6 +103,60 @@ class MainPort extends hxd.App {
     static function main() {
         hxd.Res.initEmbed();
         new MainPort();
+    }
+
+    function loaditems(){
+
+        var list : Array<Dynamic> = resManager.mlayoutData.scene;
+        
+        for (i in list) {
+
+            var name = i.name;
+
+            switch (name) {
+              case "rectangle": 
+                name = "rectangle_up";
+                var asset = getAssetSize(name);
+                var item_tile = loadTileToSize(resManager.items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
+                var item_bitmap = new h2d.Bitmap(item_tile);
+                var item = new Facility();
+                item.getObjectByName("sprite").addChild(item_bitmap);
+                item.x = 2*i.x;
+                item.y = 2*i.y;
+                layers.addChildAt(item,ResMgr.LAYER_ENTITY);
+
+                name = "rectangle_down";
+                var asset = getAssetSize(name);
+                var item_tile = loadTileToSize(resManager.items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
+                var item_bitmap = new h2d.Bitmap(item_tile);
+                var item = new Facility();
+                item.getObjectByName("sprite").addChild(item_bitmap);
+                item.x = 2*i.x;
+                item.y = 2*i.y;
+                layers.addChildAt(item,ResMgr.LAYER_STATIC);
+
+              case "mixer":
+                name = "mixer";
+                var asset = getAssetSize(name);
+                var item_tile = loadTileToSize(resManager.items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
+                var item_bitmap = new h2d.Bitmap(item_tile);
+                var item = new Facility();
+                item.getObjectByName("sprite").addChild(item_bitmap);
+                item.x = 2*i.x;
+                item.y = 2*i.y;
+                layers.addChildAt(item,ResMgr.LAYER_ENTITY) ;
+
+              default:
+                var asset = getAssetSize(name);
+                var item_tile = loadTileToSize(resManager.items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
+                var item_bitmap = new h2d.Bitmap(item_tile);
+                var item = new Facility();
+                item.getObjectByName("sprite").addChild(item_bitmap);
+                item.x = 2*i.x;
+                item.y = 2*i.y;
+                layers.addChildAt(item,ResMgr.LAYER_ENTITY);
+            }
+        } 
     }
 }
 

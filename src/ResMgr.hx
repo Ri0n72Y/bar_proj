@@ -1,3 +1,4 @@
+import haxe.Json;
 import haxe.macro.Expr.Error;
 import h2d.Object;
 import h2d.Tile;
@@ -33,6 +34,10 @@ class ResMgr {
 
     // data for mobile version use
     public var res : Array<Dynamic> ;
+
+    //layout
+    public var mlayoutData : Dynamic;
+
     public final s = {
         f : {
             a : {offx:0, offy:0},
@@ -73,8 +78,14 @@ ddgggggggggdddd..
                 loadMain();
             case "mobile" :
                 items = hxd.Res.m256x.toTile();
+                
                 var s = haxe.Json.parse(hxd.Res.msizeData.entry.getText());
                 AssetManager.msizeData = s;
+
+
+                var m = Json.parse(hxd.Res.mlayoutData.entry.getText());
+                mlayoutData = m;
+                
                 loadMobile();
             default :
                 throw new Error("Unknown Resourse Scenario.", {min: 49, max: 62, file: "src/ResMgr"});
@@ -172,6 +183,11 @@ ddgggggggggdddd..
         }
         res.push(fruits); // index 4
         // TODO : Load items
+        res.push(new Array<Dynamic>()); // index 5
+
+        // Load cellar
+        var tile = hxd.Res.mcellar.toTile(); tile.scaleToSize(540, 960);
+        res.push(new h2d.Bitmap(tile)); // index 6
     }
 
     function onLoad() {
