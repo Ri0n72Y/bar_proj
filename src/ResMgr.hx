@@ -233,6 +233,18 @@ ddgggggggggdddd..
                 elements.push(2*i.y);
                 layout_result.push(elements);
 
+              case "cut":
+                var elements: Array<Dynamic> = [];
+                name = "cut_open";
+                var asset = getAssetSize(name);
+                var item_tile = loadTileToSize(items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
+                var item_bitmap = new h2d.Bitmap(item_tile);
+                elements.push(name);
+                elements.push(item_bitmap);
+                elements.push(2*i.x);
+                elements.push(2*i.y);
+                layout_result.push(elements);
+
               default:
                 var elements: Array<Dynamic> = [];
                 var asset = getAssetSize(name);

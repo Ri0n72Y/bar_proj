@@ -39,6 +39,9 @@ class MainPort extends hxd.App {
         // build scene
         layers = new h2d.Layers(s2d);
         layers.addChildAt(res[index.background], ResMgr.LAYER_STATIC);
+
+        loaditems();
+
         initEntities();
     }
 
@@ -122,6 +125,12 @@ class MainPort extends hxd.App {
                 item.y = i[3];
                 layers.addChildAt(item,ResMgr.LAYER_STATIC);
               case "mixer":
+                var item = new Facility();
+                item.getObjectByName("sprite").addChild(i[1]);
+                item.x = i[2];
+                item.y = i[3];
+                layers.addChildAt(item,ResMgr.LAYER_ENTITY);
+              case "cut":
                 var item = new Facility();
                 item.getObjectByName("sprite").addChild(i[1]);
                 item.x = i[2];
