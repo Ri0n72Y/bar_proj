@@ -208,7 +208,7 @@ ddgggggggggdddd..
                 elements.push(item_bitmap);
                 elements.push(2*i.x);
                 elements.push(2*i.y);
-                layout_result.push(elements);
+                
 
                 var elements2: Array<Dynamic> = [];
                 name = "rectangle_down";
@@ -220,6 +220,7 @@ ddgggggggggdddd..
                 elements2.push(2*i.x);
                 elements2.push(2*i.y);
                 layout_result.push(elements2);
+                layout_result.push(elements);
 
               case "mixer":
                 var elements: Array<Dynamic> = [];
@@ -230,7 +231,7 @@ ddgggggggggdddd..
                 elements.push(name);
                 elements.push(item_bitmap);
                 elements.push(2*i.x);
-                elements.push(2*i.y);
+                elements.push(2*i.y+2);
                 layout_result.push(elements);
 
               case "cut":

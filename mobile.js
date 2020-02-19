@@ -563,43 +563,13 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 			var i = list[_g];
 			++_g;
 			var name = i[0];
-			switch(name) {
-			case "cut":
-				var item = new entity_Facility();
-				item.getObjectByName("sprite").addChild(i[1]);
-				item.posChanged = true;
-				item.x = i[2];
-				item.posChanged = true;
-				item.y = i[3];
-				this.layers.addChildAt(item,3);
-				break;
-			case "mixer":
-				var item1 = new entity_Facility();
-				item1.getObjectByName("sprite").addChild(i[1]);
-				item1.posChanged = true;
-				item1.x = i[2];
-				item1.posChanged = true;
-				item1.y = i[3];
-				this.layers.addChildAt(item1,3);
-				break;
-			case "rectangle_up":
-				var item2 = new entity_Facility();
-				item2.getObjectByName("sprite").addChild(i[1]);
-				item2.posChanged = true;
-				item2.x = i[2];
-				item2.posChanged = true;
-				item2.y = i[3];
-				this.layers.addChildAt(item2,0);
-				break;
-			default:
-				var item3 = new entity_Facility();
-				item3.getObjectByName("sprite").addChild(i[1]);
-				item3.posChanged = true;
-				item3.x = i[2];
-				item3.posChanged = true;
-				item3.y = i[3];
-				this.layers.addChildAt(item3,3);
-			}
+			var item = new entity_Facility();
+			item.getObjectByName("sprite").addChild(i[1]);
+			item.posChanged = true;
+			item.x = i[2];
+			item.posChanged = true;
+			item.y = i[3];
+			this.layers.addChildAt(item,3);
 		}
 	}
 	,__class__: MainPort
@@ -2472,7 +2442,7 @@ ResMgr.prototype = {
 				elements1.push(name);
 				elements1.push(item_bitmap1);
 				elements1.push(2 * i.x);
-				elements1.push(2 * i.y);
+				elements1.push(2 * i.y + 2);
 				layout_result.push(elements1);
 				break;
 			case "rectangle":
@@ -2485,7 +2455,6 @@ ResMgr.prototype = {
 				elements2.push(item_bitmap2);
 				elements2.push(2 * i.x);
 				elements2.push(2 * i.y);
-				layout_result.push(elements2);
 				var elements21 = [];
 				name = "rectangle_down";
 				var asset3 = AssetManager.getAssetSize(name);
@@ -2496,6 +2465,7 @@ ResMgr.prototype = {
 				elements21.push(2 * i.x);
 				elements21.push(2 * i.y);
 				layout_result.push(elements21);
+				layout_result.push(elements2);
 				break;
 			default:
 				var elements3 = [];
@@ -2519,7 +2489,7 @@ ResMgr.prototype = {
 			AssetManager.tileSizeData = s1;
 		} catch( e ) {
 			var e1 = ((e) instanceof js__$Boot_HaxeError) ? e.val : e;
-			haxe_Log.trace("Error on load json file.",{ fileName : "src/ResMgr.hx", lineNumber : 274, className : "ResMgr", methodName : "onLoad"});
+			haxe_Log.trace("Error on load json file.",{ fileName : "src/ResMgr.hx", lineNumber : 275, className : "ResMgr", methodName : "onLoad"});
 		}
 	}
 	,parseMap: function(maps) {

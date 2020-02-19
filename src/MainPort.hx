@@ -117,24 +117,6 @@ class MainPort extends hxd.App {
         for (i in list) {
             var name = i[0];
             switch (name) {
-              case "rectangle_up": 
-                var item = new Facility();
-                item.getObjectByName("sprite").addChild(i[1]);
-                item.x = i[2];
-                item.y = i[3];
-                layers.addChildAt(item,ResMgr.LAYER_STATIC);
-              case "mixer":
-                var item = new Facility();
-                item.getObjectByName("sprite").addChild(i[1]);
-                item.x = i[2];
-                item.y = i[3];
-                layers.addChildAt(item,ResMgr.LAYER_ENTITY);
-              case "cut":
-                var item = new Facility();
-                item.getObjectByName("sprite").addChild(i[1]);
-                item.x = i[2];
-                item.y = i[3];
-                layers.addChildAt(item,ResMgr.LAYER_ENTITY);
               default:
                 var item = new Facility();
                 item.getObjectByName("sprite").addChild(i[1]);
