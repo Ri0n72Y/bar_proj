@@ -1,8 +1,6 @@
 import haxe.macro.Expr.Error;
 import entity.Entity.Character;
 
-import AssetManager.getAssetSize;
-import ResMgr.loadTileToSize;
 import entity.Facility;
 
 class MainPort extends hxd.App {
