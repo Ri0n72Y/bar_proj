@@ -11,8 +11,8 @@ class MainPort extends hxd.App {
     var facilities : Array<Facility>;
     public var resManager : ResMgr;
     public static var IS_MENU_OPEN : Bool;
-    static inline var FIXED_WIDTH = 540; 
-    static inline var FIXED_HEIGHT = 960; 
+    static inline var FIXED_WIDTH = 270; 
+    static inline var FIXED_HEIGHT = 480; 
 
     var index = {
         background : 0,
@@ -44,6 +44,7 @@ class MainPort extends hxd.App {
         initMenu();
         initFacilities();
         initEntities();
+        s2d.scale(2);
     }
 
     function initEntities() {
@@ -57,7 +58,7 @@ class MainPort extends hxd.App {
             slime.name = "slime";
             slime.x = FIXED_WIDTH / 2;
             slime.y = FIXED_HEIGHT / 2;
-            new DraggableEntity(64, 64, slime, s2d);
+            new DraggableEntity(32, 32, slime, s2d);
             layers.addChildAt(slime, ResMgr.LAYER_ENTITY); 
             entities.push(slime);
             i++;
@@ -89,10 +90,9 @@ class MainPort extends hxd.App {
                 item.onPush(e);
             }
         }
-        menu.scale(2);
         // bound menu button
         var cellar = findByNameInArray("entry", facilities);
-        var button = new h2d.Interactive(188, 96, cellar);
+        var button = new h2d.Interactive(94, 48, cellar);
         button.onPush = function (e:hxd.Event) {
             if (IS_MENU_OPEN) return;
             onOpenMenu(menu);
@@ -130,7 +130,7 @@ class MainPort extends hxd.App {
         fruit.getObjectByName("sprite").addChild(sprite);
         layers.addChild(fruit);
         entities.push(fruit);
-        return new DraggableEntity(32, 32, fruit, s2d);
+        return new DraggableEntity(16, 16, fruit, s2d);
     }
     
     function getFruitIndex(type: String){

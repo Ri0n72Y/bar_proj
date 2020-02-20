@@ -127,11 +127,11 @@ ddgggggggggdddd..
     function loadMobile() {
         res = new Array<Dynamic>();
         // load background
-        var tile = hxd.Res.mlayout_vert.toTile(); tile.scaleToSize(540, 960);
+        var tile = hxd.Res.mlayout_vert.toTile();
         var background = new h2d.Bitmap(tile);
         res.push(background); // index 0
         // load UI
-        var tile = hxd.Res.mhandbook.toTile(); tile.scaleToSize(540, 960);
+        var tile = hxd.Res.mhandbook.toTile();
         var handbook = new h2d.Bitmap(tile);
 
         res.push(handbook); // index 1
@@ -147,7 +147,7 @@ ddgggggggggdddd..
                 while (i < 128) {
                     var w = 32;
                     if ((i == 64) || (j > 64) && (i == 32)) w = 34;
-                    var frame = loadTileToSize(slimes, offx + i, offy + j, w, 32, w * 2, 64, "default");
+                    var frame = loadTileToSize(slimes, offx + i, offy + j, w, 32, w, 32, "default");
                     if (i == 0) sprites.push(new h2d.Bitmap(frame));
                     frames.push(frame); 
                     i += w;
@@ -174,7 +174,7 @@ ddgggggggggdddd..
             var fruit = []; 
             for (name in textures) {
                 var size = getAssetSize(name);
-                fruit.push(loadTileToSize(items, size.x, size.y, size.w, size.h, size.w * 2, size.h * 2, "default"));
+                fruit.push(loadTileToSize(items, size.x, size.y, size.w, size.h, size.w, size.h, "default"));
             }
             fruits.push(fruit);
         }
@@ -198,22 +198,22 @@ ddgggggggggdddd..
                 var elements: Array<Dynamic> = [];
                 name = "rectangle_up";
                 var asset = getAssetSize(name);
-                var item_tile = loadTileToSize(items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
+                var item_tile = loadTileToSize(items,asset.x,asset.y,asset.w,asset.h,asset.w,asset.h,"default");
                 var item_bitmap = new h2d.Bitmap(item_tile);
                 elements.push(name);
                 elements.push(item_bitmap);
-                elements.push(2*i.x);
-                elements.push(2*i.y);
+                elements.push(i.x);
+                elements.push(i.y);
                 
                 var elements2: Array<Dynamic> = [];
                 name = "rectangle_down";
                 var asset = getAssetSize(name);
-                var item_tile = loadTileToSize(items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
+                var item_tile = loadTileToSize(items,asset.x,asset.y,asset.w,asset.h,asset.w,asset.h,"default");
                 var item_bitmap = new h2d.Bitmap(item_tile);
                 elements2.push(name);
                 elements2.push(item_bitmap);
-                elements2.push(2*i.x);
-                elements2.push(2*i.y);
+                elements2.push(i.x);
+                elements2.push(i.y);
                 layout_result.push(elements2);
                 layout_result.push(elements);
 
@@ -221,35 +221,35 @@ ddgggggggggdddd..
                 var elements: Array<Dynamic> = [];
                 name = "mixer";
                 var asset = getAssetSize(name);
-                var item_tile = loadTileToSize(items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
+                var item_tile = loadTileToSize(items,asset.x,asset.y,asset.w,asset.h,asset.w,asset.h,"default");
                 var item_bitmap = new h2d.Bitmap(item_tile);
                 elements.push(name);
                 elements.push(item_bitmap);
-                elements.push(2*i.x);
-                elements.push(2*i.y+2);
+                elements.push(i.x);
+                elements.push(i.y);
                 layout_result.push(elements);
 
               case "cut":
                 var elements: Array<Dynamic> = [];
                 name = "cut_open";
                 var asset = getAssetSize(name);
-                var item_tile = loadTileToSize(items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
+                var item_tile = loadTileToSize(items,asset.x,asset.y,asset.w,asset.h,asset.w,asset.h,"default");
                 var item_bitmap = new h2d.Bitmap(item_tile);
                 elements.push(name);
                 elements.push(item_bitmap);
-                elements.push(2*i.x);
-                elements.push(2*i.y);
+                elements.push(i.x);
+                elements.push(i.y);
                 layout_result.push(elements);
 
               default:
                 var elements: Array<Dynamic> = [];
                 var asset = getAssetSize(name);
-                var item_tile = loadTileToSize(items,asset.x,asset.y,asset.w,asset.h,asset.w*2,asset.h*2,"default");
+                var item_tile = loadTileToSize(items,asset.x,asset.y,asset.w,asset.h,asset.w,asset.h,"default");
                 var item_bitmap = new h2d.Bitmap(item_tile);
                 elements.push(name);
                 elements.push(item_bitmap);
-                elements.push(2*i.x);
-                elements.push(2*i.y);
+                elements.push(i.x);
+                elements.push(i.y);
                 layout_result.push(elements);
             }
         }

@@ -496,8 +496,16 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		this.layers = new h2d_Layers(this.s2d);
 		this.layers.addChildAt(res[this.index.background],0);
 		this.loaditems();
-		this.onLoadMenu();
+		this.initMenu();
+		this.initFacilities();
 		this.initEntities();
+		var _this = this.s2d;
+		var _g = _this;
+		_g.posChanged = true;
+		_g.scaleX *= 2;
+		var _g1 = _this;
+		_g1.posChanged = true;
+		_g1.scaleY *= 2;
 	}
 	,initEntities: function() {
 		var res = this.resManager.res;
@@ -507,16 +515,19 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 			var slime = new entity_Character(slimeSprite.slice(i * 4,(i + 1) * 4));
 			slime.name = "slime";
 			slime.posChanged = true;
-			slime.x = 270.;
+			slime.x = 135.;
 			slime.posChanged = true;
-			slime.y = 480.;
-			new DraggableEntity(64,64,slime,this.s2d);
+			slime.y = 240.;
+			new DraggableEntity(32,32,slime,this.s2d);
 			this.layers.addChildAt(slime,3);
 			this.entities.push(slime);
 			++i;
 		}
 	}
-	,onLoadMenu: function() {
+	,initFacilities: function() {
+		var mixer = this.findByNameInArray("mixer",this.facilities);
+	}
+	,initMenu: function() {
 		var _gthis = this;
 		MainPort.IS_MENU_OPEN = false;
 		var menu = new h2d_Layers();
@@ -542,14 +553,8 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 				};
 			})(f);
 		}
-		var _g2 = menu;
-		_g2.posChanged = true;
-		_g2.scaleX *= 2;
-		var _g11 = menu;
-		_g11.posChanged = true;
-		_g11.scaleY *= 2;
 		var cellar = this.findByNameInArray("entry",this.facilities);
-		var button = new h2d_Interactive(188,96,cellar);
+		var button = new h2d_Interactive(94,48,cellar);
 		button.onPush = function(e1) {
 			if(MainPort.IS_MENU_OPEN) {
 				return;
@@ -594,7 +599,7 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		fruit.getObjectByName("sprite").addChild(sprite);
 		this.layers.addChild(fruit);
 		this.entities.push(fruit);
-		return new DraggableEntity(32,32,fruit,this.s2d);
+		return new DraggableEntity(16,16,fruit,this.s2d);
 	}
 	,getFruitIndex: function(type) {
 		return this.fruitIndex.indexOf(type);
@@ -1439,17 +1444,17 @@ h2d_Object.prototype = {
 			view.yMax = y15;
 		}
 		var a = bounds.xMin;
-		var b1 = view.xMin;
-		bounds.xMin = a < b1 ? b1 : a;
+		var b = view.xMin;
+		bounds.xMin = a < b ? b : a;
 		var a1 = bounds.yMin;
-		var b2 = view.yMin;
-		bounds.yMin = a1 < b2 ? b2 : a1;
+		var b1 = view.yMin;
+		bounds.yMin = a1 < b1 ? b1 : a1;
 		var a2 = bounds.xMax;
-		var b3 = view.xMax;
-		bounds.xMax = a2 > b3 ? b3 : a2;
+		var b2 = view.xMax;
+		bounds.xMax = a2 > b2 ? b2 : a2;
 		var a3 = bounds.yMax;
-		var b4 = view.yMax;
-		bounds.yMax = a3 > b4 ? b4 : a3;
+		var b3 = view.yMax;
+		bounds.yMax = a3 > b3 ? b3 : a3;
 	}
 	,drawFilters: function(ctx) {
 		if(!ctx.pushFilter(this)) {
@@ -2413,11 +2418,9 @@ ResMgr.prototype = {
 	,loadMobile: function() {
 		this.res = [];
 		var tile = hxd_Res.get_loader().loadCache("mlayout_vert.png",hxd_res_Image).toTile();
-		tile.scaleToSize(540,960);
 		var background = new h2d_Bitmap(tile);
 		this.res.push(background);
 		var tile1 = hxd_Res.get_loader().loadCache("mhandbook.png",hxd_res_Image).toTile();
-		tile1.scaleToSize(540,960);
 		var handbook = new h2d_Bitmap(tile1);
 		this.res.push(handbook);
 		var slimes = hxd_Res.get_loader().loadCache("slimebase.png",hxd_res_Image).toTile();
@@ -2436,7 +2439,7 @@ ResMgr.prototype = {
 					if(i == 64 || j > 64 && i == 32) {
 						w = 34;
 					}
-					var frame = ResMgr.loadTileToSize(slimes,offx + i,offy + j,w,32,w * 2,64,"default");
+					var frame = ResMgr.loadTileToSize(slimes,offx + i,offy + j,w,32,w,32,"default");
 					if(i == 0) {
 						sprites.push(new h2d_Bitmap(frame));
 					}
@@ -2465,7 +2468,7 @@ ResMgr.prototype = {
 				var name = textures[_g1];
 				++_g1;
 				var size = AssetManager.getAssetSize(name);
-				fruit.push(ResMgr.loadTileToSize(this.items,size.x,size.y,size.w,size.h,size.w * 2,size.h * 2,"default"));
+				fruit.push(ResMgr.loadTileToSize(this.items,size.x,size.y,size.w,size.h,size.w,size.h,"default"));
 			}
 			fruits.push(fruit);
 		}
@@ -2487,57 +2490,57 @@ ResMgr.prototype = {
 				var elements = [];
 				name = "cut_open";
 				var asset = AssetManager.getAssetSize(name);
-				var item_tile = ResMgr.loadTileToSize(this.items,asset.x,asset.y,asset.w,asset.h,asset.w * 2,asset.h * 2,"default");
+				var item_tile = ResMgr.loadTileToSize(this.items,asset.x,asset.y,asset.w,asset.h,asset.w,asset.h,"default");
 				var item_bitmap = new h2d_Bitmap(item_tile);
 				elements.push(name);
 				elements.push(item_bitmap);
-				elements.push(2 * i.x);
-				elements.push(2 * i.y);
+				elements.push(i.x);
+				elements.push(i.y);
 				layout_result.push(elements);
 				break;
 			case "mixer":
 				var elements1 = [];
 				name = "mixer";
 				var asset1 = AssetManager.getAssetSize(name);
-				var item_tile1 = ResMgr.loadTileToSize(this.items,asset1.x,asset1.y,asset1.w,asset1.h,asset1.w * 2,asset1.h * 2,"default");
+				var item_tile1 = ResMgr.loadTileToSize(this.items,asset1.x,asset1.y,asset1.w,asset1.h,asset1.w,asset1.h,"default");
 				var item_bitmap1 = new h2d_Bitmap(item_tile1);
 				elements1.push(name);
 				elements1.push(item_bitmap1);
-				elements1.push(2 * i.x);
-				elements1.push(2 * i.y + 2);
+				elements1.push(i.x);
+				elements1.push(i.y);
 				layout_result.push(elements1);
 				break;
 			case "rectangle":
 				var elements2 = [];
 				name = "rectangle_up";
 				var asset2 = AssetManager.getAssetSize(name);
-				var item_tile2 = ResMgr.loadTileToSize(this.items,asset2.x,asset2.y,asset2.w,asset2.h,asset2.w * 2,asset2.h * 2,"default");
+				var item_tile2 = ResMgr.loadTileToSize(this.items,asset2.x,asset2.y,asset2.w,asset2.h,asset2.w,asset2.h,"default");
 				var item_bitmap2 = new h2d_Bitmap(item_tile2);
 				elements2.push(name);
 				elements2.push(item_bitmap2);
-				elements2.push(2 * i.x);
-				elements2.push(2 * i.y);
+				elements2.push(i.x);
+				elements2.push(i.y);
 				var elements21 = [];
 				name = "rectangle_down";
 				var asset3 = AssetManager.getAssetSize(name);
-				var item_tile3 = ResMgr.loadTileToSize(this.items,asset3.x,asset3.y,asset3.w,asset3.h,asset3.w * 2,asset3.h * 2,"default");
+				var item_tile3 = ResMgr.loadTileToSize(this.items,asset3.x,asset3.y,asset3.w,asset3.h,asset3.w,asset3.h,"default");
 				var item_bitmap3 = new h2d_Bitmap(item_tile3);
 				elements21.push(name);
 				elements21.push(item_bitmap3);
-				elements21.push(2 * i.x);
-				elements21.push(2 * i.y);
+				elements21.push(i.x);
+				elements21.push(i.y);
 				layout_result.push(elements21);
 				layout_result.push(elements2);
 				break;
 			default:
 				var elements3 = [];
 				var asset4 = AssetManager.getAssetSize(name);
-				var item_tile4 = ResMgr.loadTileToSize(this.items,asset4.x,asset4.y,asset4.w,asset4.h,asset4.w * 2,asset4.h * 2,"default");
+				var item_tile4 = ResMgr.loadTileToSize(this.items,asset4.x,asset4.y,asset4.w,asset4.h,asset4.w,asset4.h,"default");
 				var item_bitmap4 = new h2d_Bitmap(item_tile4);
 				elements3.push(name);
 				elements3.push(item_bitmap4);
-				elements3.push(2 * i.x);
-				elements3.push(2 * i.y);
+				elements3.push(i.x);
+				elements3.push(i.y);
 				layout_result.push(elements3);
 			}
 		}
@@ -2551,7 +2554,7 @@ ResMgr.prototype = {
 			AssetManager.tileSizeData = s1;
 		} catch( e ) {
 			var e1 = ((e) instanceof js__$Boot_HaxeError) ? e.val : e;
-			haxe_Log.trace("Error on load json file.",{ fileName : "src/ResMgr.hx", lineNumber : 275, className : "ResMgr", methodName : "onLoad"});
+			haxe_Log.trace("Error on load json file.",{ fileName : "src/ResMgr.hx", lineNumber : 270, className : "ResMgr", methodName : "onLoad"});
 		}
 	}
 	,parseMap: function(maps) {
@@ -2830,6 +2833,9 @@ entity_Facility.__super__ = entity_Entity;
 entity_Facility.prototype = $extend(entity_Entity.prototype,{
 	interact: function(entity1) {
 	}
+	,update: function(dt) {
+		entity_Entity.prototype.update.call(this,dt);
+	}
 	,__class__: entity_Facility
 });
 var entity_PlantSoil = function(sprite) {
@@ -2876,7 +2882,7 @@ entity_PlantSoil.prototype = $extend(entity_Facility.prototype,{
 			this.state = 0;
 			return;
 		default:
-			haxe_Log.trace("Error: invalid state of plant soil " + Std.string(this),{ fileName : "src/entity/Facility.hx", lineNumber : 63, className : "entity.PlantSoil", methodName : "interact"});
+			haxe_Log.trace("Error: invalid state of plant soil " + Std.string(this),{ fileName : "src/entity/Facility.hx", lineNumber : 70, className : "entity.PlantSoil", methodName : "interact"});
 		}
 	}
 	,update: function(dt) {
@@ -56850,8 +56856,8 @@ KeySetting.SYS_PAGE_POST = 69;
 KeySetting.ACTION_KEYS = [KeySetting.MOVE_HORISONTAL_DEC,KeySetting.MOVE_HORISONTAL_INC,KeySetting.MOVE_VERTICAL_DEC,KeySetting.MOVE_VERTICAL_INC,KeySetting.ACTION_CHECK,KeySetting.ACTION_INTERACT,KeySetting.ACTION_TALK];
 KeySetting.SYS_KEYS = [KeySetting.SYS_ENTER,KeySetting.SYS_EXIT,KeySetting.SYS_MENU,KeySetting.SYS_SEL_UP,KeySetting.SYS_SEL_DW,KeySetting.SYS_SEL_LF,KeySetting.SYS_SEL_RT,KeySetting.SYS_PAGE_PRE,KeySetting.SYS_PAGE_POST];
 MainPort.MOVE_SPEED = 150;
-MainPort.FIXED_WIDTH = 540;
-MainPort.FIXED_HEIGHT = 960;
+MainPort.FIXED_WIDTH = 270;
+MainPort.FIXED_HEIGHT = 480;
 ResMgr.LAYER_STATIC = 0;
 ResMgr.LAYER_COLLIS = 2;
 ResMgr.LAYER_ENTITY = 3;
