@@ -41,7 +41,8 @@ class MainPort extends hxd.App {
         layers.addChildAt(res[index.background], ResMgr.LAYER_STATIC);
 
         loaditems();
-        onLoadMenu();
+        initMenu();
+        initFacilities();
         initEntities();
     }
 
@@ -62,8 +63,15 @@ class MainPort extends hxd.App {
             i++;
         }
     }
+    function  initFacilities() {
+        // cupboard
+        // mixer
+        var mixer = findByNameInArray("mixer", facilities);
+        // cut
+        // chopping_board
+    }
 
-    function onLoadMenu() {
+    function initMenu() {
         // cellar menu
         IS_MENU_OPEN = false;
         var menu = new h2d.Layers();

@@ -8,13 +8,20 @@ import entity.Item.ItemType;
 class Facility extends Entity {
     var id : String;
     var description : String;
+    var state : Int;
+    var counter : Int;
+    var sprites : Dynamic;
 
-    function interact(entity:Dynamic) {
+    public function interact(entity:Dynamic) {
+    }
+
+    override function update(dt:Float) {
+        super.update(dt);
     }
 }
 
 class PlantSoil extends Facility {
-    var state : Int; //0:clean, 1:has plants, 2:has dead plants, 3:rough
+    // var state : Int; //0:clean, 1:has plants, 2:has dead plants, 3:rough
     var plant : Plant;
     var interactions : String; // place holder
     public function new(sprite: h2d.Bitmap) {

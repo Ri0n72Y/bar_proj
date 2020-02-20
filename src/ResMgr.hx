@@ -79,14 +79,10 @@ ddgggggggggdddd..
                 loadMain();
             case "mobile" :
                 items = hxd.Res.m256x.toTile();
-                
                 var s = haxe.Json.parse(hxd.Res.msizeData.entry.getText());
                 AssetManager.msizeData = s;
-
-
                 var m = Json.parse(hxd.Res.mlayoutData.entry.getText());
                 AssetManager.mlayoutData = m;
-                
                 loadMobile();
             default :
                 throw new Error("Unknown Resourse Scenario.", {min: 49, max: 62, file: "src/ResMgr"});
@@ -209,7 +205,6 @@ ddgggggggggdddd..
                 elements.push(2*i.x);
                 elements.push(2*i.y);
                 
-
                 var elements2: Array<Dynamic> = [];
                 name = "rectangle_down";
                 var asset = getAssetSize(name);
