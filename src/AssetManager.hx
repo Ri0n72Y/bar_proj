@@ -169,7 +169,7 @@ class AssetManager {
             
             //knife
             case "knife_stand" : return msizeData.knife_stand;
-            case "knife_flat" : return msizeData.knife_small;
+            case "knife_flat" : return msizeData.knife_flat;
             case "chopping_board" : return msizeData.chopping_board;
             
             case "glass_triangle" : return msizeData.glass_triangle;

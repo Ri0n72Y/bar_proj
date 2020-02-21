@@ -149,21 +149,47 @@ class MainPort extends hxd.App {
     }
 
     function loaditems(){
-        var list: Array<Dynamic> = [];
-        list = resManager.res[5];
-        for (i in list) {
-            var name = i[0];
-            switch (name) {
-              default:
-                var item = new Facility();
-                item.name = name;
-                item.getObjectByName("sprite").addChild(i[1]);
-                item.x = i[2];
-                item.y = i[3];
-                layers.addChildAt(item,ResMgr.LAYER_ENTITY);
-                facilities.push(item);
+        var list: Array<Dynamic> = resManager.res[index.items];
+        var facs: Array<Dynamic> = AssetManager.mlayoutData.scene;
+        for (f in facs) {
+            trace(f);
+            var fac = new Facility();
+            fac.name = f;
+            fac.x = f.x; fac.y = f.y;
+            switch (f.name) {
+                case "rectangle":
+                    var list = [findByNameInArray("rectangle_up", list), 
+                                findByNameInArray("rectangle_down", list)];
+                    var sp = new h2d.Layers(fac);
+                    sp.add(list[0], 2); sp.add(list[1], 0);
+                    fac.getObjectByName("sprite").addChild(sp);
+                case "mixer":
+                    var list = [findByNameInArray("mixer", list), 
+                                findByNameInArray("mixer_open", list)];
+                    fac.sprites = list;
+                    fac.state = 0;
+                    fac.getObjectByName("sprite").addChild(list[0]);
+                case "cut":
+                    var list = [findByNameInArray("cut_open", list), 
+                                findByNameInArray("cut_close", list)];
+                    fac.sprites = list;
+                    fac.state = 0;
+                    fac.getObjectByName("sprite").addChild(list[0]);
+                case "chopping_board":
+                    var list = [findByNameInArray("chopping_board", list), 
+                                findByNameInArray("knife_flat", list),
+                                findByNameInArray("knife_stand", list)];
+                    fac.sprites = list;
+                    fac.state = 0;
+                    fac.getObjectByName("sprite").addChild(list[0]);
+                default:
+                    var sprite = fac.getObjectByName("sprite");
+                    var bmp = findByNameInArray(f.name, list);
+                    sprite.addChild(bmp);
             }
-        } 
+            layers.add(fac, ResMgr.LAYER_STATIC);
+            facilities.push(fac);
+        }
     }
 }
 

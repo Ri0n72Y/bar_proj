@@ -8,9 +8,10 @@ import entity.Item.ItemType;
 class Facility extends Entity {
     var id : String;
     var description : String;
-    var state : Int;
+    public var state : Int;
     var counter : Int;
-    var sprites : Dynamic;
+    public var sprites : Dynamic;
+    var level : Int;
 
     public function interact(entity:Dynamic) {
     }
