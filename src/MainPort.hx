@@ -154,7 +154,7 @@ class MainPort extends hxd.App {
         for (f in facs) {
             trace(f);
             var fac = new Facility();
-            fac.name = f;
+            fac.name = f.name;
             fac.x = f.x; fac.y = f.y;
             switch (f.name) {
                 case "rectangle":

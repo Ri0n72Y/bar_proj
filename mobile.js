@@ -622,7 +622,7 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 			++_g;
 			haxe_Log.trace(f,{ fileName : "src/MainPort.hx", lineNumber : 155, className : "MainPort", methodName : "loaditems"});
 			var fac = new entity_Facility();
-			fac.name = f;
+			fac.name = f.name;
 			fac.posChanged = true;
 			fac.x = f.x;
 			fac.posChanged = true;
