@@ -11,6 +11,7 @@ class MainPort extends hxd.App {
     var facilities : Array<Facility>;
     public var resManager : ResMgr;
     public static var IS_MENU_OPEN : Bool;
+    public static var IS_DRAGGING : Bool;
     static inline var FIXED_WIDTH = 270; 
     static inline var FIXED_HEIGHT = 480; 
 
@@ -42,8 +43,8 @@ class MainPort extends hxd.App {
 
         loaditems();
         initMenu();
-        initFacilities();
         initEntities();
+        initData();
         s2d.scale(2);
     }
 
@@ -64,12 +65,9 @@ class MainPort extends hxd.App {
             i++;
         }
     }
-    function  initFacilities() {
-        // cupboard
-        // mixer
-        var mixer = findByNameInArray("mixer", facilities);
-        // cut
-        // chopping_board
+    function  initData() {
+        IS_MENU_OPEN = false;
+        IS_DRAGGING = false;
     }
 
     function initMenu() {
@@ -86,7 +84,7 @@ class MainPort extends hxd.App {
             fruit.x = x[i]; fruit.y = y[i];
             fruit.onPush = function (e: hxd.Event){
                 onLeaveMenu(menu);
-                var item = spawnFruit(f);
+                var item = spawnFruit(f, "whole");
                 item.onPush(e);
             }
         }
@@ -128,12 +126,21 @@ class MainPort extends hxd.App {
         return null;
     }
 
-    function spawnFruit(type: String) {
-        var fruit = new entity.Item.Fruit(type);
-        var sprite = new h2d.Bitmap(resManager.res[index.fruits][getFruitIndex(type)][0]);
-        fruit.getObjectByName("sprite").addChild(sprite);
+    function spawnFruit(type: String, part: String, ?x=0.0, ?y=0.0) {
+        var fruit = spawnItemAt(type, part, x, y, layers);
         entities.push(fruit);
-        return new DraggableEntity(sprite.tile.width, sprite.tile.height, fruit, s2d);
+        var bmp:Dynamic = fruit.getObjectByName("sprite").getChildAt(0);
+        return new DraggableEntity(bmp.tile.width, bmp.tile.height, fruit, s2d);
+    }
+    function spawnItemAt(type: String, part: String, ?x=0.0, ?y=0.0, ?parent:h2d.Object) {
+        var fruit = new entity.Item.Fruit(type, part); 
+        var name = type;
+        if (part != "whole") name = name + "_" + part;
+        var sprite = new h2d.Bitmap(resManager.res[index.fruits][getFruitIndex(type)][ResMgr.getIndex(name)]);
+        fruit.getObjectByName("sprite").addChild(sprite);
+        fruit.x = x; fruit.y = y;
+        parent.addChild(fruit);
+        return fruit;
     }
     function spawnPlate(type: String) {
         var plate = new entity.Item.Plate(type);
@@ -173,8 +180,9 @@ class MainPort extends hxd.App {
                     sp.add(list[0], 2);
                     fac.getObjectByName("sprite").addChild(sp);
                 case "mixer":
+                    var m : Dynamic = findByNameInArray("mixer_open", list);
                     var list = [findByNameInArray("mixer", list), 
-                                findByNameInArray("mixer_open", list)];
+                                m];
                     fac.sprites = list;
                     fac.state = 0;
                     fac.getObjectByName("sprite").addChild(list[0]);
@@ -182,8 +190,20 @@ class MainPort extends hxd.App {
                         if (fac.isSpriteChanged)
                             fac.sprite = fac.sprites[fac.state];
                     }
+                    var event = new h2d.Interactive(m.tile.width, m.tile.height, fac);
+                    event.onRelease = function (event:hxd.Event) {
+                        if (!IS_DRAGGING) return;
+                        var i = layers.getLayer(ResMgr.LAYER_UI);
+                        if (i.hasNext())
+                            fac.interact(i.next);
+                    }
+
+                    fac.interact = function (e: Dynamic) {
+                        var f: entity.Item.Fruit = e;
+                    }
                 case "cut":
-                    var list = [findByNameInArray("cut_open", list), 
+                    var m : Dynamic = findByNameInArray("cut_open", list);
+                    var list = [m, 
                                 findByNameInArray("cut_close", list)];
                     fac.sprites = list;
                     fac.state = 0;
@@ -192,16 +212,31 @@ class MainPort extends hxd.App {
                         if (fac.isSpriteChanged)
                             fac.sprite = fac.sprites[fac.state];
                     }
+                    var event = new h2d.Interactive(m.tile.width, m.tile.height, fac);
+                    event.onRelease = function (event:hxd.Event) {
+                        if (!IS_DRAGGING) return;
+                        var i = layers.getLayer(ResMgr.LAYER_UI);
+                        if (i.hasNext())
+                            fac.interact(i.next);
+                    }
                 case "chopping_board":
                     var knife = findByNameInArray("knife_flat", list);
                     knife.x = 15; knife.y = 1;
-                    var list = [findByNameInArray("chopping_board", list), 
+                    var m : Dynamic = findByNameInArray("chopping_board", list);
+                    var list = [m, 
                                 knife,
                                 findByNameInArray("knife_stand", list)];
                     fac.sprites = list;
                     fac.state = 0;
                     fac.getObjectByName("sprite").addChild(list[0]);
                     fac.getObjectByName("sprite").addChild(list[1]);
+                    var event = new h2d.Interactive(m.tile.width, m.tile.height, fac);
+                    event.onRelease = function (event:hxd.Event) {
+                        if (!IS_DRAGGING) return;
+                        var i = layers.getLayer(ResMgr.LAYER_UI);
+                        if (i.hasNext())
+                            fac.interact(i.next);
+                    }
                 default:
                     var sprite = fac.getObjectByName("sprite");
                     var bmp = findByNameInArray(f.name, list);
@@ -212,6 +247,7 @@ class MainPort extends hxd.App {
         }
     }
 
+    // TODO: Handle case that number of plates break the cupboard
     function cupboardPut(type: String, n: Int) {
         var c = findByNameInArray("rectangle", facilities);
         var stacks:Dynamic = c.getObjectByName("sprite").getObjectByName("stacks");
@@ -230,7 +266,7 @@ class MainPort extends hxd.App {
             p.y = -(num + 1) * pad;
             s.addChild(p);
             n --;
-        } 
+        }
     }
     function cupboardTake(type:String):Bool {
         var c = findByNameInArray("rectangle", facilities);
@@ -275,11 +311,11 @@ class DraggableEntity extends h2d.Interactive {
             var layer = entity.parent;
             if ((layer != null) && (layer.getChildIndex(entity) != -1)) layer.removeChild(entity);
             layer.addChildAt(entity, ResMgr.LAYER_UI);
-            isFollow = true;
+            isFollow = true; MainPort.IS_DRAGGING = true;
         }
         this.onRelease = function(event: hxd.Event) {
             if (MainPort.IS_MENU_OPEN) return;
-            isFollow = false;
+            isFollow = false; MainPort.IS_DRAGGING = false;
             entity.alpha = 1; entity.scale(5 / 6);
             entity.x = s2d.mouseX - width * 5 / 12;
             entity.y = s2d.mouseY - height * 5 / 12;

@@ -50,6 +50,13 @@ class ResMgr {
             e : {offx:3, offy:-4}
         }
     }
+    static var fruitTextures = [
+        ["apple", "apple_half", "apple_peel", "apple_slice", "apple_slicegroup", "apple_dice"],
+        ["orange", "orange_half", "orange_peel", "orange_slice", "orange_slicegroup"],
+        ["lemon", "lemon_half", "lemon_slice", "lemon_slicegroup"],
+        ["kiwi", "kiwi_half", "kiwi_slice", "kiwi_slicegroup", "kiwi_smash"],
+        ["blueberry", "blueberry_mush"]
+    ];
 
     static var testmap = 
 "...ddddd.........
@@ -158,13 +165,6 @@ ddgggggggggdddd..
         res.push(anims); // index 3
         // load fruits
         var fruits = [];
-        var fruitTextures = [
-            ["apple", "apple_half", "apple_peel", "apple_slice", "apple_slicegroup", "apple_dice"],
-            ["orange", "orange_half", "orange_peel", "orange_slice", "orange_slicegroup"],
-            ["lemon", "lemon_half", "lemon_slice", "lemon_slicegroup"],
-            ["kiwi", "kiwi_half", "kiwi_slice", "kiwi_slicegroup", "kiwi_smash"],
-            ["blueberry", "blueberry_mush"]
-        ];
         for (textures in fruitTextures) {
             var fruit = []; 
             for (name in textures) {
@@ -243,6 +243,14 @@ ddgggggggggdddd..
             map.addChild(tile);
         }
         return map;
+    }
+
+    public static function getIndex(name: String) {
+        for (a in fruitTextures)
+            for (n in a)
+                if (n == name)
+                    return a.indexOf(n);
+        return (-1);
     }
 
     /**

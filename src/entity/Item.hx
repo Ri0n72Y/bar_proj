@@ -71,12 +71,14 @@ class Food extends Item {
 class Fruit extends Food{
     var flavor : String; //unused
     var tastes : Array<Float>; //unused
-    var fruitType : String;
+    public var fruitType : String;
+    public var part : String;
     var generic_info : Map<String, Float>; //unused
 
-    public function new(type : String) {
+    public function new(type : String, part: String) {
         super();
         this.fruitType = type;
+        this.part = part;
         tastes = [0,0,0,0,0];
     }
 
@@ -91,7 +93,7 @@ class Seed extends Fruit {
     var species : String; // unused
 
     public function new(time : Int, type : String) {
-        super(type);
+        super(type, "seed");
         this.type = ItemType.Seed;
         timeBirth = time;
     }

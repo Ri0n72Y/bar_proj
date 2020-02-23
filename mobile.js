@@ -493,8 +493,8 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		this.layers.addChildAt(res[this.index.background],0);
 		this.loaditems();
 		this.initMenu();
-		this.initFacilities();
 		this.initEntities();
+		this.initData();
 		var _this = this.s2d;
 		var _g = _this;
 		_g.posChanged = true;
@@ -520,8 +520,9 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 			++i;
 		}
 	}
-	,initFacilities: function() {
-		var mixer = this.findByNameInArray("mixer",this.facilities);
+	,initData: function() {
+		MainPort.IS_MENU_OPEN = false;
+		MainPort.IS_DRAGGING = false;
 	}
 	,initMenu: function() {
 		var _gthis = this;
@@ -544,7 +545,7 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 			fruit.onPush = (function(f1) {
 				return function(e) {
 					_gthis.onLeaveMenu(menu);
-					var item = _gthis.spawnFruit(f1[0]);
+					var item = _gthis.spawnFruit(f1[0],"whole");
 					item.onPush(e);
 				};
 			})(f);
@@ -592,12 +593,38 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		}
 		return null;
 	}
-	,spawnFruit: function(type) {
-		var fruit = new entity_Fruit(type);
-		var sprite = new h2d_Bitmap(this.resManager.res[this.index.fruits][this.getFruitIndex(type)][0]);
-		fruit.getObjectByName("sprite").addChild(sprite);
+	,spawnFruit: function(type,part,x,y) {
+		if(y == null) {
+			y = 0.0;
+		}
+		if(x == null) {
+			x = 0.0;
+		}
+		var fruit = this.spawnItemAt(type,part,x,y,this.layers);
 		this.entities.push(fruit);
-		return new DraggableEntity(sprite.tile.width,sprite.tile.height,fruit,this.s2d);
+		var bmp = fruit.getObjectByName("sprite").children[0];
+		return new DraggableEntity(bmp.tile.width,bmp.tile.height,fruit,this.s2d);
+	}
+	,spawnItemAt: function(type,part,x,y,parent) {
+		if(y == null) {
+			y = 0.0;
+		}
+		if(x == null) {
+			x = 0.0;
+		}
+		var fruit = new entity_Fruit(type,part);
+		var name = type;
+		if(part != "whole") {
+			name = name + "_" + part;
+		}
+		var sprite = new h2d_Bitmap(this.resManager.res[this.index.fruits][this.getFruitIndex(type)][ResMgr.getIndex(name)]);
+		fruit.getObjectByName("sprite").addChild(sprite);
+		fruit.posChanged = true;
+		fruit.x = x;
+		fruit.posChanged = true;
+		fruit.y = y;
+		parent.addChild(fruit);
+		return fruit;
 	}
 	,spawnPlate: function(type) {
 		var plate = new entity_Plate(type);
@@ -611,6 +638,7 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		return this.fruitIndex.indexOf(type);
 	}
 	,loaditems: function() {
+		var _gthis = this;
 		var list = this.resManager.res[this.index.items];
 		var facs = AssetManager.mlayoutData.scene;
 		var _g = 0;
@@ -630,37 +658,81 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 				knife.x = 15;
 				knife.posChanged = true;
 				knife.y = 1;
-				var list1 = [this.findByNameInArray("chopping_board",list),knife,this.findByNameInArray("knife_stand",list)];
+				var m = this.findByNameInArray("chopping_board",list);
+				var list1 = [m,knife,this.findByNameInArray("knife_stand",list)];
 				fac[0].sprites = list1;
 				fac[0].state = 0;
 				fac[0].getObjectByName("sprite").addChild(list1[0]);
 				fac[0].getObjectByName("sprite").addChild(list1[1]);
-				break;
-			case "cut":
-				var list2 = [this.findByNameInArray("cut_open",list),this.findByNameInArray("cut_close",list)];
-				fac[0].sprites = list2;
-				fac[0].state = 0;
-				fac[0].getObjectByName("sprite").addChild(list2[0]);
-				fac[0].state_update = (function(fac1) {
-					return function(dt) {
-						if(fac1[0].isSpriteChanged) {
-							fac1[0].sprite = fac1[0].sprites[fac1[0].state];
+				var event = new h2d_Interactive(m.tile.width,m.tile.height,fac[0]);
+				event.onRelease = (function(fac1) {
+					return function(event1) {
+						if(!MainPort.IS_DRAGGING) {
+							return;
+						}
+						var i = _gthis.layers.getLayer(5);
+						if(i.hasNext()) {
+							fac1[0].interact($bind(i,i.next));
 						}
 					};
 				})(fac);
 				break;
-			case "mixer":
-				var list3 = [this.findByNameInArray("mixer",list),this.findByNameInArray("mixer_open",list)];
-				fac[0].sprites = list3;
+			case "cut":
+				var m1 = this.findByNameInArray("cut_open",list);
+				var list2 = [m1,this.findByNameInArray("cut_close",list)];
+				fac[0].sprites = list2;
 				fac[0].state = 0;
-				fac[0].getObjectByName("sprite").addChild(list3[0]);
+				fac[0].getObjectByName("sprite").addChild(list2[0]);
 				fac[0].state_update = (function(fac2) {
-					return function(dt1) {
+					return function(dt) {
 						if(fac2[0].isSpriteChanged) {
 							fac2[0].sprite = fac2[0].sprites[fac2[0].state];
 						}
 					};
 				})(fac);
+				var event2 = new h2d_Interactive(m1.tile.width,m1.tile.height,fac[0]);
+				event2.onRelease = (function(fac3) {
+					return function(event3) {
+						if(!MainPort.IS_DRAGGING) {
+							return;
+						}
+						var i1 = _gthis.layers.getLayer(5);
+						if(i1.hasNext()) {
+							fac3[0].interact($bind(i1,i1.next));
+						}
+					};
+				})(fac);
+				break;
+			case "mixer":
+				var m2 = this.findByNameInArray("mixer_open",list);
+				var list3 = [this.findByNameInArray("mixer",list),m2];
+				fac[0].sprites = list3;
+				fac[0].state = 0;
+				fac[0].getObjectByName("sprite").addChild(list3[0]);
+				fac[0].state_update = (function(fac4) {
+					return function(dt1) {
+						if(fac4[0].isSpriteChanged) {
+							fac4[0].sprite = fac4[0].sprites[fac4[0].state];
+						}
+					};
+				})(fac);
+				var event4 = new h2d_Interactive(m2.tile.width,m2.tile.height,fac[0]);
+				event4.onRelease = (function(fac5) {
+					return function(event5) {
+						if(!MainPort.IS_DRAGGING) {
+							return;
+						}
+						var i2 = _gthis.layers.getLayer(5);
+						if(i2.hasNext()) {
+							fac5[0].interact($bind(i2,i2.next));
+						}
+					};
+				})(fac);
+				fac[0].interact = (function() {
+					return function(e) {
+						var f1 = e;
+					};
+				})();
 				break;
 			case "rectangle":
 				var list_0 = this.findByNameInArray("rectangle_up",list);
@@ -2376,12 +2448,14 @@ var DraggableEntity = function(width,height,entity1,s2d) {
 		}
 		layer.addChildAt(entity1,5);
 		_gthis.isFollow = true;
+		MainPort.IS_DRAGGING = true;
 	};
 	this.onRelease = function(event1) {
 		if(MainPort.IS_MENU_OPEN) {
 			return;
 		}
 		_gthis.isFollow = false;
+		MainPort.IS_DRAGGING = false;
 		entity1.alpha = 1;
 		var _g2 = entity1;
 		_g2.posChanged = true;
@@ -2509,6 +2583,23 @@ var ResMgr = function(type) {
 };
 $hxClasses["ResMgr"] = ResMgr;
 ResMgr.__name__ = "ResMgr";
+ResMgr.getIndex = function(name) {
+	var _g = 0;
+	var _g1 = ResMgr.fruitTextures;
+	while(_g < _g1.length) {
+		var a = _g1[_g];
+		++_g;
+		var _g2 = 0;
+		while(_g2 < a.length) {
+			var n = a[_g2];
+			++_g2;
+			if(n == name) {
+				return a.indexOf(n);
+			}
+		}
+	}
+	return -1;
+};
 ResMgr.loadTileToSize = function(tiles,x,y,w,h,scaleX,scaleY,centre) {
 	var dx = 0.0;
 	var dy = 0.0;
@@ -2594,16 +2685,16 @@ ResMgr.prototype = {
 		this.res.push(sprites);
 		this.res.push(anims);
 		var fruits = [];
-		var fruitTextures = [["apple","apple_half","apple_peel","apple_slice","apple_slicegroup","apple_dice"],["orange","orange_half","orange_peel","orange_slice","orange_slicegroup"],["lemon","lemon_half","lemon_slice","lemon_slicegroup"],["kiwi","kiwi_half","kiwi_slice","kiwi_slicegroup","kiwi_smash"],["blueberry","blueberry_mush"]];
 		var _g = 0;
-		while(_g < fruitTextures.length) {
-			var textures = fruitTextures[_g];
+		var _g1 = ResMgr.fruitTextures;
+		while(_g < _g1.length) {
+			var textures = _g1[_g];
 			++_g;
 			var fruit = [];
-			var _g1 = 0;
-			while(_g1 < textures.length) {
-				var name = textures[_g1];
-				++_g1;
+			var _g2 = 0;
+			while(_g2 < textures.length) {
+				var name = textures[_g2];
+				++_g2;
 				var size = AssetManager.getAssetSize(name);
 				fruit.push(ResMgr.loadTileToSize(this.items,size.x,size.y,size.w,size.h,size.w,size.h,"default"));
 			}
@@ -3056,9 +3147,10 @@ entity_Juice.prototype = $extend(entity_Food.prototype,{
 	}
 	,__class__: entity_Juice
 });
-var entity_Fruit = function(type) {
+var entity_Fruit = function(type,part) {
 	entity_Food.call(this);
 	this.fruitType = type;
+	this.part = part;
 	this.tastes = [0,0,0,0,0];
 };
 $hxClasses["entity.Fruit"] = entity_Fruit;
@@ -3072,7 +3164,7 @@ entity_Fruit.prototype = $extend(entity_Food.prototype,{
 });
 var entity_Seed = function(time,type) {
 	this.state = "Fresh";
-	entity_Fruit.call(this,type);
+	entity_Fruit.call(this,type,"seed");
 	this.type = entity_ItemType.Seed;
 	this.timeBirth = time;
 };
@@ -57008,6 +57100,7 @@ ResMgr.TILE_SIZE = 32;
 ResMgr.SCALED_SIZE = 80;
 ResMgr.SCALE = 2.5;
 ResMgr.plant_waterfruit = [];
+ResMgr.fruitTextures = [["apple","apple_half","apple_peel","apple_slice","apple_slicegroup","apple_dice"],["orange","orange_half","orange_peel","orange_slice","orange_slicegroup"],["lemon","lemon_half","lemon_slice","lemon_slicegroup"],["kiwi","kiwi_half","kiwi_slice","kiwi_slicegroup","kiwi_smash"],["blueberry","blueberry_mush"]];
 ResMgr.testmap = "...ddddd.........\r\n..ddgggddddddd...\r\ndddggggggggggdddd\r\ndggggggggggggggdd\r\ndggggggggggggggdd\r\ndggggggggggggggdd\r\ndggggggggggggggdd\r\ndgggggggggggggddd\r\nddgggggggggdddd..\r\n..ddddggggddd....\r\n.....dddddd......";
 format_gif_Tools.LN2 = Math.log(2);
 format_mp3_MPEG.V1 = 3;
