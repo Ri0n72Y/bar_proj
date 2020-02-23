@@ -97,6 +97,10 @@ class MainPort extends hxd.App {
             if (IS_MENU_OPEN) return;
             onOpenMenu(menu);
         }
+        // cupboard case
+        cupboardPut("plate", 5);
+        cupboardPut("bowl", 5);
+        cupboardPut("glass_down", 5);
     }
     function onOpenMenu(menu:h2d.Object) {
         var i= 0; var max = layers.numChildren;
@@ -128,13 +132,120 @@ class MainPort extends hxd.App {
         var fruit = new entity.Item.Fruit(type);
         var sprite = new h2d.Bitmap(resManager.res[index.fruits][getFruitIndex(type)][0]);
         fruit.getObjectByName("sprite").addChild(sprite);
-        layers.addChild(fruit);
         entities.push(fruit);
-        return new DraggableEntity(16, 16, fruit, s2d);
+        return new DraggableEntity(sprite.tile.width, sprite.tile.height, fruit, s2d);
+    }
+    function spawnPlate(type: String) {
+        var plate = new entity.Item.Plate(type);
+        var bmp : Dynamic = findByNameInArray(type, resManager.res[index.items]);// 套娃
+        var sprite = new h2d.Bitmap(bmp.tile);
+        plate.getObjectByName("sprite").addChild(sprite);
+        entities.push(plate);
+        return new DraggableEntity(sprite.tile.width, sprite.tile.height, plate, s2d);
     }
     
     function getFruitIndex(type: String){
         return fruitIndex.indexOf(type);
+    }
+
+    function loaditems(){
+        var list: Array<Dynamic> = resManager.res[index.items];
+        var facs: Array<Dynamic> = AssetManager.mlayoutData.scene;
+        for (f in facs) {
+            var fac = new Facility();
+            fac.name = f.name;
+            fac.x = f.x; fac.y = f.y;
+            switch (f.name) {
+                case "rectangle":
+                    var list = [findByNameInArray("rectangle_up", list), 
+                                findByNameInArray("rectangle_down", list)];
+                    var sp = new h2d.Layers(fac); sp.name = "stacks";
+                    var bowls = new h2d.Object(); bowls.name = "bowls";
+                    bowls.x = 7; bowls.y = 45;
+                    var plates = new h2d.Object(); plates.name = "plates";
+                    plates.x = 22; plates.y = 57;
+                    var cups = new h2d.Object(); cups.name = "cups";
+                    cups.x = 45; cups.y = 63;
+                    sp.add(list[1], 0);
+                    sp.add(bowls, 1);
+                    sp.add(plates, 1);
+                    sp.add(cups, 1);
+                    sp.add(list[0], 2);
+                    fac.getObjectByName("sprite").addChild(sp);
+                case "mixer":
+                    var list = [findByNameInArray("mixer", list), 
+                                findByNameInArray("mixer_open", list)];
+                    fac.sprites = list;
+                    fac.state = 0;
+                    fac.getObjectByName("sprite").addChild(list[0]);
+                    fac.state_update = function (dt: Float) {
+                        if (fac.isSpriteChanged)
+                            fac.sprite = fac.sprites[fac.state];
+                    }
+                case "cut":
+                    var list = [findByNameInArray("cut_open", list), 
+                                findByNameInArray("cut_close", list)];
+                    fac.sprites = list;
+                    fac.state = 0;
+                    fac.getObjectByName("sprite").addChild(list[0]);
+                    fac.state_update = function (dt: Float) {
+                        if (fac.isSpriteChanged)
+                            fac.sprite = fac.sprites[fac.state];
+                    }
+                case "chopping_board":
+                    var knife = findByNameInArray("knife_flat", list);
+                    knife.x = 15; knife.y = 1;
+                    var list = [findByNameInArray("chopping_board", list), 
+                                knife,
+                                findByNameInArray("knife_stand", list)];
+                    fac.sprites = list;
+                    fac.state = 0;
+                    fac.getObjectByName("sprite").addChild(list[0]);
+                    fac.getObjectByName("sprite").addChild(list[1]);
+                default:
+                    var sprite = fac.getObjectByName("sprite");
+                    var bmp = findByNameInArray(f.name, list);
+                    sprite.addChild(bmp);
+            }
+            layers.add(fac, ResMgr.LAYER_STATIC);
+            facilities.push(fac);
+        }
+    }
+
+    function cupboardPut(type: String, n: Int) {
+        var c = findByNameInArray("rectangle", facilities);
+        var stacks:Dynamic = c.getObjectByName("sprite").getObjectByName("stacks");
+        var s:h2d.Object = null;
+        var pad = 0;
+        switch (type) {
+            case "plate" : pad = 2; s = stacks.getObjectByName("plates"); type = "dish_small";
+            case "bowl" : pad = 3; s = stacks.getObjectByName("bowls");
+            case "glass_down" : pad = 5; s = stacks.getObjectByName("cups");
+        }
+        if (s == null) return; // debug use
+        var sp:Dynamic = findByNameInArray(type, resManager.res[index.items]);
+        while (n > 0) {
+            var p = new h2d.Bitmap(sp.tile);
+            var num = s.numChildren;
+            p.y = -(num + 1) * pad;
+            s.addChild(p);
+            n --;
+        } 
+    }
+    function cupboardTake(type:String):Bool {
+        var c = findByNameInArray("rectangle", facilities);
+        var stacks:Dynamic = c.getObjectByName("sprite").getObjectByName("stacks");
+        var s:h2d.Object=null;
+        switch (type) {
+            case "dish_small" : s = stacks.getObjectByName("plates");
+            case "dish_large" : s = stacks.getObjectByName("plates");
+            case "bowl" : s = stacks.getObjectByName("bowls");
+            case "glass_down" : s = stacks.getObjectByName("cups");
+            default: return false;
+        }
+        if (s.numChildren <= 0) return false;
+        s.removeChild(s.getChildAt(s.numChildren - 1));
+        return true;
     }
 
     override function update(dt: Float) {
@@ -146,50 +257,6 @@ class MainPort extends hxd.App {
     static function main() {
         hxd.Res.initEmbed();
         new MainPort();
-    }
-
-    function loaditems(){
-        var list: Array<Dynamic> = resManager.res[index.items];
-        var facs: Array<Dynamic> = AssetManager.mlayoutData.scene;
-        for (f in facs) {
-            trace(f);
-            var fac = new Facility();
-            fac.name = f.name;
-            fac.x = f.x; fac.y = f.y;
-            switch (f.name) {
-                case "rectangle":
-                    var list = [findByNameInArray("rectangle_up", list), 
-                                findByNameInArray("rectangle_down", list)];
-                    var sp = new h2d.Layers(fac);
-                    sp.add(list[0], 2); sp.add(list[1], 0);
-                    fac.getObjectByName("sprite").addChild(sp);
-                case "mixer":
-                    var list = [findByNameInArray("mixer", list), 
-                                findByNameInArray("mixer_open", list)];
-                    fac.sprites = list;
-                    fac.state = 0;
-                    fac.getObjectByName("sprite").addChild(list[0]);
-                case "cut":
-                    var list = [findByNameInArray("cut_open", list), 
-                                findByNameInArray("cut_close", list)];
-                    fac.sprites = list;
-                    fac.state = 0;
-                    fac.getObjectByName("sprite").addChild(list[0]);
-                case "chopping_board":
-                    var list = [findByNameInArray("chopping_board", list), 
-                                findByNameInArray("knife_flat", list),
-                                findByNameInArray("knife_stand", list)];
-                    fac.sprites = list;
-                    fac.state = 0;
-                    fac.getObjectByName("sprite").addChild(list[0]);
-                default:
-                    var sprite = fac.getObjectByName("sprite");
-                    var bmp = findByNameInArray(f.name, list);
-                    sprite.addChild(bmp);
-            }
-            layers.add(fac, ResMgr.LAYER_STATIC);
-            facilities.push(fac);
-        }
     }
 }
 

@@ -189,7 +189,8 @@ ddgggggggggdddd..
             "rectangle_up", "rectangle_down", 
             "entry", "cut_open", "cut_close", 
             "paper", "mixer", "mixer_open", "book",
-            "chopping_board", "knife_flat", "knife_stand"];
+            "chopping_board", "knife_flat", "knife_stand",
+            "bowl", "dish_small", "dish_large", "glass_down"];
         for (n in source_names) {
             var size = getAssetSize(n);
             var bmp = new h2d.Bitmap(items.sub(size.x, size.y, size.w, size.h));

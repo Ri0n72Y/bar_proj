@@ -142,10 +142,8 @@ class AssetManager {
             case "lemon_slicegroup" : return msizeData.lemon_slicegroup;
             
             //glass
-            case "glass_stack_topb" : return msizeData.glass_stack_topb;
-            case "glass_stack_top" : return msizeData.glass_stack_top;
+            case "glass_stack" : return msizeData.glass_stack;
             case "glass_stack_bot" : return msizeData.glass_stack_bot;
-            case "glass_stack_botb" : return msizeData.glass_stack_botb;
             case "glass" : return msizeData.glass;
             case "glass_down" : return msizeData.glass_down;
             
@@ -189,7 +187,6 @@ class AssetManager {
             
             case "rectangle_up" : return msizeData.rectangle_up;
             case "rectangle_down" : return msizeData.rectangle_down;
-
 
             default : 
                 trace ("Unknown tile name: " + name);

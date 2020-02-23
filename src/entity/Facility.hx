@@ -13,10 +13,14 @@ class Facility extends Entity {
     public var sprites : Dynamic;
     var level : Int;
 
-    public function interact(entity:Dynamic) {
+    public dynamic function interact(entity:Dynamic) {
+    }
+    
+    public dynamic function state_update(dt: Float) {
     }
 
     override function update(dt:Float) {
+        this.state_update(dt);
         super.update(dt);
     }
 }
