@@ -126,8 +126,8 @@ class MainPort extends hxd.App {
         return null;
     }
 
-    function spawnFruit(type: String, part: String, ?x=0.0, ?y=0.0) {
-        var fruit = spawnItemAt(type, part, x, y, layers);
+    function spawnFruit(type: String, part: String) {
+        var fruit = spawnItemAt(type, part,0,0, layers);
         entities.push(fruit);
         var bmp:Dynamic = fruit.getObjectByName("sprite").getChildAt(0);
         return new DraggableEntity(bmp.tile.width, bmp.tile.height, fruit, s2d);

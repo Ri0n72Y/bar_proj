@@ -81,6 +81,7 @@ ddgggggggggdddd..
                 loadMain();
             case "mobile" :
                 items = hxd.Res.m256x.toTile();
+                tiles = hxd.Res.m256xfac.toTile();
                 var s = haxe.Json.parse(hxd.Res.msizeData.entry.getText());
                 AssetManager.msizeData = s;
                 var m = Json.parse(hxd.Res.mlayoutData.entry.getText());
@@ -191,9 +192,13 @@ ddgggggggggdddd..
             "paper", "mixer", "mixer_open", "book",
             "chopping_board", "knife_flat", "knife_stand",
             "bowl", "dish_small", "dish_large", "glass_down"];
+        var fac = ["rectangle_up", "rectangle_down", "cut_open", "cut_close", "mixer", "mixer_open"];
         for (n in source_names) {
             var size = getAssetSize(n);
-            var bmp = new h2d.Bitmap(items.sub(size.x, size.y, size.w, size.h));
+            var item = items;
+            if (fac.indexOf(n) != -1)
+                item = tiles; 
+            var bmp = new h2d.Bitmap(item.sub(size.x, size.y, size.w, size.h));
             bmp.name = n;
             layout_result.push(bmp);
         }
