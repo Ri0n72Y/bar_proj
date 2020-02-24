@@ -1,3 +1,4 @@
+import entity.Item.Plate;
 import h2d.filter.Blur;
 import haxe.macro.Expr.Error;
 import entity.Entity.Character;
@@ -22,7 +23,8 @@ class MainPort extends hxd.App {
         slimeAnims : 3,
         fruits : 4,
         items : 5,
-        cellar : 6
+        cellar : 6,
+        cupboard : 7
     }
     var animIndex = {
         blue:0, red:4, lemon:8, kiwi:12,
@@ -74,6 +76,7 @@ class MainPort extends hxd.App {
         // cellar menu
         IS_MENU_OPEN = false;
         var menu = new h2d.Layers();
+        menu.name = "cellar";
         menu.add(resManager.res[index.cellar], 0);
         var x = [120, 120, 66, 180, 152];
         var y = [150, 334, 198, 292, 219];
@@ -91,7 +94,7 @@ class MainPort extends hxd.App {
         // bound menu button
         var cellar = findByNameInArray("entry", facilities);
         var button = new h2d.Interactive(94, 48, cellar);
-        button.onPush = function (e:hxd.Event) {
+        button.onClick = function (e:hxd.Event) {
             if (IS_MENU_OPEN) return;
             onOpenMenu(menu);
         }
@@ -118,6 +121,26 @@ class MainPort extends hxd.App {
             i++;
         }
     }
+    function onOpenBubbles(e:entity.Entity, list:Array<Dynamic>) {
+        var menu = new h2d.Object();
+        menu.addChild(e); // index 0
+        for (i in list) {
+            var bubble = getBubble(i);
+            var event:Dynamic = bubble.getObjectByName("interact");
+            event.onPush = function (e:hxd.Event) {
+                layers.addChildAt(menu.getChildAt(0), ResMgr.LAYER_ENTITY);
+                onLeaveMenu(menu);
+                var item = null;
+                if ((i is entity.Item.Food))
+                    item = spawnFruit(i.name, i.part);
+                else if ((i is entity.Item.Plate))
+                    item = spawnPlate(i.size);
+                item.onPush(e);
+            }
+            menu.addChild(bubble);
+        }
+        onOpenMenu(menu);
+    }
 
     function findByNameInArray(n:String, a:Array<Dynamic>) {
         for (e in a) {
@@ -127,23 +150,17 @@ class MainPort extends hxd.App {
     }
 
     function spawnFruit(type: String, part: String) {
-        var fruit = spawnItemAt(type, part,0,0, layers);
-        entities.push(fruit);
-        var bmp:Dynamic = fruit.getObjectByName("sprite").getChildAt(0);
-        return new DraggableEntity(bmp.tile.width, bmp.tile.height, fruit, s2d);
-    }
-    function spawnItemAt(type: String, part: String, ?x=0.0, ?y=0.0, ?parent:h2d.Object) {
         var fruit = new entity.Item.Fruit(type, part); 
         var name = type;
         if (part != "whole") name = name + "_" + part;
         var sprite = new h2d.Bitmap(resManager.res[index.fruits][getFruitIndex(type)][ResMgr.getIndex(name)]);
         fruit.getObjectByName("sprite").addChild(sprite);
-        fruit.x = x; fruit.y = y;
-        parent.addChild(fruit);
-        return fruit;
+        entities.push(fruit);
+        return new DraggableEntity(sprite.tile.width, sprite.tile.height, fruit, s2d);
     }
+
     function spawnPlate(type: String) {
-        var plate = new entity.Item.Plate(type);
+        var plate = new Plate(type);
         var bmp : Dynamic = findByNameInArray(type, resManager.res[index.items]);// 套娃
         var sprite = new h2d.Bitmap(bmp.tile);
         plate.getObjectByName("sprite").addChild(sprite);
@@ -179,6 +196,14 @@ class MainPort extends hxd.App {
                     sp.add(cups, 1);
                     sp.add(list[0], 2);
                     fac.getObjectByName("sprite").addChild(sp);
+                    var e = new h2d.Interactive(72, 80, fac);
+                    e.onClick = function (e:hxd.Event) {
+                        var i1 = new Plate("bowl"); i1.x = 164; i1.y = 160; i1.getObjectByName("sprite").addChild(findByNameInArray("bowl", resManager.res[index.items]));
+                        var i2 = new Plate("dish_small"); i2.x = 175; i2.y = 191; i2.getObjectByName("sprite").addChild(findByNameInArray("dish_small", resManager.res[index.items]));
+                        var i3 = new Plate("dish_large"); i3.x = 207; i3.y = 213; i3.getObjectByName("sprite").addChild(findByNameInArray("dish_large", resManager.res[index.items]));
+                        var i4 = new Plate("glass"); i4.x = 240; i4.y = 221; i4.getObjectByName("sprite").addChild(findByNameInArray("glass", resManager.res[index.items]));
+                        onOpenBubbles(fac, [i1,i2,i3,i4]);
+                    }
                 case "mixer":
                     var m : Dynamic = findByNameInArray("mixer_open", list);
                     var list = [findByNameInArray("mixer", list), 
@@ -247,7 +272,18 @@ class MainPort extends hxd.App {
         }
     }
 
-    // TODO: Handle case that number of plates break the cupboard
+    function getBubble(e: entity.Item):h2d.Bitmap {
+        var bubble = new h2d.Bitmap(hxd.Res.mui.toTile().sub(0,0,22,22));
+        bubble.x = e.x; bubble.y = e.y;
+        var bmp:Dynamic = e.getObjectByName("sprite").getChildAt(0);
+        var w = bmp.tile.width; var h = bmp.tile.height;
+        bmp.x = (22-w)/2; bmp.y = (22-h)/2;
+        bubble.addChild(bmp);
+        var event = new h2d.Interactive(22, 22, bubble);
+        event.name = "interact";
+        return bubble;
+    }
+
     function cupboardPut(type: String, n: Int) {
         var c = findByNameInArray("rectangle", facilities);
         var stacks:Dynamic = c.getObjectByName("sprite").getObjectByName("stacks");
@@ -260,6 +296,7 @@ class MainPort extends hxd.App {
         }
         if (s == null) return; // debug use
         var sp:Dynamic = findByNameInArray(type, resManager.res[index.items]);
+        if (n > 6) n = 6;
         while (n > 0) {
             var p = new h2d.Bitmap(sp.tile);
             var num = s.numChildren;

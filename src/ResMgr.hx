@@ -191,7 +191,7 @@ ddgggggggggdddd..
             "entry", "cut_open", "cut_close", 
             "paper", "mixer", "mixer_open", "book",
             "chopping_board", "knife_flat", "knife_stand",
-            "bowl", "dish_small", "dish_large", "glass_down"];
+            "bowl", "dish_small", "dish_large", "glass_down", "glass"];
         var fac = ["rectangle_up", "rectangle_down", "cut_open", "cut_close", "mixer", "mixer_open"];
         for (n in source_names) {
             var size = getAssetSize(n);
