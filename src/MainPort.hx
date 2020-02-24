@@ -1,3 +1,5 @@
+import entity.Entity;
+import entity.Item.Fruit;
 import entity.Item.Plate;
 import h2d.filter.Blur;
 import haxe.macro.Expr.Error;
@@ -130,11 +132,12 @@ class MainPort extends hxd.App {
             event.onPush = function (e:hxd.Event) {
                 layers.addChildAt(menu.getChildAt(0), ResMgr.LAYER_ENTITY);
                 onLeaveMenu(menu);
-                var item = null;
-                if ((i is entity.Item.Food))
+                var item = i;
+                if ((item is Fruit)) {
                     item = spawnFruit(i.name, i.part);
-                else if ((i is entity.Item.Plate))
+                } else if ((item is Plate)) {
                     item = spawnPlate(i.size);
+                } 
                 item.onPush(e);
             }
             menu.addChild(bubble);
@@ -156,6 +159,7 @@ class MainPort extends hxd.App {
         var sprite = new h2d.Bitmap(resManager.res[index.fruits][getFruitIndex(type)][ResMgr.getIndex(name)]);
         fruit.getObjectByName("sprite").addChild(sprite);
         entities.push(fruit);
+        layers.addChild(fruit);
         return new DraggableEntity(sprite.tile.width, sprite.tile.height, fruit, s2d);
     }
 
@@ -165,6 +169,7 @@ class MainPort extends hxd.App {
         var sprite = new h2d.Bitmap(bmp.tile);
         plate.getObjectByName("sprite").addChild(sprite);
         entities.push(plate);
+        layers.addChild(plate);
         return new DraggableEntity(sprite.tile.width, sprite.tile.height, plate, s2d);
     }
     

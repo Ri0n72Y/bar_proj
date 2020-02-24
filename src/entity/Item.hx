@@ -38,9 +38,6 @@ class Plate extends Item {
         contains.add(item, 0);
         this.contains.ysort(0);
     }
-
-    override function update(dt:Float) {
-    }
 }
 
 class Juice extends Food {

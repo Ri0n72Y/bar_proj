@@ -597,10 +597,10 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 				return function(e1) {
 					_gthis.layers.addChildAt(menu.children[0],3);
 					_gthis.onLeaveMenu(menu);
-					var item = null;
-					if(((i1[0]) instanceof entity_Item)) {
+					var item = i1[0];
+					if(((item) instanceof entity_Fruit)) {
 						item = _gthis.spawnFruit(i1[0].name,i1[0].part);
-					} else if(((i1[0]) instanceof entity_Item)) {
+					} else if(((item) instanceof entity_Plate)) {
 						item = _gthis.spawnPlate(i1[0].size);
 					}
 					item.onPush(e1);
@@ -630,6 +630,7 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		var sprite = new h2d_Bitmap(this.resManager.res[this.index.fruits][this.getFruitIndex(type)][ResMgr.getIndex(name)]);
 		fruit.getObjectByName("sprite").addChild(sprite);
 		this.entities.push(fruit);
+		this.layers.addChild(fruit);
 		return new DraggableEntity(sprite.tile.width,sprite.tile.height,fruit,this.s2d);
 	}
 	,spawnPlate: function(type) {
@@ -638,6 +639,7 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		var sprite = new h2d_Bitmap(bmp.tile);
 		plate.getObjectByName("sprite").addChild(sprite);
 		this.entities.push(plate);
+		this.layers.addChild(plate);
 		return new DraggableEntity(sprite.tile.width,sprite.tile.height,plate,this.s2d);
 	}
 	,getFruitIndex: function(type) {
@@ -3170,8 +3172,6 @@ entity_Plate.prototype = $extend(entity_Item.prototype,{
 		this.food.push(item);
 		this.contains.addChildAt(item,0);
 		this.contains.ysort(0);
-	}
-	,update: function(dt) {
 	}
 	,__class__: entity_Plate
 });
