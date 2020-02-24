@@ -51,11 +51,11 @@ class ResMgr {
         }
     }
     static var fruitTextures = [
-        ["apple", "apple_half", "apple_peel", "apple_slice", "apple_slicegroup", "apple_dice"],
-        ["orange", "orange_half", "orange_peel", "orange_slice", "orange_slicegroup"],
-        ["lemon", "lemon_half", "lemon_slice", "lemon_slicegroup"],
-        ["kiwi", "kiwi_half", "kiwi_slice", "kiwi_slicegroup", "kiwi_smash"],
-        ["blueberry", "blueberry_mush"]
+        ["apple", "apple_half", "apple_peel", "apple_slice", "apple_slicegroup", "apple_dice", "apple_dicebowl", "apple_mush", "apple_juice"],
+        ["orange", "orange_half", "orange_peel", "orange_slice", "orange_slicegroup","orange_juice"],
+        ["lemon", "lemon_half", "lemon_slice", "lemon_slicegroup", "lemon_juice"],
+        ["kiwi", "kiwi_half", "kiwi_slice", "kiwi_slicegroup", "kiwi_dice", "kiwi_dicebowl", "kiwi_mush", "kiwi_juice"],
+        ["blueberry", "blueberry_mush", "blueberry_juice"]
     ];
 
     static var testmap = 

@@ -156,6 +156,7 @@ class MainPort extends hxd.App {
         var fruit = new entity.Item.Fruit(type, part); 
         var name = type;
         if (part != "whole") name = name + "_" + part;
+        if (ResMgr.getIndex(name) == -1) return null;
         var sprite = new h2d.Bitmap(resManager.res[index.fruits][getFruitIndex(type)][ResMgr.getIndex(name)]);
         fruit.getObjectByName("sprite").addChild(sprite);
         entities.push(fruit);
@@ -215,7 +216,7 @@ class MainPort extends hxd.App {
                                 m];
                     fac.sprites = list;
                     fac.state = 0;
-                    fac.getObjectByName("sprite").addChild(list[0]);
+                    fac.getObjectByName("sprite").addChild(list[1]);
                     fac.state_update = function (dt: Float) {
                         if (fac.isSpriteChanged)
                             fac.sprite = fac.sprites[fac.state];
@@ -230,6 +231,14 @@ class MainPort extends hxd.App {
 
                     fac.interact = function (e: Dynamic) {
                         var f: entity.Item.Fruit = e;
+                        var outs = ["dicebowl", "mushbowl", "juice"];
+                        var items = [];
+                        for (n in outs) {
+                            var i = spawnFruit(f.name, n);
+                            if (i != null) 
+                                items.push(i);
+                        }
+                        onOpenBubbles(fac, items);
                     }
                 case "cut":
                     var m : Dynamic = findByNameInArray("cut_open", list);

@@ -123,8 +123,8 @@ class AssetManager {
             case "apple_slicegroup" : return msizeData.apple_slicegroup;
             case "apple_dice" : return msizeData.apple_dice;
             case "apple_juice" : return msizeData.apple_juice;
-            case "bow_apple_dice" : return msizeData.bow_apple_dice;
-            case "bow_apple_mush" : return msizeData.bow_apple_mush;
+            case "apple_dicebowl" : return msizeData.bow_apple_dice;
+            case "apple_mush" : return msizeData.bow_apple_mush;
             
             //orange
             case "orange" : return msizeData.orange;  
@@ -157,10 +157,10 @@ class AssetManager {
             case "kiwi_half" : return msizeData.kiwi_half;
             case "kiwi_slice" : return msizeData.kiwi_slice;
             case "kiwi_slicegroup" : return msizeData.kiwi_slicegroup;
-            case "kiwi_smash" : return msizeData.kiwi_smash;
+            case "kiwi_dice" : return msizeData.kiwi_smash;
             case "kiwi_juice" : return msizeData.kiwi_juice;
-            case "bow_kiwi_smash" : return msizeData.bow_kiwi_smash;
-            case "bowl_kiwi_mush" : return msizeData.bowl_kiwi_mush;
+            case "kiwi_dicebowl" : return msizeData.bow_kiwi_smash;
+            case "kiwi_mush" : return msizeData.bowl_kiwi_mush;
             
             
             case "round_wood" : return msizeData.round_wood;
