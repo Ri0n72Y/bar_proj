@@ -576,10 +576,6 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 			}
 			var mix = _gthis.findByNameInArray("mixer",_gthis.facilities);
 			mix.interact(MainPort.hold);
-			var _this = MainPort.hold;
-			if(_this != null && _this.parent != null) {
-				_this.parent.removeChild(_this);
-			}
 			MainPort.hold = null;
 		};
 		var cutSelector = new h2d_Interactive(64,60,selector);
@@ -593,10 +589,6 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 			}
 			var cut = _gthis.findByNameInArray("cut",_gthis.facilities);
 			cut.interact(MainPort.hold);
-			var _this1 = MainPort.hold;
-			if(_this1 != null && _this1.parent != null) {
-				_this1.parent.removeChild(_this1);
-			}
 			MainPort.hold = null;
 		};
 		var cbSelector = new h2d_Interactive(46,25,selector);
@@ -609,11 +601,6 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 				selector.parent.removeChild(selector);
 			}
 			var cb = _gthis.findByNameInArray("chopping_board",_gthis.facilities);
-			cb.interact(MainPort.hold);
-			var _this2 = MainPort.hold;
-			if(_this2 != null && _this2.parent != null) {
-				_this2.parent.removeChild(_this2);
-			}
 			MainPort.hold = null;
 		};
 	}
@@ -782,6 +769,13 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 								items.push(i1);
 							}
 						}
+						if(items.length <= 0) {
+							return;
+						}
+						var _this = MainPort.hold;
+						if(_this != null && _this.parent != null) {
+							_this.parent.removeChild(_this);
+						}
 						_gthis.onOpenBubbles(fac2[0],items);
 					};
 				})(fac);
@@ -814,7 +808,7 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 				fac[0].interact = (function(fac5) {
 					return function(e1) {
 						var f2 = e1;
-						var outs1 = ["dicebowl","slicegroup","half"];
+						var outs1 = ["dicebowl","slicegroup"];
 						var x1 = [169,164,180];
 						var y1 = [282,246,215];
 						var items1 = [];
@@ -833,6 +827,13 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 								++k1;
 								items1.push(i3);
 							}
+						}
+						if(items1.length <= 0) {
+							return;
+						}
+						var _this1 = MainPort.hold;
+						if(_this1 != null && _this1.parent != null) {
+							_this1.parent.removeChild(_this1);
 						}
 						_gthis.onOpenBubbles(fac5[0],items1);
 					};
@@ -873,6 +874,13 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 								++k2;
 								items2.push(i4);
 							}
+						}
+						if(items2.length <= 0) {
+							return;
+						}
+						var _this2 = MainPort.hold;
+						if(_this2 != null && _this2.parent != null) {
+							_this2.parent.removeChild(_this2);
 						}
 						_gthis.onOpenBubbles(fac7[0],items2);
 					};
@@ -2645,10 +2653,10 @@ var DraggableEntity = function(width,height,entity1,s2d) {
 		var _g11 = entity1;
 		_g11.posChanged = true;
 		_g11.scaleY *= 0.625;
-		var v = s2d.get_mouseX() - width * 0.5 / 1.6;
+		var v = s2d.get_mouseX() - width * 0.5;
 		entity1.posChanged = true;
 		entity1.x = v;
-		var v1 = s2d.get_mouseY() - height * 0.5 / 1.6;
+		var v1 = s2d.get_mouseY() - height * 0.5;
 		entity1.posChanged = true;
 		entity1.y = v1;
 		var layers = entity1.parent;

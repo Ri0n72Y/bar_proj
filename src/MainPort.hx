@@ -117,7 +117,6 @@ class MainPort extends hxd.App {
             selector.remove();
             var mix:Dynamic = findByNameInArray("mixer", facilities);
             mix.interact(hold);
-            hold.remove();
             hold = null;
         }
         var cutSelector = new h2d.Interactive(64, 60, selector);
@@ -126,7 +125,6 @@ class MainPort extends hxd.App {
             selector.remove();
             var cut:Dynamic = findByNameInArray("cut", facilities);
             cut.interact(hold);
-            hold.remove();
             hold = null;
         }
         var cbSelector = new h2d.Interactive(46, 25, selector);
@@ -134,8 +132,6 @@ class MainPort extends hxd.App {
         cbSelector.onRelease = function (e:hxd.Event) {
             selector.remove();
             var cb:Dynamic = findByNameInArray("chopping_board", facilities);
-            cb.interact(hold);
-            hold.remove();
             hold = null;
         }
     }
@@ -285,6 +281,8 @@ class MainPort extends hxd.App {
                                 items.push(i);
                             }
                         }
+                        if (items.length <= 0) return;
+                        hold.remove();
                         onOpenBubbles(fac, items);
                     }
                 case "cut":
@@ -321,6 +319,8 @@ class MainPort extends hxd.App {
                                 items.push(i);
                             }
                         }
+                        if (items.length <= 0) return;
+                        hold.remove();
                         onOpenBubbles(fac, items);
                     }
                 case "chopping_board":
@@ -357,6 +357,8 @@ class MainPort extends hxd.App {
                                 items.push(i);
                             }
                         }
+                        if (items.length <= 0) return;
+                        hold.remove();
                         onOpenBubbles(fac, items);
                     }
                 default:
@@ -444,8 +446,8 @@ class DraggableEntity extends h2d.Interactive {
             isFollow = false; MainPort.IS_DRAGGING = false;
             MainPort.hold = null;
             entity.alpha = 1; entity.scale(1 / MainPort.SELECT_SCALE);
-            entity.x = s2d.mouseX - width * 0.5 / MainPort.SELECT_SCALE;
-            entity.y = s2d.mouseY - height * 0.5 / MainPort.SELECT_SCALE;
+            entity.x = s2d.mouseX - width * 0.5;
+            entity.y = s2d.mouseY - height * 0.5;
             var layers: Dynamic = entity.parent;
             layers.addChildAt(entity, ResMgr.LAYER_ENTITY);
             layers.ysort(ResMgr.LAYER_ENTITY); // bug posible
