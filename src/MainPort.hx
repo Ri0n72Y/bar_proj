@@ -94,7 +94,7 @@ class MainPort extends hxd.App {
             fruit.onPush = function (e: hxd.Event){
                 onLeaveMenu(menu);
                 var item = spawnFruit(f, "whole");
-                item.onPush(e);
+                item.onPush(e); 
             }
         }
         // bound menu button
@@ -114,25 +114,21 @@ class MainPort extends hxd.App {
         var mixSelector = new h2d.Interactive(51, 54, selector);
         mixSelector.x = 213; mixSelector.y = 314;
         mixSelector.onRelease = function (e:hxd.Event) {
-            selector.remove();
             var mix:Dynamic = findByNameInArray("mixer", facilities);
             mix.interact(hold);
-            hold = null;
+            onLeaveMenu(selector);
         }
         var cutSelector = new h2d.Interactive(64, 60, selector);
         cutSelector.x = 199; cutSelector.y = 238;
         cutSelector.onRelease = function (e:hxd.Event) {
-            selector.remove();
             var cut:Dynamic = findByNameInArray("cut", facilities);
             cut.interact(hold);
-            hold = null;
         }
         var cbSelector = new h2d.Interactive(46, 25, selector);
         cbSelector.x = 117; cbSelector.y = 404;
         cbSelector.onRelease = function (e:hxd.Event) {
-            selector.remove();
             var cb:Dynamic = findByNameInArray("chopping_board", facilities);
-            hold = null;
+            cb.interact(hold);
         }
     }
     function onOpenMenu(menu:h2d.Object) {
@@ -283,6 +279,7 @@ class MainPort extends hxd.App {
                         }
                         if (items.length <= 0) return;
                         hold.remove();
+                        hold = null;
                         onOpenBubbles(fac, items);
                     }
                 case "cut":
@@ -321,6 +318,7 @@ class MainPort extends hxd.App {
                         }
                         if (items.length <= 0) return;
                         hold.remove();
+                        hold = null;
                         onOpenBubbles(fac, items);
                     }
                 case "chopping_board":
@@ -359,6 +357,7 @@ class MainPort extends hxd.App {
                         }
                         if (items.length <= 0) return;
                         hold.remove();
+                        hold = null;
                         onOpenBubbles(fac, items);
                     }
                 default:
@@ -410,8 +409,11 @@ class MainPort extends hxd.App {
     }
 
     override function update(dt: Float) {
-        if ((IS_DRAGGING)&& !(IS_MENU_OPEN))
+        if ((IS_DRAGGING)&& !(IS_MENU_OPEN)) {
             layers.add(findByNameInArray("selector", menus), ResMgr.LAYER_UI);
+        } else if (!IS_DRAGGING) {
+            layers.removeChild(findByNameInArray("selector", menus));
+        }
         for (entity in entities) {
             entity.update(dt);
         }
@@ -430,9 +432,10 @@ class DraggableEntity extends h2d.Interactive {
     public function new(width, height, entity, s2d) {
         super(width, height, entity);
         this.s2d = s2d;
+        this.name = "drag";
         this.e = entity;
         this.onPush = function(event: hxd.Event) {
-            if (MainPort.IS_MENU_OPEN) return;
+            if ((MainPort.IS_MENU_OPEN) || isFollow) return;
             entity.alpha = 0.8;
             entity.scale(MainPort.SELECT_SCALE);
             var layer = entity.parent;

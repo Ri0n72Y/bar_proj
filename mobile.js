@@ -571,12 +571,9 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		mixSelector.posChanged = true;
 		mixSelector.y = 314;
 		mixSelector.onRelease = function(e2) {
-			if(selector != null && selector.parent != null) {
-				selector.parent.removeChild(selector);
-			}
 			var mix = _gthis.findByNameInArray("mixer",_gthis.facilities);
 			mix.interact(MainPort.hold);
-			MainPort.hold = null;
+			_gthis.onLeaveMenu(selector);
 		};
 		var cutSelector = new h2d_Interactive(64,60,selector);
 		cutSelector.posChanged = true;
@@ -584,12 +581,8 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		cutSelector.posChanged = true;
 		cutSelector.y = 238;
 		cutSelector.onRelease = function(e3) {
-			if(selector != null && selector.parent != null) {
-				selector.parent.removeChild(selector);
-			}
 			var cut = _gthis.findByNameInArray("cut",_gthis.facilities);
 			cut.interact(MainPort.hold);
-			MainPort.hold = null;
 		};
 		var cbSelector = new h2d_Interactive(46,25,selector);
 		cbSelector.posChanged = true;
@@ -597,11 +590,8 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		cbSelector.posChanged = true;
 		cbSelector.y = 404;
 		cbSelector.onRelease = function(e4) {
-			if(selector != null && selector.parent != null) {
-				selector.parent.removeChild(selector);
-			}
 			var cb = _gthis.findByNameInArray("chopping_board",_gthis.facilities);
-			MainPort.hold = null;
+			cb.interact(MainPort.hold);
 		};
 	}
 	,onOpenMenu: function(menu) {
@@ -776,6 +766,7 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 						if(_this != null && _this.parent != null) {
 							_this.parent.removeChild(_this);
 						}
+						MainPort.hold = null;
 						_gthis.onOpenBubbles(fac2[0],items);
 					};
 				})(fac);
@@ -835,6 +826,7 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 						if(_this1 != null && _this1.parent != null) {
 							_this1.parent.removeChild(_this1);
 						}
+						MainPort.hold = null;
 						_gthis.onOpenBubbles(fac5[0],items1);
 					};
 				})(fac);
@@ -882,6 +874,7 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 						if(_this2 != null && _this2.parent != null) {
 							_this2.parent.removeChild(_this2);
 						}
+						MainPort.hold = null;
 						_gthis.onOpenBubbles(fac7[0],items2);
 					};
 				})(fac);
@@ -1020,6 +1013,8 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 	,update: function(dt) {
 		if(MainPort.IS_DRAGGING && !MainPort.IS_MENU_OPEN) {
 			this.layers.addChildAt(this.findByNameInArray("selector",this.menus),5);
+		} else if(!MainPort.IS_DRAGGING) {
+			this.layers.removeChild(this.findByNameInArray("selector",this.menus));
 		}
 		var _g = 0;
 		var _g1 = this.entities;
@@ -2618,9 +2613,10 @@ var DraggableEntity = function(width,height,entity1,s2d) {
 	var _gthis = this;
 	h2d_Interactive.call(this,width,height,entity1);
 	this.s2d = s2d;
+	this.name = "drag";
 	this.e = entity1;
 	this.onPush = function(event) {
-		if(MainPort.IS_MENU_OPEN) {
+		if(MainPort.IS_MENU_OPEN || _gthis.isFollow) {
 			return;
 		}
 		entity1.alpha = 0.8;
