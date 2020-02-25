@@ -41,21 +41,35 @@ class Plate extends Item {
 }
 
 class Juice extends Food {
-    var juiceType: String;
-    var mix: Array<Float>;
+    var juiceType: String; // a specific fruit or mix
+    var mix: Array<Float>; // content that mixed inside
+
+    static var fruits = ["apple", "orange", "lemon", "kiwi", "blueberry"];
     public function new() {
         super();
-        mix = [];
-    }
-    public function getMix() {
-        return(mix);
+        mix = [0, 0, 0, 0, 0];
     }
     public function put(juice:Juice) {
-        var i = 0;
-        for (e in mix) {
-            e = (e + juice.mix[i]) / 2;
-            i ++; 
+        for (i in 0...mix.length) {
+            mix[i] += juice.mix[i];
         }
+
+    }
+    public function getAmount():Float {
+        var r = 0.0;
+        for (i in mix)
+            r += i;
+        return r;
+    }
+    public function getFlavor() {
+        var r, g, b;
+        var t = AssetManager.mtaste;
+        for (i in 0...mix.length) {
+            r += t.taste[i][0] * mix[i]; // fruit sweetness
+            g += t.taste[i][1] * mix[i]; // fruit sourness
+            b += t.juice[i][0] * mix[i]; // juice hardness
+        }
+        return Std.int(r * 255) << 16 + Std.int(g * 255) << 8 + Std.int(b * 255)
     }
 }
 

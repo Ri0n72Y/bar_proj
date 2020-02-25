@@ -23,6 +23,7 @@ class AssetManager {
     public static var tileSizeData : Dynamic;
     public static var msizeData : Dynamic;
     public static var mlayoutData : Dynamic;
+    public static var mtaste : Dynamic;
 
 
     public static function getAssetSize(name : String) : Dynamic{

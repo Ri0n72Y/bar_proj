@@ -1,4 +1,3 @@
-import haxe.Json;
 import haxe.macro.Expr.Error;
 import h2d.Object;
 import h2d.Tile;
@@ -84,8 +83,10 @@ ddgggggggggdddd..
                 tiles = hxd.Res.m256xfac.toTile();
                 var s = haxe.Json.parse(hxd.Res.msizeData.entry.getText());
                 AssetManager.msizeData = s;
-                var m = Json.parse(hxd.Res.mlayoutData.entry.getText());
+                var m = haxe.Json.parse(hxd.Res.mlayoutData.entry.getText());
                 AssetManager.mlayoutData = m;
+                var t = haxe.Json.parse(hxd.Res.mtaste.entry.getText());
+                AssetManager.mtaste = t;
                 loadMobile();
             default :
                 throw new Error("Unknown Resourse Scenario.", {min: 49, max: 62, file: "src/ResMgr"});
