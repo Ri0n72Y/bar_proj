@@ -2,6 +2,7 @@ import h2d.filter.ColorMatrix;
 import entity.Entity;
 import entity.Item.Fruit;
 import entity.Item.Plate;
+import entity.Item.Glass;
 import h2d.filter.Blur;
 import haxe.macro.Expr.Error;
 import entity.Entity.Character;
@@ -216,7 +217,7 @@ class MainPort extends hxd.App {
         return fruitIndex.indexOf(type);
     }
 
-    static function setColor(c:Int, alpha:Float, obj:h2d.Object) {
+    public static function setColor(c:Int, alpha:Float, obj:h2d.Object) {
         var matrix = new h3d.Matrix();
         matrix.colorSet(c, alpha);
         var shader = new h2d.filter.ColorMatrix(matrix);
@@ -253,7 +254,7 @@ class MainPort extends hxd.App {
                         var i1 = new Plate("bowl"); i1.x = 164; i1.y = 160; i1.getObjectByName("sprite").addChild(findByNameInArray("bowl", resManager.res[index.items]));
                         var i2 = new Plate("dish_small"); i2.x = 175; i2.y = 191; i2.getObjectByName("sprite").addChild(findByNameInArray("dish_small", resManager.res[index.items]));
                         var i3 = new Plate("dish_large"); i3.x = 207; i3.y = 213; i3.getObjectByName("sprite").addChild(findByNameInArray("dish_large", resManager.res[index.items]));
-                        var i4 = new Plate("glass"); i4.x = 240; i4.y = 221; i4.getObjectByName("sprite").addChild(findByNameInArray("glass", resManager.res[index.items]));
+                        var i4 = new Glass(); i4.x = 240; i4.y = 221; i4.getObjectByName("sprite").addChild(findByNameInArray("glass", resManager.res[index.items]));
                         onOpenBubbles(fac, [i1,i2,i3,i4]);
                     }
                 case "mixer":
@@ -444,7 +445,7 @@ class DraggableEntity extends h2d.Interactive {
         this.onPush = function(event: hxd.Event) {
             if ((MainPort.IS_MENU_OPEN) || isFollow) return;
             entity.alpha = 0.8;
-            entity.scale(MainPort.SELECT_SCALE);
+            entity.setScale(MainPort.SELECT_SCALE);
             var layer = entity.parent;
             if ((layer != null) && (layer.getChildIndex(entity) != -1)) layer.removeChild(entity);
             layer.addChildAt(entity, ResMgr.LAYER_UI);
@@ -455,7 +456,7 @@ class DraggableEntity extends h2d.Interactive {
             if (MainPort.IS_MENU_OPEN) return;
             isFollow = false; MainPort.IS_DRAGGING = false;
             MainPort.hold = null;
-            entity.alpha = 1; entity.scale(1 / MainPort.SELECT_SCALE);
+            entity.alpha = 1; entity.setScale(1);
             entity.x = s2d.mouseX - width * 0.5;
             entity.y = s2d.mouseY - height * 0.5;
             var layers: Dynamic = entity.parent;

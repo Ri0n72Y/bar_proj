@@ -20,6 +20,7 @@ enum FruitType {
 
 class Plate extends Item {
     public var isDirty : Bool;
+    public var isEmpty : Bool;
     var food : Array<Dynamic>;
     var contains : h2d.Layers;
     public var size : String;
@@ -30,6 +31,7 @@ class Plate extends Item {
         contains.name = "food";
         this.addChild(contains);
         isDirty = false;
+        isEmpty = true;
         food = [];
     }
 
@@ -37,6 +39,26 @@ class Plate extends Item {
         food.push(item);
         contains.add(item, 0);
         this.contains.ysort(0);
+    }
+}
+
+class Glass extends Plate {
+    public function new() {
+        super("glass");
+    }
+
+    override function put(item:Item) {
+        var sp = this.getObjectByName("sprite");
+        if (isEmpty)
+            sp.addChildAt(item, 0);
+        else {
+            var r:Dynamic = sp.getChildAt(0); // should be class juice
+            if ((item is Fruit))
+                r.putFruit(item);
+            else if ((item is Juice))
+                r.put(item);
+            //TODO else if ((item is Tea)) 
+        }
     }
 }
 
@@ -53,7 +75,22 @@ class Juice extends Food {
         for (i in 0...mix.length) {
             mix[i] += juice.mix[i];
         }
-
+        updateColor();
+    }
+    public function putFriut(juice:Fruit):Bool{
+        if (juice.part != "juice")
+            return false;
+        var t = AssetManager.mtaste;
+        var i = fruits.indexOf(juice.fruitType); // fruit id
+        mix[i] += t.juice[i][1];
+        return true;
+    }
+    function updateColor() {
+        // change colour
+        var matrix = new h3d.Matrix();
+        matrix.colorSet(getFlavor(), 0.8);
+        var shader = new h2d.filter.ColorMatrix(matrix);
+        this.filter = shader;
     }
     public function getAmount():Float {
         var r = 0.0;
@@ -61,7 +98,7 @@ class Juice extends Food {
             r += i;
         return r;
     }
-    public function getFlavor() {
+    public function getFlavor():Int {
         var r, g, b;
         var t = AssetManager.mtaste;
         for (i in 0...mix.length) {
@@ -69,7 +106,9 @@ class Juice extends Food {
             g += t.taste[i][1] * mix[i]; // fruit sourness
             b += t.juice[i][0] * mix[i]; // juice hardness
         }
-        return Std.int(r * 255) << 16 + Std.int(g * 255) << 8 + Std.int(b * 255)
+        var sum = r + g + b;
+        r = r / sum; g = g / sum; b = b / sum; // normalize
+        return Std.int(r * 255) << 16 + Std.int(g * 255) << 8 + Std.int(b * 255);
     }
 }
 
