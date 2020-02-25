@@ -67,7 +67,7 @@ class Food extends Item {
 
 class Fruit extends Food{
     var flavor : String; //unused
-    var tastes : Array<Float>; //unused
+    var tastes : Array<Float>; 
     public var fruitType : String;
     public var part : String;
     var generic_info : Map<String, Float>; //unused

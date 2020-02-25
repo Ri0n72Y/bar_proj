@@ -1,4 +1,4 @@
-import h2d.Object;
+import h2d.filter.ColorMatrix;
 import entity.Entity;
 import entity.Item.Fruit;
 import entity.Item.Plate;
@@ -61,7 +61,6 @@ class MainPort extends hxd.App {
         // slimes
         var res = resManager.res;
         var slimeSprite = res[index.slimes];
-
         var i = 0;
         while (i < 8) {
             var slime = new Character(slimeSprite.slice(i * 4, (i+1)*4)); // main chef
@@ -215,6 +214,14 @@ class MainPort extends hxd.App {
     
     function getFruitIndex(type: String){
         return fruitIndex.indexOf(type);
+    }
+
+    static function setColor(c:Int, alpha:Float, obj:h2d.Object) {
+        var matrix = new h3d.Matrix();
+        matrix.colorSet(c, alpha);
+        var shader = new h2d.filter.ColorMatrix(matrix);
+        var sp = obj.getObjectByName("sprite");
+        sp.filter = shader;
     }
 
     function loaditems(){
