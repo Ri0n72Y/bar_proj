@@ -177,7 +177,7 @@ class MainPort extends hxd.App {
         for (c in containers) {
             var sprite:h2d.Object = c.getObjectByName("sprite");
             var bmp:Dynamic = sprite.getChildAt(sprite.numChildren - 1);
-            var i = new h2d.Interactive(bmp.tile.width, bmp.tile.height, container);
+            var i = new h2d.Interactive(bmp.tile.width*1.5, bmp.tile.height*1.5, container);
             i.x = c.x; i.y = c.y;
             i.onRelease = function (e:hxd.Event) {
                 if (!IS_DRAGGING) return;
@@ -230,7 +230,7 @@ class MainPort extends hxd.App {
         fruit.getObjectByName("sprite").addChild(sprite);
         entities.push(fruit);
         layers.addChild(fruit);
-        return new DraggableEntity(sprite.tile.width*1.5, sprite.tile.height*1.5, fruit, s2d);
+        return new DraggableEntity(sprite.tile.width, sprite.tile.height, fruit, s2d);
     }
 
     function spawnPlate(type: String) {
@@ -243,7 +243,7 @@ class MainPort extends hxd.App {
         plate.getObjectByName("sprite").addChild(sprite);
         entities.push(plate);
         layers.addChild(plate);
-        return new DraggableEntity(sprite.tile.width*1.5, sprite.tile.height*1.5, plate, s2d);
+        return new DraggableEntity(sprite.tile.width, sprite.tile.height, plate, s2d);
     }
     
     function getFruitIndex(type: String){
@@ -492,8 +492,8 @@ class DraggableEntity extends h2d.Interactive {
             isFollow = false; MainPort.IS_DRAGGING = false;
             MainPort.hold = null;
             e.alpha = 1; e.scale(1/MainPort.SELECT_SCALE);
-            e.x = s2d.mouseX - width * 0.5;
-            e.y = s2d.mouseY - height * 0.5;
+            e.x = s2d.mouseX - width * 0.75;
+            e.y = s2d.mouseY - height * 0.75;
             var layers: Dynamic = e.parent;
             layers.addChildAt(e, ResMgr.LAYER_ENTITY);
             layers.ysort(ResMgr.LAYER_ENTITY); // bug posible
@@ -501,8 +501,8 @@ class DraggableEntity extends h2d.Interactive {
     }
     public function update(dt:Float) {
         if (isFollow) {
-            this.parent.x = s2d.mouseX - width * MainPort.SELECT_SCALE * 0.5;
-            this.parent.y = s2d.mouseY - height * MainPort.SELECT_SCALE * 0.5;
+            this.parent.x = s2d.mouseX - width * MainPort.SELECT_SCALE * 0.75;
+            this.parent.y = s2d.mouseY - height * MainPort.SELECT_SCALE * 0.75;
         }
     }
 }

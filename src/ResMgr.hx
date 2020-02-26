@@ -200,6 +200,7 @@ ddgggggggggdddd..
             if (fac.indexOf(n) != -1)
                 item = tiles; 
             var bmp = new h2d.Bitmap(item.sub(size.x, size.y, size.w, size.h));
+            if (n == "glass") bmp.alpha = 0.8;
             bmp.name = n;
             layout_result.push(bmp);
         }

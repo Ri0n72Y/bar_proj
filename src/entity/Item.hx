@@ -68,7 +68,7 @@ class Glass extends Plate {
         } else if ((item is entity.Item.Juice))
             r.put(item);
         //TODO else if ((item is Tea)) 
-        r.updateColor();
+        r.updateType();
         item.remove();
         return true;
     }
@@ -77,12 +77,15 @@ class Glass extends Plate {
 class Juice extends Food {
     var juiceType: String; // a specific fruit or mix
     var mix: Array<Float>; // content that mixed inside
+    var bmp:h2d.Bitmap;
 
     static var fruits = ["apple", "orange", "lemon", "kiwi", "blueberry"];
+    static var colors = [0xffff99, 0xffcc33, 0xffcc66, 0x99cc66, 0x660033];
     public function new() {
         super();
         mix = [0, 0, 0, 0, 0];
-        this.getObjectByName("sprite").addChild(new h2d.Bitmap(hxd.Res.mui.toTile().sub(0, 24, 16, 16)));
+        bmp = new h2d.Bitmap(hxd.Res.mui.toTile().sub(0, 24, 16, 16));
+        this.getObjectByName("sprite").addChild(bmp);
     }
     public function put(juice:Juice) {
         for (i in 0...mix.length) {
@@ -94,16 +97,20 @@ class Juice extends Food {
         var i = fruits.indexOf(juice.fruitType); // fruit id
         mix[i] += t.juice[i];
     }
-    public function updateColor() {
-        updateType();
+    function updateColor() {
         // change colour
         var matrix = new h3d.Matrix();
-        matrix.colorSet(getFlavor(), 0.8);
+        var f;
+        if (juiceType == "mix")
+            f = getFlavor();
+        else 
+            f = colors[fruits.indexOf(juiceType)];
+        matrix.colorSet(f, 0.8);
         var shader = new h2d.filter.ColorMatrix(matrix);
         this.filter = shader;
     }
 
-    function updateType() {
+    public function updateType() {
         var max = 0.0;
         var name: String = "mix";
         for (i in 0...mix.length) 
@@ -112,10 +119,12 @@ class Juice extends Food {
                 name = fruits[i];
             }
         var r = getAmount();
-        if (max / r < 0.7)
+        if (max / r < 0.7) {
             juiceType = "mix";
-        else
+        } else {
             juiceType = name;
+        }
+        updateColor();
     }
 
     public function getAmount():Float {
