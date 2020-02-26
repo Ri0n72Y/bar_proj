@@ -35,10 +35,11 @@ class Plate extends Item {
         food = [];
     }
 
-    public function put(item: Item) {
+    public function put(item: Item):Bool {
         food.push(item);
         contains.add(item, 0);
         this.contains.ysort(0);
+        return true;
     }
 }
 
@@ -47,18 +48,28 @@ class Glass extends Plate {
         super("glass");
     }
 
-    override function put(item:Item) {
+    override function put(item:Item):Bool {
+        if (!(item is entity.Item.Food)) return false;
+        var i:Dynamic=item;
+        if (i.part != "juice")
+            return false;
         var sp = this.getObjectByName("sprite");
-        if (isEmpty)
-            sp.addChildAt(item, 0);
-        else {
-            var r:Dynamic = sp.getChildAt(0); // should be class juice
-            if ((item is Fruit))
-                r.putFruit(item);
-            else if ((item is Juice))
-                r.put(item);
-            //TODO else if ((item is Tea)) 
+        var r:Dynamic;
+        if (isEmpty) { // checi if glass is empty
+            r = new Juice();
+            sp.addChildAt(r, 0);
+        } else {
+            r = sp.getChildAt(0); // should be class juice
         }
+
+        if ((item is entity.Item.Fruit)) {
+            r.putFruit(item); // possible cannot put
+        } else if ((item is entity.Item.Juice))
+            r.put(item);
+        //TODO else if ((item is Tea)) 
+        r.updateColor();
+        item.remove();
+        return true;
     }
 }
 
@@ -70,45 +81,71 @@ class Juice extends Food {
     public function new() {
         super();
         mix = [0, 0, 0, 0, 0];
+        this.getObjectByName("sprite").addChild(new h2d.Bitmap(hxd.Res.mui.toTile().sub(0, 24, 16, 16)));
     }
     public function put(juice:Juice) {
         for (i in 0...mix.length) {
             mix[i] += juice.mix[i];
         }
-        updateColor();
     }
-    public function putFriut(juice:Fruit):Bool{
-        if (juice.part != "juice")
-            return false;
+    public function putFruit(juice:Fruit){
         var t = AssetManager.mtaste;
         var i = fruits.indexOf(juice.fruitType); // fruit id
-        mix[i] += t.juice[i][1];
-        return true;
+        mix[i] += t.juice[i];
     }
-    function updateColor() {
+    public function updateColor() {
+        updateType();
         // change colour
         var matrix = new h3d.Matrix();
         matrix.colorSet(getFlavor(), 0.8);
         var shader = new h2d.filter.ColorMatrix(matrix);
         this.filter = shader;
     }
+
+    function updateType() {
+        var max = 0.0;
+        var name: String = "mix";
+        for (i in 0...mix.length) 
+            if (mix[i] > max) {
+                max = mix[i];
+                name = fruits[i];
+            }
+        var r = getAmount();
+        if (max / r < 0.7)
+            juiceType = "mix";
+        else
+            juiceType = name;
+    }
+
     public function getAmount():Float {
         var r = 0.0;
         for (i in mix)
             r += i;
         return r;
     }
+
     public function getFlavor():Int {
-        var r, g, b;
+        var r = 0.0, g = 0.0;
         var t = AssetManager.mtaste;
         for (i in 0...mix.length) {
             r += t.taste[i][0] * mix[i]; // fruit sweetness
             g += t.taste[i][1] * mix[i]; // fruit sourness
-            b += t.juice[i][0] * mix[i]; // juice hardness
+        }
+        var b = 0.0; // juice madness
+        var chaosFactor:Float = fruits.length;
+        if (juiceType != "mix") { 
+            chaosFactor /= 2;
+            b -= mix[fruits.indexOf(juiceType)] / chaosFactor;
+        }
+        for (i in 0...mix.length) {
+            b += mix[i] / chaosFactor;
         }
         var sum = r + g + b;
         r = r / sum; g = g / sum; b = b / sum; // normalize
-        return Std.int(r * 255) << 16 + Std.int(g * 255) << 8 + Std.int(b * 255);
+        var c = Std.int(r * 255) << 16;
+        c += Std.int(g * 255) << 8;
+        c += Std.int(b * 255);
+        return c;
     }
 }
 

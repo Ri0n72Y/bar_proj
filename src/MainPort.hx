@@ -18,6 +18,7 @@ class MainPort extends hxd.App {
     public static var hold : h2d.Object;
     public var resManager : ResMgr;
     public static var IS_MENU_OPEN : Bool;
+    public static var IS_SELECTOR_ACTIVE : Bool;
     public static var IS_DRAGGING : Bool;
     static inline var FIXED_WIDTH = 270; 
     static inline var FIXED_HEIGHT = 480; 
@@ -108,46 +109,41 @@ class MainPort extends hxd.App {
         cupboardPut("plate", 5);
         cupboardPut("bowl", 5);
         cupboardPut("glass_down", 5);
+
         // dragging bubble menu
         var selector = new h2d.Object();
         selector.name = "selector"; menus.push(selector);
-        var mixSelector = new h2d.Interactive(51, 54, selector);
-        mixSelector.x = 213; mixSelector.y = 314;
-        mixSelector.onRelease = function (e:hxd.Event) {
-            var mix:Dynamic = findByNameInArray("mixer", facilities);
-            mix.interact(hold);
-            onLeaveMenu(selector);
-        }
-        var cutSelector = new h2d.Interactive(64, 60, selector);
-        cutSelector.x = 199; cutSelector.y = 238;
-        cutSelector.onRelease = function (e:hxd.Event) {
-            var cut:Dynamic = findByNameInArray("cut", facilities);
-            cut.interact(hold);
-        }
-        var cbSelector = new h2d.Interactive(46, 25, selector);
-        cbSelector.x = 117; cbSelector.y = 404;
-        cbSelector.onRelease = function (e:hxd.Event) {
-            var cb:Dynamic = findByNameInArray("chopping_board", facilities);
-            cb.interact(hold);
+
+        var facName = ["mixer", "cut", "chopping_board"];
+        var size = [[51,54], [64,60], [46,25]];
+        var coord = [[213,314], [199,238], [117,404]];
+        for (i in 0...facName.length) {
+            var facSelector = new h2d.Interactive(size[i][0], size[i][1], selector);
+            facSelector.x = coord[i][0]; facSelector.y = coord[i][1];
+            facSelector.onRelease = function (e:hxd.Event) {
+                var fac:Dynamic = findByNameInArray(facName[i], facilities);
+                fac.interact(hold);
+                onSelectorClose();
+            }
         }
     }
     function onOpenMenu(menu:h2d.Object) {
-        var i= 0; var max = layers.numChildren;
+        var i= 0; var max = layers.numChildren; // blur everything else
         while (i < max) {
             layers.getChildAt(i).filter = new Blur(10, 0.9, 1, 0);
             i++;
         }
-        IS_MENU_OPEN = true; 
         layers.addChildAt(menu, ResMgr.LAYER_UI);
+        IS_MENU_OPEN = true; 
     }
     function onLeaveMenu(menu:h2d.Object) {
         layers.removeChild(menu);
-        IS_MENU_OPEN = false;
         var i= 0; var max = layers.numChildren;
         while (i < max) {
             layers.getChildAt(i).filter = null;
             i++;
         }
+        IS_MENU_OPEN = false;
     }
     function onOpenBubbles(e:entity.Entity, list:Array<Dynamic>) {
         var menu = new h2d.Object();
@@ -172,6 +168,39 @@ class MainPort extends hxd.App {
         onOpenMenu(menu);
         return menu;
     }
+    function onSelectorOpen() {
+        var selector = findByNameInArray("selector", menus);
+        // containers interaction
+        var containers = entities.filter(function (f) return (f is Plate) && (f != hold));
+        var container = new h2d.Object(selector);
+        container.name = "containers";
+        for (c in containers) {
+            var sprite:h2d.Object = c.getObjectByName("sprite");
+            var bmp:Dynamic = sprite.getChildAt(sprite.numChildren - 1);
+            var i = new h2d.Interactive(bmp.tile.width, bmp.tile.height, container);
+            i.x = c.x; i.y = c.y;
+            i.onRelease = function (e:hxd.Event) {
+                if (!IS_DRAGGING) return;
+                if (!c.put(hold))
+                    c.getObjectByName("drag").onRelease(e);
+                else {
+                    IS_DRAGGING = false;
+                    hold.remove();
+                    hold = null;
+                }
+                onSelectorClose();
+            }
+        }
+        layers.addChildAt(selector, ResMgr.LAYER_UI);
+        IS_SELECTOR_ACTIVE = true;
+    }
+    function onSelectorClose() {
+        var selector = findByNameInArray("selector", menus);
+        selector.getObjectByName("containers").remove();
+        selector.remove();
+        IS_SELECTOR_ACTIVE = false;
+    }
+
     function getBubble(e: entity.Item):h2d.Bitmap {
         var bubble = new h2d.Bitmap(hxd.Res.mui.toTile().sub(0,0,22,22));
         bubble.x = e.x; bubble.y = e.y;
@@ -204,7 +233,9 @@ class MainPort extends hxd.App {
     }
 
     function spawnPlate(type: String) {
-        var plate = new Plate(type);
+        var plate:Dynamic;
+        if (type == "glass") plate = new Glass();
+            else plate = new Plate(type);
         var bmp : Dynamic = findByNameInArray(type, resManager.res[index.items]);// 套娃
         var sprite = new h2d.Bitmap(bmp.tile);
         plate.getObjectByName("sprite").addChild(sprite);
@@ -417,11 +448,13 @@ class MainPort extends hxd.App {
     }
 
     override function update(dt: Float) {
-        if ((IS_DRAGGING)&& !(IS_MENU_OPEN)) {
-            layers.add(findByNameInArray("selector", menus), ResMgr.LAYER_UI);
-        } else if (!IS_DRAGGING) {
-            layers.removeChild(findByNameInArray("selector", menus));
+        if ((IS_DRAGGING)&& !(IS_MENU_OPEN) && !(IS_SELECTOR_ACTIVE)) {
+            onSelectorOpen();
         }
+        if ((IS_MENU_OPEN) || (!IS_DRAGGING) && (IS_SELECTOR_ACTIVE)) {
+            onSelectorClose();
+        }
+
         for (entity in entities) {
             entity.update(dt);
         }
@@ -444,23 +477,23 @@ class DraggableEntity extends h2d.Interactive {
         this.e = entity;
         this.onPush = function(event: hxd.Event) {
             if ((MainPort.IS_MENU_OPEN) || isFollow) return;
-            entity.alpha = 0.8;
-            entity.setScale(MainPort.SELECT_SCALE);
-            var layer = entity.parent;
-            if ((layer != null) && (layer.getChildIndex(entity) != -1)) layer.removeChild(entity);
-            layer.addChildAt(entity, ResMgr.LAYER_UI);
+            e.alpha = 0.8;
+            e.setScale(MainPort.SELECT_SCALE);
+            var layer = e.parent;
+            if ((layer != null) && (layer.getChildIndex(e) != -1)) layer.removeChild(e);
+            layer.addChildAt(e, ResMgr.LAYER_UI);
             isFollow = true; MainPort.IS_DRAGGING = true;
-            MainPort.hold = entity;
+            MainPort.hold = e;
         }
         this.onRelease = function(event: hxd.Event) {
-            if (MainPort.IS_MENU_OPEN) return;
+            if (MainPort.IS_MENU_OPEN || (e != MainPort.hold)) return;
             isFollow = false; MainPort.IS_DRAGGING = false;
             MainPort.hold = null;
-            entity.alpha = 1; entity.setScale(1);
-            entity.x = s2d.mouseX - width * 0.5;
-            entity.y = s2d.mouseY - height * 0.5;
-            var layers: Dynamic = entity.parent;
-            layers.addChildAt(entity, ResMgr.LAYER_ENTITY);
+            e.alpha = 1; e.setScale(1);
+            e.x = s2d.mouseX - width * 0.5;
+            e.y = s2d.mouseY - height * 0.5;
+            var layers: Dynamic = e.parent;
+            layers.addChildAt(e, ResMgr.LAYER_ENTITY);
             layers.ysort(ResMgr.LAYER_ENTITY); // bug posible
         }
     }
