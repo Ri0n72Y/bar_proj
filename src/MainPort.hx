@@ -222,6 +222,7 @@ class MainPort extends hxd.App {
 
     function spawnFruit(type: String, part: String) {
         var fruit = new entity.Item.Fruit(type, part); 
+        fruit.scale(1.5);
         var name = type;
         if (part != "whole") name = name + "_" + part;
         if (ResMgr.getIndex(name) == -1) return null;
@@ -229,19 +230,20 @@ class MainPort extends hxd.App {
         fruit.getObjectByName("sprite").addChild(sprite);
         entities.push(fruit);
         layers.addChild(fruit);
-        return new DraggableEntity(sprite.tile.width, sprite.tile.height, fruit, s2d);
+        return new DraggableEntity(sprite.tile.width*1.5, sprite.tile.height*1.5, fruit, s2d);
     }
 
     function spawnPlate(type: String) {
         var plate:Dynamic;
         if (type == "glass") plate = new Glass();
             else plate = new Plate(type);
+        plate.scale(1.5);
         var bmp : Dynamic = findByNameInArray(type, resManager.res[index.items]);// 套娃
         var sprite = new h2d.Bitmap(bmp.tile);
         plate.getObjectByName("sprite").addChild(sprite);
         entities.push(plate);
         layers.addChild(plate);
-        return new DraggableEntity(sprite.tile.width, sprite.tile.height, plate, s2d);
+        return new DraggableEntity(sprite.tile.width*1.5, sprite.tile.height*1.5, plate, s2d);
     }
     
     function getFruitIndex(type: String){
@@ -478,7 +480,7 @@ class DraggableEntity extends h2d.Interactive {
         this.onPush = function(event: hxd.Event) {
             if ((MainPort.IS_MENU_OPEN) || isFollow) return;
             e.alpha = 0.8;
-            e.setScale(MainPort.SELECT_SCALE);
+            e.scale(MainPort.SELECT_SCALE);
             var layer = e.parent;
             if ((layer != null) && (layer.getChildIndex(e) != -1)) layer.removeChild(e);
             layer.addChildAt(e, ResMgr.LAYER_UI);
@@ -489,7 +491,7 @@ class DraggableEntity extends h2d.Interactive {
             if (MainPort.IS_MENU_OPEN || (e != MainPort.hold)) return;
             isFollow = false; MainPort.IS_DRAGGING = false;
             MainPort.hold = null;
-            e.alpha = 1; e.setScale(1);
+            e.alpha = 1; e.scale(1/MainPort.SELECT_SCALE);
             e.x = s2d.mouseX - width * 0.5;
             e.y = s2d.mouseY - height * 0.5;
             var layers: Dynamic = e.parent;

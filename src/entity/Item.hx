@@ -58,6 +58,7 @@ class Glass extends Plate {
         if (isEmpty) { // checi if glass is empty
             r = new Juice();
             sp.addChildAt(r, 0);
+            isEmpty = false;
         } else {
             r = sp.getChildAt(0); // should be class juice
         }
@@ -145,6 +146,7 @@ class Juice extends Food {
         var c = Std.int(r * 255) << 16;
         c += Std.int(g * 255) << 8;
         c += Std.int(b * 255);
+        trace(c);
         return c;
     }
 }

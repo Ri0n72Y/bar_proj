@@ -742,6 +742,12 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 	}
 	,spawnFruit: function(type,part) {
 		var fruit = new entity_Fruit(type,part);
+		var _g = fruit;
+		_g.posChanged = true;
+		_g.scaleX *= 1.5;
+		var _g1 = fruit;
+		_g1.posChanged = true;
+		_g1.scaleY *= 1.5;
 		var name = type;
 		if(part != "whole") {
 			name = name + "_" + part;
@@ -753,7 +759,7 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		fruit.getObjectByName("sprite").addChild(sprite);
 		this.entities.push(fruit);
 		this.layers.addChild(fruit);
-		return new DraggableEntity(sprite.tile.width,sprite.tile.height,fruit,this.s2d);
+		return new DraggableEntity(sprite.tile.width * 1.5,sprite.tile.height * 1.5,fruit,this.s2d);
 	}
 	,spawnPlate: function(type) {
 		var plate;
@@ -762,12 +768,13 @@ MainPort.prototype = $extend(hxd_App.prototype,{
 		} else {
 			plate = new entity_Plate(type);
 		}
+		plate.scale(1.5);
 		var bmp = this.findByNameInArray(type,this.resManager.res[this.index.items]);
 		var sprite = new h2d_Bitmap(bmp.tile);
 		plate.getObjectByName("sprite").addChild(sprite);
 		this.entities.push(plate);
 		this.layers.addChild(plate);
-		return new DraggableEntity(sprite.tile.width,sprite.tile.height,plate,this.s2d);
+		return new DraggableEntity(sprite.tile.width * 1.5,sprite.tile.height * 1.5,plate,this.s2d);
 	}
 	,getFruitIndex: function(type) {
 		return this.fruitIndex.indexOf(type);
@@ -2696,7 +2703,7 @@ var DraggableEntity = function(width,height,entity1,s2d) {
 			return;
 		}
 		_gthis.e.alpha = 0.8;
-		_gthis.e.setScale(1.6);
+		_gthis.e.scale(1.6);
 		var layer = _gthis.e.parent;
 		if(layer != null && layer.getChildIndex(_gthis.e) != -1) {
 			layer.removeChild(_gthis.e);
@@ -2714,7 +2721,7 @@ var DraggableEntity = function(width,height,entity1,s2d) {
 		MainPort.IS_DRAGGING = false;
 		MainPort.hold = null;
 		_gthis.e.alpha = 1;
-		_gthis.e.setScale(1);
+		_gthis.e.scale(0.625);
 		var tmp = s2d.get_mouseX();
 		_gthis.e.x = tmp - width * 0.5;
 		var tmp1 = s2d.get_mouseY();
@@ -3392,6 +3399,7 @@ entity_Glass.prototype = $extend(entity_Plate.prototype,{
 		if(this.isEmpty) {
 			r = new entity_Juice();
 			sp.addChildAt(r,0);
+			this.isEmpty = false;
 		} else {
 			r = sp.children[0];
 		}
@@ -3454,7 +3462,6 @@ entity_Juice.prototype = $extend(entity_Food.prototype,{
 		matrix._43 += (c & 255) / 255;
 		var shader = new h2d_filter_ColorMatrix(matrix);
 		this.set_filter(shader);
-		haxe_Log.trace(this.getFlavor(),{ fileName : "src/entity/Item.hx", lineNumber : 103, className : "entity.Juice", methodName : "updateColor"});
 	}
 	,updateType: function() {
 		var max = 0.0;
@@ -3516,6 +3523,7 @@ entity_Juice.prototype = $extend(entity_Food.prototype,{
 		var c = (r * 255 | 0) << 16;
 		c += (g * 255 | 0) << 8;
 		c += b * 255 | 0;
+		haxe_Log.trace(c,{ fileName : "src/entity/Item.hx", lineNumber : 149, className : "entity.Juice", methodName : "getFlavor"});
 		return c;
 	}
 	,__class__: entity_Juice
