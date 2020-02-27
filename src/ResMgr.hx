@@ -1,3 +1,4 @@
+import hxd.res.Sound;
 import haxe.macro.Expr.Error;
 import h2d.Object;
 import h2d.Tile;
@@ -32,7 +33,9 @@ class ResMgr {
     public static final plant_waterfruit: Array<h2d.Tile> = [];
 
     // data for mobile version use
-    public var res : Array<Dynamic> ;
+    public var res : Array<Dynamic>;
+    public var sound : Array<Dynamic>;
+    public var seName : Array<String>;
     public final s = {
         f : {
             a : {offx:0, offy:0},
@@ -81,11 +84,11 @@ ddgggggggggdddd..
             case "mobile" :
                 items = hxd.Res.m256x.toTile();
                 tiles = hxd.Res.m256xfac.toTile();
-                var s = haxe.Json.parse(hxd.Res.msizeData.entry.getText());
+                var s = haxe.Json.parse(hxd.Res.json.msizeData.entry.getText());
                 AssetManager.msizeData = s;
-                var m = haxe.Json.parse(hxd.Res.mlayoutData.entry.getText());
+                var m = haxe.Json.parse(hxd.Res.json.mlayoutData.entry.getText());
                 AssetManager.mlayoutData = m;
-                var t = haxe.Json.parse(hxd.Res.mtaste.entry.getText());
+                var t = haxe.Json.parse(hxd.Res.json.mtaste.entry.getText());
                 AssetManager.mtaste = t;
                 loadMobile();
             default :
@@ -129,6 +132,7 @@ ddgggggggggdddd..
     }
 
     function loadMobile() {
+        loadSE();
         res = new Array<Dynamic>();
         // load background
         var tile = hxd.Res.mlayout_vert.toTile();
@@ -183,6 +187,13 @@ ddgggggggggdddd..
         var tile = hxd.Res.mcellar.toTile();
         res.push(new h2d.Bitmap(tile)); // index 6
 
+    }
+
+    function loadSE() {
+        sound = []; seName = [];
+        var s:Sound; if (Sound.supportedFormat(Mp3)) {
+            s = hxd.Res.se.test; seName.push("test"); sound.push(s); 
+        }
     }
 
     function loaditems(){

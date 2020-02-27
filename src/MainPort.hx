@@ -1,4 +1,3 @@
-import h2d.filter.ColorMatrix;
 import entity.Entity;
 import entity.Item.Fruit;
 import entity.Item.Plate;
@@ -23,6 +22,7 @@ class MainPort extends hxd.App {
     static inline var FIXED_WIDTH = 270; 
     static inline var FIXED_HEIGHT = 480; 
     public static inline var SELECT_SCALE = (8/5);
+    var sfx : Dynamic;
 
     var index = {
         background : 0,
@@ -51,6 +51,12 @@ class MainPort extends hxd.App {
         // build scene
         layers = new h2d.Layers(s2d);
         layers.addChildAt(res[index.background], ResMgr.LAYER_STATIC);
+
+        //TODO refactor
+        sfx = {
+            name : resManager.seName, 
+            sound : resManager.sound
+        };
 
         loaditems();
         initMenu();
@@ -103,6 +109,9 @@ class MainPort extends hxd.App {
         var button = new h2d.Interactive(94, 48, cellar);
         button.onClick = function (e:hxd.Event) {
             if (IS_MENU_OPEN) return;
+            var i = sfx.name.indexOf("test");
+            var s:hxd.res.Sound = sfx.sound[i];
+            s.play();
             onOpenMenu(menu);
         }
         // cupboard case
